@@ -29,7 +29,7 @@ function HScrollSection({
   children: React.ReactNode
 }) {
   return (
-    <div style={{ maxWidth: 1400, margin: '0 auto', padding: '48px 0 0' }}>
+    <div style={{ maxWidth: 1400, margin: '0 auto', padding: '62px 0 0' }}>
       {/* Header row */}
       <div style={{ padding: '0 28px', marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 4 }}>
         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
@@ -244,23 +244,7 @@ export default function ThingsToDoPage() {
     <main>
       <Hero city={city} onSearch={handleSearch} />
 
-      {/* ═══ 1. City Crawls ═══════════════════════════════════════ */}
-      {cityWalks.length > 0 && (
-        <HScrollSection
-          emoji="🚶"
-          heading="City Crawls"
-          count={cityWalks.length}
-          viewMoreHref={`/${citySlug}/walks`}
-        >
-          {shuffledWalks.slice(0, 5).map(walk => (
-            <div key={walk.id} style={walkCardStyle}>
-              <WalkCard walk={walk} citySlug={citySlug} />
-            </div>
-          ))}
-        </HScrollSection>
-      )}
-
-      {/* ═══ 2. Low Budget Fun ════════════════════════════════════ */}
+      {/* ═══ 1. Low Budget Fun ════════════════════════════════════ */}
       {lowBudget.length > 0 && (
         <HScrollSection
           emoji="💰"
@@ -277,7 +261,7 @@ export default function ThingsToDoPage() {
         </HScrollSection>
       )}
 
-      {/* ═══ 3. Sports ════════════════════════════════════════════ */}
+      {/* ═══ 2. Sports ════════════════════════════════════════════ */}
       {sports.length > 0 && (
         <HScrollSection
           emoji="⚽"
@@ -289,6 +273,22 @@ export default function ThingsToDoPage() {
           {shuffledSports.slice(0, 8).map(a => (
             <div key={a.id} style={cardStyle}>
               <ActivityCard activity={a} citySlug={citySlug} />
+            </div>
+          ))}
+        </HScrollSection>
+      )}
+
+      {/* ═══ 3. City Crawls ═══════════════════════════════════════ */}
+      {cityWalks.length > 0 && (
+        <HScrollSection
+          emoji="🚶"
+          heading="City Crawls"
+          count={cityWalks.length}
+          viewMoreHref={`/${citySlug}/walks`}
+        >
+          {shuffledWalks.slice(0, 5).map(walk => (
+            <div key={walk.id} style={walkCardStyle}>
+              <WalkCard walk={walk} citySlug={citySlug} />
             </div>
           ))}
         </HScrollSection>
@@ -330,7 +330,7 @@ export default function ThingsToDoPage() {
 
 
       {/* ═══ 5. Filter Strip + All Activities Grid ═══════════════ */}
-      <div style={{ borderTop: '1px solid var(--border)', marginTop: 56, padding: '40px 0', borderBottom: '1px solid var(--border)' }}>
+      <div style={{ borderTop: '1px solid var(--border)', marginTop: 72, padding: '40px 0', borderBottom: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px', marginBottom: 20 }}>
           <h3 style={{
             fontSize: 12,

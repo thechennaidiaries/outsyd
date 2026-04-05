@@ -14,33 +14,6 @@ const ROTATING_PHRASES = [
     'Done with the beaches',
 ]
 
-const BG_SLIDES = [
-    {
-        image: 'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/temple.png?updatedAt=1775389293239',
-        label: 'Temples',
-        emoji: '🪔',
-    },
-    {
-        image: 'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/sunrisechennai.jpeg?updatedAt=1775389293078',
-        label: 'Sunrises',
-        emoji: '🌅',
-    },
-    {
-        image: 'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/surfingchennai.jpeg?updatedAt=1775389293055',
-        label: 'Adventure',
-        emoji: '🏄‍♂️',
-    },
-    {
-        image: 'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/paintball.jpeg?updatedAt=1775389292732',
-        label: 'Games',
-        emoji: '🎯',
-    },
-    {
-        image: 'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/burger.jpeg?updatedAt=1775389292690',
-        label: 'Food',
-        emoji: '🍔',
-    },
-]
 
 interface HeroProps {
     city: City
@@ -48,19 +21,11 @@ interface HeroProps {
 }
 
 export default function Hero({ city, onSearch }: HeroProps) {
-    const [slideIdx, setSlideIdx] = useState(0)
     const [phraseIdx, setPhraseIdx] = useState(0)
     const [phraseFade, setPhraseFade] = useState(true)
     const [searchFocused, setSearchFocused] = useState(false)
     const [inputVal, setInputVal] = useState('')
 
-    // Cycle background slides every 4 seconds
-    useEffect(() => {
-        const t = setInterval(() => {
-            setSlideIdx(i => (i + 1) % BG_SLIDES.length)
-        }, 4000)
-        return () => clearInterval(t)
-    }, [])
 
     // Cycle rotating phrases
     useEffect(() => {
@@ -79,29 +44,20 @@ export default function Hero({ city, onSearch }: HeroProps) {
             position: 'relative', overflow: 'hidden',
         }}>
 
-            {/* Crossfading background slides */}
-            {BG_SLIDES.map((slide, i) => (
-                <div
-                    key={slide.image}
+            {/* Background image */}
+            <div style={{
+                position: 'absolute', inset: 0, zIndex: 0,
+            }}>
+                <img
+                    src="https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/sunrisechennai.jpeg?updatedAt=1775389293078"
+                    alt="Chennai Sunrise"
                     style={{
-                        position: 'absolute', inset: 0, zIndex: 0,
-                        opacity: i === slideIdx ? 1 : 0,
-                        transition: 'opacity 1.4s ease-in-out',
+                        width: '100%', height: '100%',
+                        objectFit: 'cover', objectPosition: 'center',
+                        filter: 'saturate(0.8) brightness(0.48)',
                     }}
-                >
-                    <img
-                        src={slide.image}
-                        alt={slide.label}
-                        style={{
-                            width: '100%', height: '100%',
-                            objectFit: 'cover', objectPosition: 'center',
-                            filter: 'saturate(0.8) brightness(0.48)',
-                            transform: i === slideIdx ? 'scale(1.06)' : 'scale(1.0)',
-                            transition: 'transform 4s ease-out, opacity 1.4s ease-in-out',
-                        }}
-                    />
-                </div>
-            ))}
+                />
+            </div>
 
             {/* Overlays */}
             <div style={{
@@ -141,51 +97,48 @@ export default function Hero({ city, onSearch }: HeroProps) {
                     </span>
                 </h1>
 
-                {/* Search bar — wraps on mobile */}
+                {/* Search bar */}
                 <div style={{
-                    display: 'flex', flexWrap: 'wrap', gap: 10, width: '100%', maxWidth: 600,
+                    position: 'relative', width: '100%', maxWidth: 540,
                     margin: '0 auto',
                     animation: 'fade-up 0.7s ease 0.3s both',
+                    borderRadius: 16,
+                    background: searchFocused ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.06)',
+                    border: `1.5px solid ${searchFocused ? 'rgba(255,107,0,0.5)' : 'rgba(255,255,255,0.11)'}`,
+                    boxShadow: searchFocused
+                        ? '0 0 0 4px rgba(255,107,0,0.08), 0 8px 32px rgba(0,0,0,0.4)'
+                        : '0 4px 20px rgba(0,0,0,0.35)',
+                    transition: 'all 0.3s ease',
+                    backdropFilter: 'blur(12px)',
+                    display: 'flex', alignItems: 'center',
                 }}>
-                    <div style={{
-                        position: 'relative', flex: '1 1 300px', minWidth: 0,
-                        borderRadius: 16,
-                        background: searchFocused ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.06)',
-                        border: `1.5px solid ${searchFocused ? 'rgba(255,107,0,0.5)' : 'rgba(255,255,255,0.11)'}`,
-                        boxShadow: searchFocused
-                            ? '0 0 0 4px rgba(255,107,0,0.08), 0 8px 32px rgba(0,0,0,0.4)'
-                            : '0 4px 20px rgba(0,0,0,0.35)',
-                        transition: 'all 0.3s ease',
-                        backdropFilter: 'blur(12px)',
-                    }}>
-                        <Search size={17} style={{
-                            position: 'absolute', left: 18, top: '50%', transform: 'translateY(-50%)',
-                            color: searchFocused ? 'var(--accent)' : 'var(--text-3)',
-                            transition: 'color 0.2s', pointerEvents: 'none',
-                        }} />
-                        <input
-                            id="hero-search"
-                            type="text"
-                            value={inputVal}
-                            onChange={e => setInputVal(e.target.value)}
-                            placeholder="Search places, moods, areas…"
-                            onFocus={() => setSearchFocused(true)}
-                            onBlur={() => setSearchFocused(false)}
-                            onKeyDown={e => {
-                                if (e.key === 'Enter' && onSearch) {
-                                    onSearch(inputVal)
-                                    document.getElementById('activities-section')?.scrollIntoView({ behavior: 'smooth' })
-                                }
-                            }}
-                            style={{
-                                width: '100%', height: 56, paddingLeft: 52, paddingRight: 16,
-                                background: 'transparent',
-                                color: 'var(--text)', fontSize: 15,
-                                outline: 'none', fontFamily: 'inherit', border: 'none',
-                                borderRadius: 16,
-                            }}
-                        />
-                    </div>
+                    <Search size={17} style={{
+                        position: 'absolute', left: 18, top: '50%', transform: 'translateY(-50%)',
+                        color: searchFocused ? 'var(--accent)' : 'var(--text-3)',
+                        transition: 'color 0.2s', pointerEvents: 'none',
+                    }} />
+                    <input
+                        id="hero-search"
+                        type="text"
+                        value={inputVal}
+                        onChange={e => setInputVal(e.target.value)}
+                        placeholder="Search places, moods, areas…"
+                        onFocus={() => setSearchFocused(true)}
+                        onBlur={() => setSearchFocused(false)}
+                        onKeyDown={e => {
+                            if (e.key === 'Enter' && onSearch) {
+                                onSearch(inputVal)
+                                document.getElementById('activities-section')?.scrollIntoView({ behavior: 'smooth' })
+                            }
+                        }}
+                        style={{
+                            width: '100%', height: 56, paddingLeft: 52, paddingRight: 60,
+                            background: 'transparent',
+                            color: 'var(--text)', fontSize: 15,
+                            outline: 'none', fontFamily: 'inherit', border: 'none',
+                            borderRadius: 16,
+                        }}
+                    />
                     <button
                         onClick={() => {
                             if (onSearch) {
@@ -194,28 +147,26 @@ export default function Hero({ city, onSearch }: HeroProps) {
                             }
                         }}
                         style={{
-                            height: 56, padding: '0 28px', borderRadius: 16,
+                            position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
+                            width: 40, height: 40, borderRadius: 12,
                             background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
-                            color: 'white', fontSize: 15, fontWeight: 700,
+                            color: 'white',
                             border: 'none', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                            boxShadow: '0 4px 24px rgba(255,107,0,0.4)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            boxShadow: '0 4px 16px rgba(255,107,0,0.4)',
                             transition: 'all 0.2s ease',
-                            whiteSpace: 'nowrap', letterSpacing: '-0.01em',
-                            flex: '0 0 auto',
-                            width: 'auto',
+                            flexShrink: 0,
                         }}
-                        className="hero-explore-btn"
                         onMouseEnter={e => {
-                            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 30px rgba(255,107,0,0.6)'
-                                ; (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)'
+                            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 24px rgba(255,107,0,0.6)'
+                            ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-50%) scale(1.05)'
                         }}
                         onMouseLeave={e => {
-                            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 24px rgba(255,107,0,0.4)'
-                                ; (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'
+                            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 16px rgba(255,107,0,0.4)'
+                            ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-50%)'
                         }}
                     >
-                        Explore <ArrowRight size={16} />
+                        <ArrowRight size={18} />
                     </button>
                 </div>
             </div>

@@ -173,19 +173,28 @@ export default function SurprisePage() {
             overflow: 'hidden',
         }}>
 
-            {/* ── Handwritten instruction ───────────────────────── */}
-            <div style={{
-                textAlign: 'center', marginBottom: 28,
-                fontFamily: "'Caveat', cursive",
-                fontSize: 'clamp(18px, 4vw, 22px)',
-                color: 'var(--text-2)',
-                lineHeight: 1.5,
-                maxWidth: 360,
-            }}>
-                <span style={{ color: '#f87171', fontWeight: 700 }}>swipe left</span>
-                {' '}if you want another activity,{' '}
-                <span style={{ color: '#4ade80', fontWeight: 700 }}>swipe right</span>
-                {' '}if you want to try this activity ✨
+            {/* ── Headline ───────────────────────── */}
+            <div style={{ textAlign: 'center', marginBottom: 28 }}>
+                <h1 style={{
+                    fontSize: 'clamp(18px, 5vw, 24px)',
+                    fontWeight: 500,
+                    color: 'var(--text-2)',
+                    lineHeight: 1.1,
+                    letterSpacing: '-0.01em',
+                    marginBottom: 8,
+                    whiteSpace: 'nowrap',
+                }}>
+                    Chennai la bore adikutha?
+                </h1>
+                <p style={{
+                    fontFamily: "'Caveat', cursive", 
+                    fontSize: 'clamp(22px, 6vw, 32px)',
+                    color: 'var(--accent)',
+                    fontWeight: 700,
+                    lineHeight: 1,
+                }}>
+                    Swipe to Find your Scene
+                </p>
             </div>
 
             {/* ── Stacked cards ────────────────────────────────────── */}
@@ -338,7 +347,7 @@ export default function SurprisePage() {
             </div>
 
             {/* ── Action buttons ────────────────────────────────────── */}
-            <div style={{ display: 'flex', gap: 20, marginTop: 36, alignItems: 'center' }}>
+            <div className="hidden md:flex" style={{ gap: 20, marginTop: 36, alignItems: 'center' }}>
                 {/* Skip */}
                 <button
                     onClick={() => {

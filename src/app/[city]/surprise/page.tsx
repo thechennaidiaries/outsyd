@@ -48,14 +48,14 @@ export default function SurprisePage() {
         const activityItems: SurpriseItem[] = cityActivities
             .filter(a => a.image && a.slug) // only include activities with image and slug
             .map(a => ({
-            id: `activity-${a.id}`,
-            type: 'activity',
-            title: a.title,
-            image: a.image!,
-            location: a.location ?? a.area ?? '',
-            tags: a.tags ?? [],
-            slug: a.slug!,
-        }))
+                id: `activity-${a.id}`,
+                type: 'activity',
+                title: a.title,
+                image: a.image!,
+                location: a.location ?? a.area ?? '',
+                tags: a.tags ?? [],
+                slug: a.slug!,
+            }))
         const walkItems: SurpriseItem[] = cityWalks.map(w => ({
             id: `walk-${w.id}`,
             type: 'walk',
@@ -119,7 +119,7 @@ export default function SurprisePage() {
     // Shuffle on client only — avoids hydration mismatch from Math.random()
     useEffect(() => {
         setDeck(buildPool())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [citySlug])
 
     const onReset = () => { setDeck(buildPool()); setIdx(0); setOffset(0); setFlying(null); setSaved(false); setImgErr(false) }
@@ -164,34 +164,33 @@ export default function SurprisePage() {
 
     /* ── Main ────────────────────────────────────────────────────── */
     return (
-        <div style={{
+        <div className="flex flex-col items-center pt-24 md:pt-32 pb-12 px-6" style={{
             minHeight: '100vh', background: 'var(--bg)',
-            display: 'flex', flexDirection: 'column',
-            alignItems: 'center', justifyContent: 'center',
-            padding: '80px 24px 48px',
             userSelect: 'none',
             overflow: 'hidden',
         }}>
 
             {/* ── Headline ───────────────────────── */}
-            <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <div style={{ textAlign: 'center', marginBottom: 24 }}>
                 <h1 style={{
-                    fontSize: 'clamp(18px, 5vw, 24px)',
-                    fontWeight: 500,
+                    fontFamily: "'Bricolage Grotesque', sans-serif",
+                    fontSize: 'clamp(17px, 5vw, 22px)',
+                    fontWeight: 400,
                     color: 'var(--text-2)',
                     lineHeight: 1.1,
-                    letterSpacing: '-0.01em',
-                    marginBottom: 8,
+                    letterSpacing: '0em',
+                    marginBottom: 10,
                     whiteSpace: 'nowrap',
                 }}>
                     Chennai la bore adikutha?
                 </h1>
                 <p style={{
-                    fontFamily: "'Caveat', cursive", 
-                    fontSize: 'clamp(22px, 6vw, 32px)',
+                    fontFamily: "'Caveat', cursive",
+                    fontSize: 'clamp(24px, 7vw, 34px)',
                     color: 'var(--accent)',
                     fontWeight: 700,
                     lineHeight: 1,
+                    paddingRight: 6,
                 }}>
                     Swipe to Find your Scene
                 </p>

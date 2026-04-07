@@ -34,7 +34,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'All days 9AM-6PM',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://etickets.tnhorticulture.in/sp',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 75 for adults, Rs 40 for kids below 10',
     },
     {
@@ -50,7 +50,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'KMC, 814, Poonamallee High Rd, Opposite to, New Bupathy Nagar, Kilpauk, Chennai, Tamil Nadu 600010',
         timings: '10:00 AM to 7:30 PM daily',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 25 for adults, Rs 10 for kids',
     },
     {
@@ -66,7 +66,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'KMC, 814, Poonamallee High Rd, Opposite to, New Bupathy Nagar, Kilpauk, Chennai, Tamil Nadu 600010',
         timings: '10:00 AM to 7:30 PM daily',
         tags: ['water activities', 'outdoor activities', 'group activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 59 for adults, Rs 29 for kids',
     },
     {
@@ -82,7 +82,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'KMC, 814, Poonamallee High Rd, Opposite to, New Bupathy Nagar, Kilpauk, Chennai, Tamil Nadu 600010',
         timings: '10:00 AM to 7:30 PM daily',
         tags: ['water activities', 'outdoor activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 200',
     },
     {
@@ -98,7 +98,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'KMC, 814, Poonamallee High Rd, Opposite to, New Bupathy Nagar, Kilpauk, Chennai, Tamil Nadu 600010',
         timings: '10:00 AM to 7:30 PM daily',
         tags: ['indoor activities', 'water activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 50 for adults, Rs 30 for kids',
     },
     {
@@ -115,7 +115,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'All days 6:30 am–6 pm. Thursday Closed',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://www.crrt.tn.gov.in/visitor-instruction',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 20, Online booking required',
     },
     {
@@ -147,7 +147,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        10 am–6 pm\nWednesday        10 am–6 pm\nThursday        10 am–6 pm\nFriday        10 am–6 pm\nSaturday        10 am–6 pm\nSunday        10 am–6 pm\nMonday        Closed',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://etickets.tnhorticulture.in/kcp',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 100 for adults, Rs 50 for kids, Rs 20 for infants',
     },
     {
@@ -164,7 +164,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        10 am– 4 pm\nWednesday        10 am– 4 pm\nThursday        10 am– 4 pm\nFriday        10 am– 4 pm\nSaturday        10 am– 4pm\nSunday        10 am– 4pm\nMonday        Closed',
         tags: ['adventure activities', 'outdoor activities'],
         bookingLink: 'https://etickets.tnhorticulture.in/kcp',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 250 for adults, Rs 200 for children',
     },
     {
@@ -181,7 +181,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        10 am–6 pm\nWednesday        10 am–6 pm\nThursday        10 am–6 pm\nFriday        10 am–6 pm\nSaturday        10 am–6 pm\nSunday        10 am–6 pm\nMonday        Closed',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://etickets.tnhorticulture.in/kcp',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 50 for adults',
     },
     {
@@ -198,7 +198,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday   - 6:30 Pm, 7:10 pm\nWednesday      - 6:30 Pm, 7:10 pm\nThursday        - 6:30 Pm, 7:10 pm\nFriday   - 6:30 Pm, 7:10 pm\nSaturday        - 6:30 Pm, 7:10 pm\nSunday      - 6:30 Pm, 7:10 pm\nMonday    - 6:30 Pm, 7:10 pm',
         tags: ['outdoor activities', 'night activities', 'low budget fun activities'],
         bookingLink: 'https://etickets.tnhorticulture.in/kcp',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 50 for both adults and children',
     },
     {
@@ -215,7 +215,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        10 am– 5:30 pm\nWednesday        10 am– 5:30 pm\nThursday        10 am– 5:30 pm\nFriday        10 am– 5:30 pm\nSaturday        10 am– 5:30 pm\nSunday        110 am– 5:30 pm\nMonday        Closed',
         tags: ['leisure activities', 'low budget fun activities'],
         bookingLink: 'https://etickets.tnhorticulture.in/kcp',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 50 for adults, Rs 40 for kids',
     },
     {
@@ -232,7 +232,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        10 am– 4 pm\nWednesday        10 am– 4 pm\nThursday        10 am– 4 pm\nFriday        10 am– 4 pm\nSaturday        10 am– 4pm\nSunday        10 am– 4pm\nMonday        Closed',
         tags: ['outdoor activities', 'leisure activities'],
         bookingLink: 'https://etickets.tnhorticulture.in/kcp',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 150 for adults, Rs 75 for kids',
     },
     {
@@ -248,7 +248,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Rangeguindy, Chennai, Tamil Nadu 600022',
         timings: 'Tuesday        Closed\nWednesday        9 am–5:30 pm\nThursday        9 am–5:30 pm\nFriday        9 am–5:30 pm\nSaturday        9 am–5:30 pm\nSunday        9 am–5:30 pm\nMonday        9 am–5:30 pm',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities', 'kids activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 60 for adults, Rs 10 for kids',
     },
     {
@@ -264,7 +264,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Raj Bhavan, post, Guindy National Park, Guindy, Chennai, Tamil Nadu 600022',
         timings: 'Tuesday        Closed\nWednesday        9 am–5:30 pm\nThursday        9 am–5:30 pm\nFriday        9 am–5:30 pm\nSaturday        9 am–5:30 pm\nSunday        9 am–5:30 pm\nMonday        9 am–5:30 pm',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities', 'kids activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 30 for adults, Rs 10 for kids',
     },
     {
@@ -280,7 +280,7 @@ export const ACTIVITIES: Activity[] = [
         address: '129, Velachery - Tambaram Main Rd, Ram Nagar South, Pallikaranai, Chennai, Tamil Nadu 600100',
         timings: 'Tuesday	6 am–6:30 pm\nWednesday	6 am–6:30 pm\nThursday	6 am–6:30 pm\nFriday	6 am–6:30 pm\nSaturday	6 am–6:30 pm\nSunday	6 am–6:30 pm\nMonday	6 am–6:30 pm',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 10 for adults, free for kids under 12',
     },
     {
@@ -297,7 +297,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        Closed\nWednesday        9 am–5 pm\nThursday        9 am–5 pm\nFriday        9 am–5 pm\nSaturday        9 am–5 pm\nSunday        9 am–5 pm\nMonday        9 am–5 pm',
         tags: ['outdoor activities', 'leisure activities', 'group activities'],
         bookingLink: 'https://tickets.aazp.in/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 200 for adults, Rs 50 for kids',
     },
     {
@@ -314,7 +314,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        Closed\nWednesday        9 am–5 pm\nThursday        9 am–5 pm\nFriday        9 am–5 pm\nSaturday        9 am–5 pm\nSunday        9 am–5 pm\nMonday        9 am–5 pm',
         tags: ['adventure activities', 'outdoor activities', 'group activities'],
         bookingLink: 'https://tickets.aazp.in/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 150 for adults, Rs 30 for kids',
     },
     {
@@ -331,7 +331,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        Closed\nWednesday        9 am–5 pm\nThursday        9 am–5 pm\nFriday        9 am–5 pm\nSaturday        9 am–5 pm\nSunday        9 am–5 pm\nMonday        9 am–5 pm',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://tickets.aazp.in/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 30 / hour for bicycle, Rs 90 / hour for electric cycle',
     },
     {
@@ -392,7 +392,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'no 4, Post bag, Post Bag No 4, Mahabalipuram, Tamil Nadu 603104',
         timings: 'Tuesday        9 am–5 pm\nWednesday        9 am–5 pm\nThursday        9 am–5 pm\nFriday        9 am–5 pm\nSaturday        9 am–5 pm\nSunday        9 am–5 pm\nMonday        Closed',
         tags: ['adventure activities', 'outdoor activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 100 for adults, Rs 50 for kids',
     },
     {
@@ -408,7 +408,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'no 4, Post bag, Post Bag No 4, Mahabalipuram, Tamil Nadu 603104',
         timings: 'Tuesday        9 am–5 pm\nWednesday        9 am–5 pm\nThursday        9 am–5 pm\nFriday        9 am–5 pm\nSaturday        9 am–5 pm\nSunday        9 am–5 pm\nMonday        Closed',
         tags: ['outdoor activities', 'unique cultural experiences', 'leisure activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 100 for adults, Rs 50 for kids',
     },
     {
@@ -424,7 +424,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'no 4, Post bag, Post Bag No 4, Mahabalipuram, Tamil Nadu 603104',
         timings: 'Tuesday        9 am–5 pm\nWednesday        9 am–5 pm\nThursday        9 am–5 pm\nFriday        9 am–5 pm\nSaturday        9 am–5 pm\nSunday        9 am–5 pm\nMonday        Closed',
         tags: ['unique cultural experiences', 'outdoor activities', 'leisure activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 100 for adults, Rs 50 for kids',
     },
     {
@@ -455,7 +455,7 @@ export const ACTIVITIES: Activity[] = [
         address: '1/812, Pillaiyar Koil St, MCN Nagar Extension, Thoraipakkam, Tamil Nadu 600097',
         timings: 'Tuesday	11 am–11 pm\nWednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 280 per person on weekends, multiple offers on weekdays',
     },
     {
@@ -471,7 +471,7 @@ export const ACTIVITIES: Activity[] = [
         address: '1/812, Pillaiyar Koil St, MCN Nagar Extension, Thoraipakkam, Tamil Nadu 600097',
         timings: 'Tuesday	11 am–11 pm\nWednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Medium table: Rs 300/hour for 4 persons, Small table: Rs 250/hour for 4 persons',
     },
     {
@@ -487,7 +487,7 @@ export const ACTIVITIES: Activity[] = [
         address: '1/812, Pillaiyar Koil St, MCN Nagar Extension, Thoraipakkam, Tamil Nadu 600097',
         timings: 'Tuesday	11 am–11 pm\nWednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 250 per person',
     },
     {
@@ -503,7 +503,7 @@ export const ACTIVITIES: Activity[] = [
         address: '13/1A, Old Mahabalipuram Road, near Marina Mall, OMR, Egattur, Chennai, Tamil Nadu 603103',
         timings: 'Tuesday	10 am–10 pm\nWednesday	10 am–10 pm\nThursday	10 am–10 pm\nFriday	10 am–10 pm\nSaturday	10 am–10 pm\nSunday	10 am–10 pm\nMonday	10 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 300 per person',
     },
     {
@@ -519,7 +519,7 @@ export const ACTIVITIES: Activity[] = [
         address: '13/1A, Old Mahabalipuram Road, near Marina Mall, OMR, Egattur, Chennai, Tamil Nadu 603103',
         timings: 'Tuesday	10 am–10 pm\nWednesday	10 am–10 pm\nThursday	10 am–10 pm\nFriday	10 am–10 pm\nSaturday	10 am–10 pm\nSunday	10 am–10 pm\nMonday	10 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 350 per person',
     },
     {
@@ -535,7 +535,7 @@ export const ACTIVITIES: Activity[] = [
         address: '13/1A, Old Mahabalipuram Road, near Marina Mall, OMR, Egattur, Chennai, Tamil Nadu 603103',
         timings: 'Tuesday	10 am–10 pm\nWednesday	10 am–10 pm\nThursday	10 am–10 pm\nFriday	10 am–10 pm\nSaturday	10 am–10 pm\nSunday	10 am–10 pm\nMonday	10 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 199/hour',
     },
     {
@@ -551,7 +551,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'No 519, V64W+2F4, SH 49, near Uthandi, Toll Gate, Kanathur Reddykuppam, Chennai, Tamil Nadu 603112',
         timings: 'Tuesday	11 am–10 pm\nWednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nSuggest new hours',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 350 per person',
     },
     {
@@ -567,7 +567,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'No 519, V64W+2F4, SH 49, near Uthandi, Toll Gate, Kanathur Reddykuppam, Chennai, Tamil Nadu 603112',
         timings: 'Tuesday	11 am–10 pm\nWednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nSuggest new hours',
         tags: ['adventure activities', 'indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starts from Rs 350/person',
     },
     {
@@ -583,7 +583,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'No 519, V64W+2F4, SH 49, near Uthandi, Toll Gate, Kanathur Reddykuppam, Chennai, Tamil Nadu 603112',
         timings: 'Tuesday	11 am–10 pm\nWednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nSuggest new hours',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starts from Rs 350/person',
     },
     {
@@ -599,7 +599,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'No 519, V64W+2F4, SH 49, near Uthandi, Toll Gate, Kanathur Reddykuppam, Chennai, Tamil Nadu 603112',
         timings: 'Tuesday	11 am–10 pm\nWednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nSuggest new hours',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starts from Rs 150/person',
     },
     {
@@ -615,7 +615,7 @@ export const ACTIVITIES: Activity[] = [
         address: '5th Avenue, Elliot\'s Promenade, Besant Nagar, Chennai, Tamil Nadu 600090',
         timings: 'Tuesday	11 am–11 pm\nWednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Enjoy a weekend bowling session with your loved ones',
@@ -630,7 +630,7 @@ export const ACTIVITIES: Activity[] = [
         address: '5th Avenue, Elliot\'s Promenade, Besant Nagar, Chennai, Tamil Nadu 600090',
         timings: 'Tuesday	11 am–11 pm\nWednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Play snooker & have a fun day',
@@ -645,7 +645,7 @@ export const ACTIVITIES: Activity[] = [
         address: '5th Avenue, Elliot\'s Promenade, Besant Nagar, Chennai, Tamil Nadu 600090',
         timings: 'Tuesday	11 am–11 pm\nWednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Play bowling at this chennai\'s oldest bowling alley',
@@ -660,7 +660,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Dugar Towers, 123, Rukmani Lakshmipathi Rd, below Bank of Baroda, Egmore, Chennai, Tamil Nadu 600008',
         timings: 'Tuesday	10 am–11 pm\nWednesday	10 am–11 pm\nThursday	10 am–11 pm\nFriday	10 am–11 pm\nSaturday	10 am–11 pm\nSunday	10 am–11 pm\nMonday	10 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 300/person on weekdays, Rs 350/day on weekends',
     },
     {
@@ -676,7 +676,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Dugar Towers, 123, Rukmani Lakshmipathi Rd, below Bank of Baroda, Egmore, Chennai, Tamil Nadu 600008',
         timings: 'Tuesday	10 am–11 pm\nWednesday	10 am–11 pm\nThursday	10 am–11 pm\nFriday	10 am–11 pm\nSaturday	10 am–11 pm\nSunday	10 am–11 pm\nMonday	10 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 200 for 30 mins, Rs 300 for 60 mins',
     },
     {
@@ -692,7 +692,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Dugar Towers, 123, Rukmani Lakshmipathi Rd, below Bank of Baroda, Egmore, Chennai, Tamil Nadu 600008',
         timings: 'Tuesday	10 am–11 pm\nWednesday	10 am–11 pm\nThursday	10 am–11 pm\nFriday	10 am–11 pm\nSaturday	10 am–11 pm\nSunday	10 am–11 pm\nMonday	10 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 100 for 30 mins, Rs 200 for 60 mins',
     },
     {
@@ -708,7 +708,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Level 8, VR Mall, Jawaharlal Nehru Salai, Ann',
         timings: 'Tuesday	12–10 am, 10:30 am–12 am\nWednesday	12–10 am, 10:30 am–12 am\nThursday	12–10 am, 10:30 am–12 am\nFriday	12–10 am, 10:30 am–12 am\nSaturday	12–10 am, 10:30 am–12 am\nSunday	12–10 am, 10:30 am–12 am\nMonday	12–10 am, 10:30 am–12 am',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 275/person',
     },
     {
@@ -755,7 +755,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday	6 am–6 pm\nWednesday	6 am–6 pm\nThursday	6 am–6 pm\nFriday	6 am–6 pm\nSaturday	6 am–6 pm\nSunday	6 am–6 pm\nMonday	6 am–6 pm',
         tags: ['outdoor activities', 'unique cultural experiences', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://www.district.in/events/group-of-monuments-mamallapuram-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 35 for adults, free for kids below 15 years',
     },
     {
@@ -817,7 +817,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday	6 am–1 pm, 2–11 pm\nWednesday	6 am–1 pm, 2–11 pm\nThursday	6 am–1 pm, 2–11 pm\nFriday	6 am–1 pm, 2–11 pm\nSaturday	6 am–1 pm, 2–11 pm\nSunday	6 am–1 pm, 2–11 pm\nMonday	6–10 am, 3–11 pm',
         tags: ['water activities', 'outdoor activities', 'sports activities'],
         bookingLink: 'https://open.turftown.in/chennai/sports-venue/blues-saidapet-swimming',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 500/hour',
     },
     {
@@ -834,7 +834,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday	6 am–1 pm, 2–11 pm\nWednesday	6 am–1 pm, 2–11 pm\nThursday	6 am–1 pm, 2–11 pm\nFriday	6 am–1 pm, 2–11 pm\nSaturday	6 am–1 pm, 2–11 pm\nSunday	6 am–1 pm, 2–11 pm\nMonday	6–10 am, 3–11 pm',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://open.turftown.in/time-slots/656b1c2bbe64a12a54f4f626',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 850/hour',
     },
     {
@@ -850,7 +850,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'SDAT, Velachery Main Rd, Chennai, Tamil Nadu 600032',
         timings: 'Tuesday	10 am–4:15 pm\nWednesday	10 am–4:15 pm\nThursday	10 am–4:15 pm\nFriday	10 am–4:15 pm\nSaturday	10 am–4:15 pm\nSunday	10 am–5:30 pm\nMonday	Closed',
         tags: ['water activities', 'outdoor activities', 'sports activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 118/hour',
     },
     {
@@ -866,7 +866,7 @@ export const ACTIVITIES: Activity[] = [
         address: '36JG+CH2, E Club Rd, Shenoy Nagar, Chennai, Tamil Nadu 600030',
         timings: 'Tuesday	9–10 am, 10:15–11:15 am, 11:30 am–12:30 pm, 3–4 pm, 4:15–5:15 pm\nWednesday	9–10 am, 10:15–11:15 am, 11:30 am–12:30 pm, 3–4 pm, 4:15–5:15 pm\nThursday	9–10 am, 10:15–11:15 am, 11:30 am–12:30 pm, 3–4 pm, 4:15–5:15 pm\nFriday	9–10 am, 10:15–11:15 am, 11:30 am–12:30 pm, 3–4 pm, 4:15–5:15 pm\nSaturday	9 am–12 am\nSunday	9–10 am, 10:15–11:15 am, 11:30 am–12:30 pm, 3–4 pm, 4:15–5:15 pm',
         tags: ['water activities', 'outdoor activities', 'group activities', 'sports activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 118/hour',
     },
     {
@@ -883,7 +883,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        5 am–4 am\nWednesday        5 am–4 am\nThursday        5 am–4 am\nFriday        5 am–4 am\nSaturday        5 am–4 am\nSunday        5 am–4 am\nMonday        5 am–4 am',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/turf-137-cricketfootball-guindy-cricket',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1200/hour on weekdays, Rs 1500/hour on weekends',
     },
     {
@@ -900,7 +900,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday        5 am–4 am\nWednesday        5 am–4 am\nThursday        5 am–4 am\nFriday        5 am–4 am\nSaturday        5 am–4 am\nSunday        5 am–4 am\nMonday        5 am–4 am',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/turf-137-cricketfootball-guindy-cricket',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1200/hour on weekdays, Rs 1500/hour on weekends',
     },
     {
@@ -917,7 +917,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	Open 24 hours\nThursday	Open 24 hours\nFriday	Open 24 hours\nSaturday	Open 24 hours\nSunday	Open 24 hours\nMonday	Open 24 hours\nTuesday	Open 24 hours',
         tags: ['outdoor activities', 'night activities', 'group activities', 'sports activities'],
         bookingLink: 'https://playo.co/venues/kovilambakkam-chennai/madras-tekkerz-turf-kovilambakkam-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1,100/hour on weekdays, Rs 1,300/hour on weekends',
     },
     {
@@ -934,7 +934,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	5 am–11 pm\nThursday	5 am–11 pm\nFriday	5 am–11 pm\nSaturday	5 am–11 pm\nSunday	5 am–11 pm\nMonday	5 am–11 pm\nTuesday	5 am–11 pm',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://playo.co/venues/semmancheri-chennai/thiram-sports-academy-semmancheri-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1000/hour',
     },
     {
@@ -951,7 +951,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	5 am–11 pm\nThursday	5 am–11 pm\nFriday	5 am–11 pm\nSaturday	5 am–11 pm\nSunday	5 am–11 pm\nMonday	5 am–11 pm\nTuesday	5 am–11 pm',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://playo.co/venues/semmancheri-chennai/thiram-sports-academy-semmancheri-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1000/hour',
     },
     {
@@ -968,7 +968,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday        5 am–11 pm\nThursday        5 am–11 pm\nFriday        5 am–11 pm\nSaturday        5 am–11 pm\nSunday        5 am–11 pm\nMonday        5 am–11 pm\nTuesday        5 am–11 pm',
         tags: ['sports activities', 'indoor activities'],
         bookingLink: 'https://playo.co/venues/semmancheri-chennai/thiram-sports-academy-semmancheri-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 250 onwards',
     },
     {
@@ -985,7 +985,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	5 am–11 pm\nThursday	5 am–11 pm\nFriday	5 am–11 pm\nSaturday	5 am–11 pm\nSunday	5 am–11 pm\nMonday	5 am–11 pm\nTuesday	5 am–11 pm',
         tags: ['indoor activities', 'group activities', 'sports activities', 'leisure activities'],
         bookingLink: 'https://playo.co/venues/semmancheri-chennai/thiram-sports-academy-semmancheri-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 350/person for one hour',
     },
     {
@@ -1002,7 +1002,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday        5 am–11 pm\nThursday        5 am–11 pm\nFriday        5 am–11 pm\nSaturday        5 am–11 pm\nSunday        5 am–11 pm\nMonday        5 am–11 pm\nTuesday        5 am–11 pm',
         tags: ['outdoor activities', 'group activities', 'sports activities', 'leisure activities'],
         bookingLink: 'https://playo.co/venues/semmancheri-chennai/thiram-sports-academy-semmancheri-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1000/hour',
     },
     {
@@ -1019,7 +1019,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	5 am–11 pm\nThursday	5 am–11 pm\nFriday	5 am–11 pm\nSaturday	5 am–11 pm\nSunday	5 am–11 pm\nMonday	5 am–11 pm\nTuesday	5 am–11 pm',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/loki-arena-perumbakkam-football',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1300 / hour on weekdays, Rs 1500/hour on weekends',
     },
     {
@@ -1036,7 +1036,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	Open 24 hours\nThursday	Open 24 hours\nFriday	Open 24 hours\nSaturday	Open 24 hours\nSunday	Open 24 hours\nMonday	Open 24 hours\nTuesday	Open 24 hours',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/fc-marina-madipakkam-football',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs `1200/hour on weekdays, Rs 1500/hour on weekends',
     },
     {
@@ -1053,7 +1053,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	Open 24 hours\nThursday	Open 24 hours\nFriday	Open 24 hours\nSaturday	Open 24 hours\nSunday	Open 24 hours\nMonday	Open 24 hours\nTuesday	Open 24 hours',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/fc-marina-madipakkam-football',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs `1200/hour on weekdays, Rs 1500/hour on weekends',
     },
     {
@@ -1070,7 +1070,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	6 am–2 am\nThursday	6 am–2 am\nFriday	6 am–2 am\nSaturday	6 am–2 am\nSunday	6 am–2 am\nMonday	6 am–2 am\nTuesday	6 am–2 am',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/pickle-up-thoraipakkam-pickleball',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 800/hour',
     },
     {
@@ -1087,7 +1087,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	6:30 am–10 pm\nThursday	6:30 am–10 pm\nFriday	6:30 am–10 pm\nSaturday	6:30 am–10 pm\nSunday	6:30 am–10 pm\nMonday	6:30 am–10 pm\nTuesday	6:30 am–10 pm',
         tags: ['outdoor activities', 'group activities', 'sports activities', 'leisure activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/vantage-5-pickleball-old-pallavaram-pickleball',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 600/hour',
     },
     {
@@ -1104,7 +1104,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	5 am–12 am\nThursday	5 am–12 am\nFriday	5 am–12 am\nSaturday	5 am–12 am\nSunday	5 am–12 am\nMonday	5 am–12 am\nTuesday	5 am–12 am',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/pickleball-at-smasher-40-porur-pickleball',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 500/hour',
     },
     {
@@ -1121,7 +1121,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	5 am–12 am\nThursday	5 am–12 am\nFriday	5 am–12 am\nSaturday	5 am–12 am\nSunday	5 am–12 am\nMonday	5 am–12 am\nTuesday	5 am–12 am',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/smasher-40-sports-academy-porur-badminton',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 400/hour',
     },
     {
@@ -1137,7 +1137,7 @@ export const ACTIVITIES: Activity[] = [
         address: '6/22, Gandhi Mandapam Rd, Anna University Staff Quarters, Duraisamy Nagar, Kotturpuram, Chennai, Tamil Nadu 600025',
         timings: 'Thursday	10 am–5:45 pm\nFriday	10 am–5:45 pm\nSaturday	10 am–5:45 pm\nSunday	10 am–5:45 pm\nMonday	10 am–5:45 pm\nTuesday	10 am–5:45 pm\nWednesday	10 am–5:45 pm',
         tags: ['indoor activities', 'leisure activities', 'kids activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 100 for adults, Rs 50 for kids',
     },
     {
@@ -1153,7 +1153,7 @@ export const ACTIVITIES: Activity[] = [
         address: '6/22, Gandhi Mandapam Rd, Anna University Staff Quarters, Duraisamy Nagar, Kotturpuram, Chennai, Tamil Nadu 600025',
         timings: 'Thursday	10 am–5:45 pm\nFriday	10 am–5:45 pm\nSaturday	10 am–5:45 pm\nSunday	10 am–5:45 pm\nMonday	10 am–5:45 pm\nTuesday	10 am–5:45 pm\nWednesday	10 am–5:45 pm',
         tags: ['indoor activities', 'low budget fun activities', 'kids activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 100 for adults, Rs 50 for kids',
     },
     {
@@ -1170,7 +1170,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	3–10:30 pm\nThursday	3–10:30 pm\nFriday	3–10:30 pm\nSaturday	3–10:30 pm\nSunday	3–10:30 pm\nMonday	3–10:30 pm\nTuesday	3–10:30 pm',
         tags: ['outdoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://www.district.in/events/madras-mini-golf-chennai-2025-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 499/person on weekdays, Rs 599/person on weekends',
     },
     {
@@ -1187,7 +1187,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–8 pm\nThursday	11 am–8 pm\nFriday	11 am–8 pm\nSaturday	11 am–8 pm\nSunday	11 am–8 pm\nMonday	11 am–8 pm\nTuesday	Closed',
         tags: ['indoor activities', 'art activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://in.bookmyshow.com/events/neon-painting-party/ET00457231/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 699/person',
     },
     {
@@ -1204,7 +1204,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Sunday	11 am–8 pm\nMonday	11 am–8 pm\nTuesday	Closed\nWednesday	11 am–8 pm\nThursday	11 am–8 pm\nFriday	11 am–8 pm\nSaturday	11 am–8 pm',
         tags: ['art activities', 'indoor activities', 'leisure activities'],
         bookingLink: 'https://www.district.in/events/cuff-and-paint-2026-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1,500 per couple',
     },
     {
@@ -1221,7 +1221,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–8 pm\nThursday	11 am–8 pm\nFriday	11 am–8 pm\nSaturday	11 am–8 pm\nSunday	11 am–8 pm\nMonday	11 am–8 pm\nTuesday	Closed',
         tags: ['indoor activities', 'art activities', 'leisure activities'],
         bookingLink: 'https://in.bookmyshow.com/events/hand-pressed-pottery-basic/ET00488030',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 899/person',
     },
     {
@@ -1238,7 +1238,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–8 pm\nThursday	11 am–8 pm\nFriday	11 am–8 pm\nSaturday	11 am–8 pm\nSunday	11 am–8 pm\nMonday	11 am–8 pm\nTuesday	Closed',
         tags: ['indoor activities', 'art activities', 'group activities', 'leisure activities'],
         bookingLink: 'https://in.bookmyshow.com/events/fridge-magnet-painting/ET00488002',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1,399/couple',
     },
     {
@@ -1254,7 +1254,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Plot 18, VGP 2nd Mainroad, East Coast Rd, VGP Uthandi Layout, PART 1, Uthandi, Chennai, Tamil Nadu 600119',
         timings: 'Wednesday	9 am–9 pm\nThursday	9 am–9 pm\nFriday	8 am–9 pm\nSaturday	9 am–9 pm\nSunday	8 am–9 pm\nMonday	9 am–9 pm\nTuesday	9 am–9 pm',
         tags: ['adventure activities', 'outdoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 480/person',
     },
     {
@@ -1270,7 +1270,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Plot 18, VGP 2nd Mainroad, East Coast Rd, VGP Uthandi Layout, PART 1, Uthandi, Chennai, Tamil Nadu 600119',
         timings: 'Wednesday	9 am–9 pm\nThursday	9 am–9 pm\nFriday	8 am–9 pm\nSaturday	9 am–9 pm\nSunday	8 am–9 pm\nMonday	9 am–9 pm\nTuesday	9 am–9 pm',
         tags: ['adventure activities', 'outdoor activities', 'sports activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 120/person',
     },
     {
@@ -1286,7 +1286,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Plot 18, VGP 2nd Mainroad, East Coast Rd, VGP Uthandi Layout, PART 1, Uthandi, Chennai, Tamil Nadu 600119',
         timings: 'Wednesday	9 am–9 pm\nThursday	9 am–9 pm\nFriday	8 am–9 pm\nSaturday	9 am–9 pm\nSunday	8 am–9 pm\nMonday	9 am–9 pm\nTuesday	9 am–9 pm',
         tags: ['adventure activities', 'outdoor activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 120 for 3 rounds',
     },
     {
@@ -1302,7 +1302,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Plot 18, VGP 2nd Mainroad, East Coast Rd, VGP Uthandi Layout, PART 1, Uthandi, Chennai, Tamil Nadu 600119',
         timings: 'Wednesday	9 am–9 pm\nThursday	9 am–9 pm\nFriday	8 am–9 pm\nSaturday	9 am–9 pm\nSunday	8 am–9 pm\nMonday	9 am–9 pm\nTuesday	9 am–9 pm',
         tags: ['adventure activities', 'water activities', 'outdoor activities', 'group activities', 'sports activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 3000/hour',
     },
     {
@@ -1319,7 +1319,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	7 am–8:30 pm\nThursday	7 am–8:30 pm\nFriday	7 am–8:30 pm\nSaturday	7 am–8:30 pm\nSunday	8 am–8:30 pm\nMonday	7 am–8:30 pm\nTuesday	7 am–8:30 pm',
         tags: ['indoor activities', 'adventure activities', 'sports activities'],
         bookingLink: 'https://www.district.in/events/hit-the-bullseye-with-ace-shooters-club-2026-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 500 onwards',
     },
     {
@@ -1336,7 +1336,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11:30 am–9 pm\nThursday	11:30 am–9 pm\nFriday	11:30 am–9 pm\nSaturday	11:30 am–9 pm\nSunday	9 am–12:30 pm\nMonday	Closed\nTuesday	11:30 am–9 pm',
         tags: ['indoor activities', 'adventure activities', 'sports activities'],
         bookingLink: 'https://www.district.in/events/sniper-shooting-2026-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 850 onwards',
     },
     {
@@ -1353,7 +1353,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11:30 am–9 pm\nThursday	11:30 am–9 pm\nFriday	11:30 am–9 pm\nSaturday	11:30 am–9 pm\nSunday	9 am–12:30 pm\nMonday	Closed\nTuesday	11:30 am–9 pm',
         tags: ['indoor activities', 'sports activities', 'leisure activities', 'adventure activities'],
         bookingLink: 'https://www.district.in/events/sniper-shooting-2026-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 500 onwards',
     },
     {
@@ -1369,7 +1369,7 @@ export const ACTIVITIES: Activity[] = [
         address: '130, Rajiv Gandhi Salai, Sholinganallur, Chennai, Tamil Nadu 600119',
         timings: 'Wednesday	6–8 am, 4–6 pm\nThursday	6–8 am, 4–6 pm\nFriday	6–8 am, 4–6 pm\nSaturday	6–8 am, 4–6 pm\nSunday	6–8 am, 4–6 pm\nMonday	Closed\nTuesday	6–8 am, 4–6 pm',
         tags: ['outdoor activities', 'adventure activities', 'leisure activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Get closer with your partner on a horse riding date',
@@ -1385,7 +1385,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	6 am–10 pm\nThursday	6 am–10 pm\nFriday	6 am–10 pm\nSaturday	6 am–10 pm\nSunday	6 am–10 pm\nMonday	6 am–10 pm\nTuesday	6 am–10 pm',
         tags: ['outdoor activities', 'adventure activities'],
         bookingLink: 'https://www.district.in/events/saddle-up-with-walk-trot-jan-2026-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 2000 for 1 hour riding',
     },
     {
@@ -1402,7 +1402,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11:30 am–10:30 pm\nThursday	11:30 am–10:30 pm\nFriday	11:30 am–10:30 pm\nSaturday	11:30 am–11:30 pm\nSunday	11:30 am–11 pm\nMonday	11:30 am–10:30 pm\nTuesday	11:30 am–10:30 pm',
         tags: ['adventure activities', 'indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://www.district.in/events/g-sector-laser-tag-chennai-2025-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 380 per head',
     },
     {
@@ -1419,7 +1419,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	6 am–12 am\nThursday	6 am–12 am\nFriday	6 am–12 am\nSaturday	6 am–12 am\nSunday	6 am–12 am\nMonday	6 am–12 am\nTuesday	6 am–12 am',
         tags: ['indoor activities', 'group activities', 'gaming activities', 'adventure activities'],
         bookingLink: 'https://playo.co/venues/adyar-chennai/chaos-entertainment-adyar-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 5000 per hour',
     },
     {
@@ -1436,7 +1436,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	6 am–12 am\nThursday	6 am–12 am\nFriday	6 am–12 am\nSaturday	6 am–12 am\nSunday	6 am–12 am\nMonday	6 am–12 am\nTuesday	6 am–12 am',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://playo.co/venues/adyar-chennai/chaos-entertainment-adyar-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1200 per hour',
     },
     {
@@ -1452,7 +1452,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Old No 57, New No.38, 2/2, Balaraman Rd, Baktavatsalm Nagar, Adyar, Chennai, Tamil Nadu 600020',
         timings: 'Wednesday	6 am–12 am\nThursday	6 am–12 am\nFriday	6 am–12 am\nSaturday	6 am–12 am\nSunday	6 am–12 am\nMonday	6 am–12 am\nTuesday	6 am–12 am',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Step into an escape room and see if you can solve it in time',
@@ -1468,7 +1468,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm\nTuesday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'escape room activities', 'adventure activities'],
         bookingLink: 'https://www.district.in/events/mystery-rooms-nungambakkam-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 800 per head',
     },
     {
@@ -1485,7 +1485,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'escape room activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://breakthru.fun/category/bookings/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 650 per head',
     },
     {
@@ -1501,7 +1501,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'E21, 16th Cross St, GOCHS Colony, Besant Nagar, Chennai, Tamil Nadu 600090',
         timings: 'Wednesday        11 am–9 pm\nThursday        11 am–9 pm\nFriday        10 am–9 pm\nSaturday        10 am–9 pm\nSunday        10 am–9 pm\nMonday        11 am–9 pm\nTuesday        11 am–9 pm',
         tags: ['adventure activities', 'indoor activities', 'escape room activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 500 per head',
     },
     {
@@ -1518,7 +1518,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10:30 pm\nThursday	11 am–10:30 pm\nFriday	11 am–10:30 pm\nSaturday	11 am–10:30 pm\nSunday	11 am–10:30 pm\nMonday	11 am–10:30 pm\nTuesday	11 am–10:30 pm',
         tags: ['indoor activities', 'escape room activities', 'group activities', 'adventure activities'],
         bookingLink: 'https://www.district.in/events/dugout-x--the-marina-mall-chennai-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 250 per head',
     },
     {
@@ -1534,7 +1534,7 @@ export const ACTIVITIES: Activity[] = [
         address: '3rd Floor, Plot No 103,, Door No.25, AS Towers, 2nd Ave, B Block, Annanagar East, Chennai, Tamil Nadu 600102',
         timings: 'Wednesday	11:30 am–8:30 pm\nThursday	11:30 am–8:30 pm\nFriday	11:30 am–8:30 pm\nSaturday	10:30 am–9:30 pm\nSunday	10:30 am–9:30 pm\nMonday	11:30 am–8:30 pm\nTuesday	11:30 am–8:30 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starting from Rs 200',
     },
     {
@@ -1550,7 +1550,7 @@ export const ACTIVITIES: Activity[] = [
         address: '3rd Floor, Express Avenue Mall, Express Estate, Royapettah, Chennai, Tamil Nadu 600014',
         timings: 'Wednesday	10 am–10 pm\nThursday	10 am–10 pm\nFriday	10 am–10 pm\nSaturday	10 am–10 pm\nSunday	10 am–10 pm\nMonday	10 am–10 pm\nTuesday	10 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Go to a trampoline park and keep jumping till you\'re tired',
@@ -1565,7 +1565,7 @@ export const ACTIVITIES: Activity[] = [
         address: '3rd Floor, Express Avenue Mall, Express Estate, Royapettah, Chennai, Tamil Nadu 600014',
         timings: 'Wednesday	10 am–10 pm\nThursday	10 am–10 pm\nFriday	10 am–10 pm\nSaturday	10 am–10 pm\nSunday	10 am–10 pm\nMonday	10 am–10 pm\nTuesday	10 am–10 pm',
         tags: ['indoor activities', 'adventure activities', 'group activities', 'sports activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starting from Rs 200',
     },
     {
@@ -1581,7 +1581,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'No 123, Basement, Ispahani Centre, Nungambakkam High Rd, Nungambakkam, Chennai, Tamil Nadu 600006',
         timings: 'Wednesday	10:30 am–9 pm\nThursday	10:30 am–9 pm\nFriday	10 am–10 pm\nSaturday	10 am–10 pm\nSunday	10 am–10 pm\nMonday	10:30 am–9 pm\nTuesday	10:30 am–9 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starting from Rs 200',
     },
     {
@@ -1597,7 +1597,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'LG 016, The Marina mall, Rajiv Gandhi Salai, Egattur, Chennai, Tamil Nadu 603103',
         timings: 'Wednesday	10 am–10:30 pm\nThursday	10 am–10:30 pm\nFriday	10 am–10:30 pm\nSaturday	10 am–10:30 pm\nSunday	10 am–10:30 pm\nMonday	10 am–10:30 pm\nTuesday	10 am–10:30 pm',
         tags: ['indoor activities', 'gaming activities', 'group activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Get into a robot fight and see how long you last',
@@ -1612,7 +1612,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'LG 016, The Marina mall, Rajiv Gandhi Salai, Egattur, Chennai, Tamil Nadu 603103',
         timings: 'Wednesday	10 am–10:30 pm\nThursday	10 am–10:30 pm\nFriday	10 am–10:30 pm\nSaturday	10 am–10:30 pm\nSunday	10 am–10:30 pm\nMonday	10 am–10:30 pm\nTuesday	10 am–10:30 pm',
         tags: ['indoor activities', 'gaming activities', 'group activities', 'adventure activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Pick up the controller and try your hand at FPV racing',
@@ -1627,7 +1627,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'LG 016, The Marina mall, Rajiv Gandhi Salai, Egattur, Chennai, Tamil Nadu 603103',
         timings: 'Wednesday	10 am–10:30 pm\nThursday	10 am–10:30 pm\nFriday	10 am–10:30 pm\nSaturday	10 am–10:30 pm\nSunday	10 am–10:30 pm\nMonday	10 am–10:30 pm\nTuesday	10 am–10:30 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Play VR & Arcade games with your friends',
@@ -1643,7 +1643,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Tuesday	12–10 am, 10:30 am–12 am\nWednesday	12–10 am, 10:30 am–12 am\nThursday	12–10 am, 10:30 am–12 am\nFriday	12–10 am, 10:30 am–12 am\nSaturday	12–10 am, 10:30 am–12 am\nSunday	12–10 am, 10:30 am–12 am\nMonday	12–10 am, 10:30 am–12 am',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://www.district.in/events/timezone-vr-mall-chennai/buy-page/shows/6979da0d1a6e6633226a09df/Tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starts from Rs 500',
     },
     {
@@ -1660,7 +1660,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–12 am\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['gaming activities', 'indoor activities', 'group activities'],
         bookingLink: 'http://district.in/events/vgp-cyber-kingdom-chennai-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 80 - Rs 150 per game',
     },
     {
@@ -1677,7 +1677,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–12 am\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'http://district.in/events/vgp-cyber-kingdom-chennai-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 350 per head',
     },
     {
@@ -1694,7 +1694,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–12 am\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities'],
         bookingLink: 'http://district.in/events/vgp-cyber-kingdom-chennai-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 200 per game',
     },
     {
@@ -1711,7 +1711,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–12 am\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'http://district.in/events/vgp-cyber-kingdom-chennai-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 200 per game',
     },
     {
@@ -1728,7 +1728,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–12 am\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'http://district.in/events/vgp-cyber-kingdom-chennai-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 150 per game',
     },
     {
@@ -1744,7 +1744,7 @@ export const ACTIVITIES: Activity[] = [
         address: '5th Avenue, Elliot\'s Promenade, Besant Nagar, Chennai, Tamil Nadu 600090',
         timings: 'Wednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm\nTuesday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Play arcade & VR games at this cool gaming zone inside Palladium Mall',
@@ -1760,7 +1760,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://www.district.in/events/timezone-phoenix-palladium-mall-chennai-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starts from Rs 500',
     },
     {
@@ -1776,7 +1776,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'No 519, V64W+2F4, SH 49, near Uthandi, Toll Gate, Kanathur Reddykuppam, Chennai, Tamil Nadu 603112',
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Play arcade & VR games at this fun gaming zone in Marina Mall',
@@ -1792,7 +1792,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://www.district.in/events/timezone-marina-mall-chennai-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starts from Rs 500',
     },
     {
@@ -1808,7 +1808,7 @@ export const ACTIVITIES: Activity[] = [
         address: '853, 13th Main Rd, Anna Nagar West, Anna Nagar, Chennai, Tamil Nadu 600040',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/north-edge-elite-ac-anna-nagar-badminton',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 800 per hour',
     },
     {
@@ -1825,7 +1825,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	Open 24 hours\nThursday	Open 24 hours\nFriday	Open 24 hours\nSaturday	Open 24 hours\nSunday	Open 24 hours\nMonday	Open 24 hours\nTuesday	Open 24 hours',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/ruckus-herkley-ac-court-ekkatuthangal-badminton',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 700 per hour',
     },
     {
@@ -1842,7 +1842,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	5 am–11 pm\nThursday	5 am–11 pm\nFriday	5 am–11 pm\nSaturday	5 am–12 am\nSunday	5 am–12 am\nMonday	5 am–11 pm\nTuesday	5 am–11 pm',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/m-square-tnagar-badminton',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 800 per hour',
     },
     {
@@ -1859,7 +1859,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	Open 24 hours\nThursday	Open 24 hours\nFriday	Open 24 hours\nSaturday	Open 24 hours\nSunday	Open 24 hours\nMonday	Open 24 hours\nTuesday	Open 24 hours',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/girish-sports-arena-selaiyur-badminton',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 300 per hour',
     },
     {
@@ -1876,7 +1876,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	Open 24 hours\nThursday	Open 24 hours\nFriday	Open 24 hours\nSaturday	Open 24 hours\nSunday	Open 24 hours\nMonday	Open 24 hours\nTuesday	Open 24 hours',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://playo.co/venues/perungudi-chennai/falcon-sports-arena-perungudi-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 375 per hour',
     },
     {
@@ -1893,7 +1893,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	Open 24 hours\nThursday	Open 24 hours\nFriday	Open 24 hours\nSaturday	Open 24 hours\nSunday	Open 24 hours\nMonday	Open 24 hours\nTuesday	Open 24 hours',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://turftown.in/chennai/sports-venue/shuttler-mylapore-badminton',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 600 per hour for AC, Rs 500 per hour for Non AC',
     },
     {
@@ -1910,7 +1910,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	5:30 am–10 pm\nThursday	5:30 am–10 pm\nFriday	5:30 am–10 pm\nSaturday	5:30 am–10 pm\nSunday	6 am–9 pm\nMonday	5:30 am–10 pm\nTuesday	5:30 am–10 pm',
         tags: ['indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://playo.co/venues/madipakkam-chennai/aarkha-sports-and-fitness-madipakkam-chennai',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 400 per hour',
     },
     {
@@ -1926,7 +1926,7 @@ export const ACTIVITIES: Activity[] = [
         address: '129, 129, Srinivasa Nagar Main Rd, Ramalinga Nagar, Madipakkam, Chennai, Tamil Nadu 600091',
         timings: 'Wednesday	5:30 am–10 pm\nThursday	5:30 am–10 pm\nFriday	5:30 am–10 pm\nSaturday	5:30 am–10 pm\nSunday	6 am–9 pm\nMonday	5:30 am–10 pm\nTuesday	5:30 am–10 pm',
         tags: ['water activities', 'outdoor activities', 'sports activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 200 per hour',
     },
     {
@@ -1942,7 +1942,7 @@ export const ACTIVITIES: Activity[] = [
         address: '2/72, Nehru St, Navalur, Tamil Nadu 600130',
         timings: 'Wednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm\nTuesday	11 am–6:30 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 200 per hour',
     },
     {
@@ -1958,7 +1958,7 @@ export const ACTIVITIES: Activity[] = [
         address: '2/72, Nehru St, Navalur, Tamil Nadu 600130',
         timings: 'Wednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm\nTuesday	11 am–6:30 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 200 per hour',
     },
     {
@@ -1974,7 +1974,7 @@ export const ACTIVITIES: Activity[] = [
         address: '2/72, Nehru St, Navalur, Tamil Nadu 600130',
         timings: 'Wednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm\nTuesday	11 am–6:30 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 200 per hour',
     },
     {
@@ -1990,7 +1990,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'no.46/73, basement, Pantheon Rd, Egmore, Chennai, Tamil Nadu 600008',
         timings: 'Wednesday	10:30 am–12 am\nThursday	10:30 am–12 am\nFriday	10:30 am–11 pm\nSaturday	10:30 am–2 am\nSunday	10:30 am–2 am\nMonday	10:30 am–12 am\nTuesday	10:30 am–12 am',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 160 per hour',
     },
     {
@@ -2006,7 +2006,7 @@ export const ACTIVITIES: Activity[] = [
         address: '16, 82, Arcot Rd, Vadapalani, Chennai, Tamil Nadu 600026',
         timings: 'Wednesday	12 pm–12:30 am\nThursday	12 pm–12:30 am\nFriday	12 pm–12:30 am\nSaturday	12 pm–12:30 am\nSunday	12 pm–12:30 am\nMonday	12 pm–12:30 am\nTuesday	12 pm–12:30 am',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 150 per hour',
     },
     {
@@ -2022,7 +2022,7 @@ export const ACTIVITIES: Activity[] = [
         address: '2nd floor, 27, Agaram Main Rd., next to New Gen Pharmacy, Ranganatha Nagar, Balaji Nagar, Selaiyur, Chennai, Tamil Nadu 600073',
         timings: 'Wednesday	10 am–11 pm\nThursday	10 am–11 pm\nFriday	10 am–11 pm\nSaturday	10 am–11 pm\nSunday	10 am–11 pm\nMonday	10 am–11 pm\nTuesday	10 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 200 per hour',
     },
     {
@@ -2038,7 +2038,7 @@ export const ACTIVITIES: Activity[] = [
         address: '2nd floor, 27, Agaram Main Rd., next to New Gen Pharmacy, Ranganatha Nagar, Balaji Nagar, Selaiyur, Chennai, Tamil Nadu 600073',
         timings: 'Wednesday	10 am–11 pm\nThursday	10 am–11 pm\nFriday	10 am–11 pm\nSaturday	10 am–11 pm\nSunday	10 am–11 pm\nMonday	10 am–11 pm\nTuesday	10 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Keep your phone aside and enjoy a good game of snooker',
@@ -2054,7 +2054,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–11:30 pm\nThursday	9 am–11:30 pm\nFriday	11 am–11:30 pm\nSaturday	11 am–1 am\nSunday	11 am–1 am\nMonday	11 am–11:30 pm\nTuesday	11 am–11:30 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://www.nerfturf.in/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 250 per hour (discounts available on website)',
     },
     {
@@ -2071,7 +2071,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–11:30 pm\nThursday	9 am–11:30 pm\nFriday	11 am–11:30 pm\nSaturday	11 am–1 am\nSunday	11 am–1 am\nMonday	11 am–11:30 pm\nTuesday	11 am–11:30 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://www.nerfturf.in/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 150 per hour (discounts available on website)',
     },
     {
@@ -2087,7 +2087,7 @@ export const ACTIVITIES: Activity[] = [
         address: '3, Bheema Sena Garden St, Rangaiah Garden, Mylapore, Chennai, Tamil Nadu 600004',
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 120/hour for one person',
     },
     {
@@ -2103,7 +2103,7 @@ export const ACTIVITIES: Activity[] = [
         address: '2nd Floor, SCM Jamaldeen Chambers, Red Cross Rd, Egmore, Chennai, Tamil Nadu 600008',
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 120/hour for one person',
     },
     {
@@ -2119,7 +2119,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Gopathy Narayana Rd, T. Nagar, Chennai, Tamil Nadu 600017',
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 120/hour for one person',
     },
     {
@@ -2135,7 +2135,7 @@ export const ACTIVITIES: Activity[] = [
         address: '48/49, Sai Nagar 1st Main Rd, Sri Sai Nagar, Thoraipakkam, Chennai, Tamil Nadu 600097',
         timings: 'Wednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm\nTuesday	11 am–11 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 129/hour for one person',
     },
     {
@@ -2151,7 +2151,7 @@ export const ACTIVITIES: Activity[] = [
         address: '48/49, Sai Nagar 1st Main Rd, Sri Sai Nagar, Thoraipakkam, Chennai, Tamil Nadu 600097',
         timings: 'Wednesday	11 am–11 pm\nThursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm\nTuesday	11 am–11 pm',
         tags: ['art activities', 'indoor activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Starting from Rs 200',
     },
     {
@@ -2167,7 +2167,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Venkatnarayana St, Puzhuthivakkam, Madipakkam, Chennai, Tamil Nadu 600091',
         timings: 'Wednesday	3–10 pm\nThursday	Closed\nFriday	Closed\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	3–10 pm\nTuesday	3–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Grab your friends and spend an evening playing board games here',
@@ -2182,7 +2182,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'No.2, Ground Floor, KB Dasan Rd, opposite to HDFC Bank, Teynampet, Chennai, Tamil Nadu 600018',
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	Closed\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 150/hour for one person',
     },
     {
@@ -2198,7 +2198,7 @@ export const ACTIVITIES: Activity[] = [
         address: '4/21, Manickeswari Rd, near Tony & Guy, Kilpauk, Chennai, Tamil Nadu 600010',
         timings: 'Wednesday	11 am–10:30 pm\nThursday	11 am–10:30 pm\nFriday	11 am–10:30 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–10:30 pm\nTuesday	11 am–10:30 pm',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 118/hour for one person',
     },
     {
@@ -2259,7 +2259,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Ground floor, 2, 33, 27th Cross St, Urur Village, Besant Nagar, Chennai, Tamil Nadu 600090',
         timings: 'Thursday	11 am–11 pm\nFriday	11 am–11 pm\nSaturday	11 am–11 pm\nSunday	11 am–11 pm\nMonday	11 am–11 pm\nTuesday	11 am–11 pm\nWednesday	11 am–11 pm',
         tags: ['outdoor activities', 'group activities', 'leisure activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Take a metro joyride from alandur to vadapalani & get a bird\'s eye view of the city\'s urban landscape',
@@ -2274,7 +2274,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'Alandur, Chennai, Tamil Nadu 600016',
         tags: ['outdoor activities', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://tickets.chennaimetrorail.org/onlineticket',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 24 one way',
     },
     {
@@ -2361,7 +2361,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'R62X+PM, Beach, Kovalam, Tamil Nadu 603112',
         timings: 'Wednesday	5 am–7 pm\nThursday	5 am–7 pm\nFriday	5 am–7 pm\nSaturday	5 am–7 pm\nSunday	5 am–7 pm\nMonday	5 am–7 pm\nTuesday	5 am–7 pm',
         tags: ['outdoor activities', 'water activities', 'leisure activities', 'low budget fun activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Go on a sunset stroll at this chennai\'s iconic beach',
@@ -2407,7 +2407,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	9 am–5:30 pm\nThursday	9 am–5:30 pm\nFriday	9 am–5:30 pm\nSaturday	9 am–5:30 pm\nSunday	9 pm–12 am\nMonday	12 am–6:30 pm\nTuesday	Closed',
         tags: ['indoor activities', 'unique cultural experiences', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://gccservices.in/victoriapublichall',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 25 for adults, Rs 10 for students',
     },
     {
@@ -2424,7 +2424,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	10:30 am–6:30 pm\nThursday	10:30 am–6:30 pm\nFriday	Closed\nSaturday	10:30 am–6:30 pm\nSunday	10:30 am–6:30 pm\nMonday	10:30 am–6:30 pm\nTuesday	10:30 am–6:30 pm',
         tags: ['indoor activities', 'unique cultural experiences', 'leisure activities', 'low budget fun activities'],
         bookingLink: 'https://govtmuseumchennai.org/home',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 50 for adults, Rs 25 for kids',
     },
     {
@@ -2456,7 +2456,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–5:30 pm\nThursday	11 am–5:30 pm\nFriday	11 am–5:30 pm\nSaturday	11:30 am–6 pm\nSunday	11:30 am–6 pm\nMonday	Closed\nTuesday	11 am–5:30 pm',
         tags: ['art activities', 'indoor activities', 'unique cultural experiences'],
         bookingLink: 'https://www.instagram.com/lalitkalakademi/?hl=en',
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Fall in love with the craft of pottery at this studio',
@@ -2472,7 +2472,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	4–9 pm\nThursday	4–9 pm\nFriday	4–9 pm\nSaturday	10 am–9 pm\nSunday	10 am–9 pm\nMonday	4–9 pm\nTuesday	10 am–9 pm',
         tags: ['art activities', 'indoor activities', 'unique cultural experiences'],
         bookingLink: 'https://www.instagram.com/healing_pottery_/',
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Go to the tower park and have a mindful yoga session',
@@ -2550,7 +2550,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Shared by organizer',
         tags: ['indoor activities', 'group activities'],
         bookingLink: 'https://www.instagram.com/sequel.in/',
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Go on a night drive with your friends on the ECR stretch',
@@ -2578,7 +2578,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'adventure activities', 'sports activities'],
         bookingLink: 'https://kynhood.com/event/6979fdc8c1be84f3459e32a7?utm_source=IG&utm_medium=bio&utm_campaign=Ice+rink+Kyn&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnY3MEF8lpEkgUIkpqY-_yXpGkBwTPHiPclFYfysV8WvujaZdwTV8B90DZSj0_aem_Y-R2leeIQCefqMazDBlRgA',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 943 per person',
     },
     {
@@ -2595,7 +2595,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	11 am–10 pm\nThursday	11 am–10 pm\nFriday	11 am–10 pm\nSaturday	11 am–10 pm\nSunday	11 am–10 pm\nMonday	11 am–10 pm\nTuesday	11 am–10 pm',
         tags: ['indoor activities', 'adventure activities', 'group activities', 'leisure activities'],
         bookingLink: 'https://www.snowkingdom.com/booknow.php',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 750 for adults, Rs 650 for kids',
     },
     {
@@ -2612,7 +2612,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	9:30 am–7:30 pm\nThursday	9:30 am–7:30 pm\nFriday	9:30 am–7:30 pm\nSaturday	9 am–8 pm\nSunday	9 am–8 pm\nMonday	9:30 am–7:30 pm\nTuesday	9:30 am–7:30 pm',
         tags: ['indoor activities', 'water activities', 'group activities'],
         bookingLink: 'https://vgpmarinekingdom.in/product/ticket/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 740 for adults, Rs 640 for kids',
     },
     {
@@ -2628,7 +2628,7 @@ export const ACTIVITIES: Activity[] = [
         address: 'No.7, VGP part-1, 2nd Main Rd, Uthandi, Chennai, Tamil Nadu 600119',
         timings: 'Wednesday	12–10 pm\nThursday	12–10 pm\nFriday	12–10 pm\nSaturday	12–10 pm\nSunday	12–10 pm\nMonday	Closed\nTuesday	12–10 pm',
         tags: ['indoor activities', 'leisure activities', 'group activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
     },
     {
         title: 'Take on a adventurous kayaking experience in the sea',
@@ -2643,7 +2643,7 @@ export const ACTIVITIES: Activity[] = [
         address: '9/9, Muthumariamman Koil St, Kunnukadu, Kovalam, Thiruvidanthai, Tamil Nadu 603112',
         timings: 'Wednesday	7 am–7 pm\nThursday	7 am–7 pm\nFriday	7 am–7 pm\nSaturday	6:30 am–7 pm\nSunday	6:30 am–7 pm\nMonday	Closed\nTuesday	7 am–7 pm',
         tags: ['adventure activities', 'water activities', 'outdoor activities', 'sports activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1500 for 1.5 hours',
     },
     {
@@ -2659,7 +2659,7 @@ export const ACTIVITIES: Activity[] = [
         address: '9/9, Muthumariamman Koil St, Kunnukadu, Kovalam, Thiruvidanthai, Tamil Nadu 603112',
         timings: 'Wednesday	7 am–7 pm\nThursday	7 am–7 pm\nFriday	7 am–7 pm\nSaturday	6:30 am–7 pm\nSunday	6:30 am–7 pm\nMonday	Closed\nTuesday	7 am–7 pm',
         tags: ['adventure activities', 'water activities', 'outdoor activities', 'sports activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 1,770 per person for 1.5 hours',
     },
     {
@@ -2675,7 +2675,7 @@ export const ACTIVITIES: Activity[] = [
         address: '2/96, Bajanai Kovil St, Kovalam, Tamil Nadu 603112',
         timings: 'Wednesday	5 am–6 pm\nThursday	5 am–6 pm\nFriday	5 am–6 pm\nSaturday	5 am–6 pm\nSunday	5 am–6 pm\nMonday	5 am–6 pm\nTuesday	5 am–6 pm',
         tags: ['adventure activities', 'water activities', 'outdoor activities', 'sports activities', 'leisure activities'],
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 1800/person for 1.5 hours',
     },
     {
@@ -2692,7 +2692,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday        4–9 pm\nThursday        4–9 pm\nFriday        4–9 pm\nSaturday        8 am–9 pm\nSunday        8 am–9 pm\nMonday        Closed\nTuesday        4–9 pm',
         tags: ['adventure activities', 'indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://www.district.in/events/indoor-rock-climbing-fitrock-arena-pallikaranai-2025-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 900 per person',
     },
     {
@@ -2709,7 +2709,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Wednesday	6 am–9 pm\nThursday	6 am–9 pm\nFriday	6 am–9 pm\nSaturday	8 am–9 pm\nSunday	8 am–9 pm\nMonday	6 am–9 pm\nTuesday	6 am–9 pm',
         tags: ['adventure activities', 'indoor activities', 'group activities', 'sports activities'],
         bookingLink: 'https://www.district.in/events/indoor-rock-climbing-fitrock-arena-chetpet-chennai-2025-buy-tickets',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 700 per person',
     },
     {
@@ -2825,7 +2825,7 @@ export const ACTIVITIES: Activity[] = [
         locationLink: 'https://www.instagram.com/chennaichessclub/?hl=en',
         tags: ['indoor activities', 'group activities', 'gaming activities'],
         bookingLink: 'https://www.instagram.com/chennaichessclub/?hl=en',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'Rs 249',
     },
     {
@@ -2842,7 +2842,7 @@ export const ACTIVITIES: Activity[] = [
         timings: 'Monday        12:30–11 pm\nTuesday        12:30–11 pm\nWednesday        12:30–11 pm\nThursday        12:30–11 pm\nFriday        12:30–11 pm\nSaturday        1–11 pm\nSunday        12:30–10:30 pm',
         tags: ['indoor activities', 'night activities', 'leisure activities'],
         bookingLink: 'https://www.instagram.com/igloos_rooftop_restaurant/',
-        pricingType: 'free',
+        pricingType: 'paid',
         pricing: 'from Rs 6000',
     },
     {

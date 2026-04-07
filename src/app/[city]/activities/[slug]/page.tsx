@@ -116,30 +116,8 @@ export default function SlugPage({ params }: Props) {
                         background: 'linear-gradient(180deg, rgba(10,10,14,0.55) 0%, transparent 30%, transparent 50%, rgba(10,10,14,0.95) 100%)',
                     }} />
 
-                    <Link href={`/${city.id}/activities`} style={{
-                        position: 'absolute', top: 80, left: 24,
-                        display: 'inline-flex', alignItems: 'center', gap: 7,
-                        padding: '9px 16px', borderRadius: 100,
-                        background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(12px)',
-                        border: '1px solid rgba(255,255,255,0.14)',
-                        color: 'white', fontSize: 13, fontWeight: 600, textDecoration: 'none',
-                        transition: 'all 0.2s ease',
-                    }}>
-                        <ArrowLeft size={14} /> Back
-                    </Link>
 
                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '28px 28px 32px' }}>
-                        {activity.tags && activity.tags.length > 0 && (
-                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 12 }}>
-                            {activity.tags.map(t => (
-                                <span key={t} style={{
-                                    padding: '4px 12px', borderRadius: 100,
-                                    background: 'rgba(255,107,0,0.2)', border: '1px solid rgba(255,107,0,0.4)',
-                                    color: '#FF9A3C', fontSize: 11, fontWeight: 700, letterSpacing: '0.04em',
-                                }}>{t}</span>
-                            ))}
-                        </div>
-                        )}
                         <h1 style={{
                             fontSize: 'clamp(22px, 4vw, 38px)', fontWeight: 900,
                             letterSpacing: '-0.03em', color: '#ffffff', lineHeight: 1.15,

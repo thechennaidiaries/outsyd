@@ -17,31 +17,22 @@ function HScrollSection({
   emoji,
   heading,
   subheading,
-  count,
   viewMoreHref,
   children,
 }: {
   emoji: string
   heading: string
   subheading?: string
-  count: number
   viewMoreHref: string
   children: React.ReactNode
 }) {
   return (
-    <div style={{ maxWidth: 1400, margin: '0 auto', padding: '62px 0 0' }}>
+    <div style={{ maxWidth: 1400, margin: '0 auto', padding: '62px 28px 0' }}>
       {/* Header row */}
-      <div style={{ padding: '0 28px', marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
-            <h2 style={{ fontSize: 22, fontWeight: 800, letterSpacing: '-0.03em', color: 'var(--text)' }}>
-              {emoji} {heading}
-            </h2>
-            <span style={{ fontSize: 13, color: 'var(--text-3)' }}>
-              {count} {count === 1 ? 'place' : 'places'}
-            </span>
-          </div>
-        </div>
+      <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 4 }}>
+        <h2 style={{ fontSize: 22, fontWeight: 600, letterSpacing: '-0.025em', color: 'var(--text)' }}>
+          {emoji} {heading}
+        </h2>
         {subheading && (
           <p style={{ fontSize: 14, color: 'var(--text-3)', fontWeight: 400, letterSpacing: '-0.01em' }}>
             {subheading}
@@ -56,8 +47,6 @@ function HScrollSection({
           display: 'flex',
           gap: 16,
           overflowX: 'auto',
-          paddingLeft: 28,
-          paddingRight: 28,
           paddingBottom: 8,
           scrollSnapType: 'x mandatory',
         }}
@@ -97,6 +86,7 @@ function HScrollSection({
     </div>
   )
 }
+
 
 /* ── Shuffle utility (Fisher-Yates) ──────────────────────────────── */
 function shuffleArray<T>(arr: T[]): T[] {
@@ -242,15 +232,14 @@ export default function ThingsToDoPage() {
 
   return (
     <main>
-      <Hero city={city} onSearch={handleSearch} />
+      <Hero city={city} />
 
       {/* ═══ 1. Low Budget Fun ════════════════════════════════════ */}
       {lowBudget.length > 0 && (
         <HScrollSection
           emoji="💰"
-          heading="Activities that don't burn your pockets"
+          heading="Pocket Friendly Activities"
           subheading="Find activities starting from ₹0"
-          count={lowBudget.length}
           viewMoreHref={`/${citySlug}/activities/low-budget-fun-activities-in-${city.id}`}
         >
           {shuffledLowBudget.slice(0, 8).map(a => (
@@ -267,7 +256,6 @@ export default function ThingsToDoPage() {
           emoji="⚽"
           heading="Burn some calories"
           subheading="Football, Cricket, Tennis, Pickleball, Swimming and many more"
-          count={sports.length}
           viewMoreHref={`/${citySlug}/activities/sports-activities-in-${city.id}`}
         >
           {shuffledSports.slice(0, 8).map(a => (
@@ -283,7 +271,6 @@ export default function ThingsToDoPage() {
         <HScrollSection
           emoji="🚶"
           heading="City Crawls"
-          count={cityWalks.length}
           viewMoreHref={`/${citySlug}/walks`}
         >
           {shuffledWalks.slice(0, 5).map(walk => (
@@ -300,7 +287,6 @@ export default function ThingsToDoPage() {
           emoji="🎮"
           heading="Have fun with your Gang"
           subheading="Laser tag, bowling, board games, RC gaming and many more"
-          count={gaming.length}
           viewMoreHref={`/${citySlug}/activities/gaming-activities-in-${city.id}`}
         >
           {shuffledGaming.slice(0, 8).map(a => (
@@ -315,8 +301,7 @@ export default function ThingsToDoPage() {
       {adventure.length > 0 && (
         <HScrollSection
           emoji="🚀"
-          heading="Activities for more Adrenaline Rush"
-          count={adventure.length}
+          heading="Activities for Adrenaline Junkies"
           viewMoreHref={`/${citySlug}/activities/adventure-activities-in-${city.id}`}
         >
           {shuffledAdventure.slice(0, 8).map(a => (

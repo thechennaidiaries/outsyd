@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { Search, ArrowRight, ChevronDown, MapPin } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import type { City } from '@/data/cities'
 
 const ROTATING_PHRASES = [
@@ -16,14 +16,11 @@ const ROTATING_PHRASES = [
 
 interface HeroProps {
     city: City
-    onSearch?: (query: string) => void
 }
 
-export default function Hero({ city, onSearch }: HeroProps) {
+export default function Hero({ city }: HeroProps) {
     const [phraseIdx, setPhraseIdx] = useState(0)
     const [phraseFade, setPhraseFade] = useState(true)
-    const [searchFocused, setSearchFocused] = useState(false)
-    const [inputVal, setInputVal] = useState('')
 
     // Cycle rotating phrases
     useEffect(() => {
@@ -58,11 +55,12 @@ export default function Hero({ city, onSearch }: HeroProps) {
                     marginBottom: 48,
                     color: '#fff',
                     animation: 'fade-up 0.7s ease 0.1s both',
-                    fontFamily: "'Bricolage Grotesque', sans-serif",
-                    fontWeight: 400,
-                    letterSpacing: '0em',
+                    fontFamily: "'PP Neue Montreal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                    fontWeight: 100,
+                    letterSpacing: '-0.02em',
                 }}>
-                    Find where to go in {city.name} When you're{' '}
+                    Find where to go in<br />
+                    {city.name} When you're<br />
                     <span style={{
                         display: 'inline-block',
                         fontFamily: "'Caveat', cursive",
@@ -82,89 +80,27 @@ export default function Hero({ city, onSearch }: HeroProps) {
                     </span>
                 </h1>
 
-                {/* Search bar */}
-                <div style={{
-                    position: 'relative', width: '100%', maxWidth: 540,
-                    margin: '0 auto',
-                    animation: 'fade-up 0.7s ease 0.3s both',
-                    borderRadius: 16,
-                    background: searchFocused ? 'rgba(255,255,255,0.09)' : 'rgba(255,255,255,0.06)',
-                    border: `1.5px solid ${searchFocused ? 'rgba(255,107,0,0.5)' : 'rgba(255,255,255,0.11)'}`,
-                    boxShadow: searchFocused
-                        ? '0 0 0 4px rgba(255,107,0,0.08), 0 8px 32px rgba(0,0,0,0.4)'
-                        : '0 4px 20px rgba(0,0,0,0.35)',
-                    transition: 'all 0.3s ease',
-                    backdropFilter: 'blur(12px)',
-                    display: 'flex', alignItems: 'center',
+                {/* Search bar removed as per user request */}
+            </div>
+
+            {/* Scroll indicator — simplified arrow */}
+            <div style={{
+                position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%)',
+                zIndex: 2,
+            }}>
+                <div className="bounce-arrow" style={{
+                    color: 'rgba(255,255,255,0.4)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }} onClick={() => {
+                    document.getElementById('activities-section')?.scrollIntoView({ behavior: 'smooth' })
                 }}>
-                    <Search size={17} style={{
-                        position: 'absolute', left: 18, top: '50%', transform: 'translateY(-50%)',
-                        color: searchFocused ? 'var(--accent)' : 'var(--text-3)',
-                        transition: 'color 0.2s', pointerEvents: 'none',
-                    }} />
-                    <input
-                        id="hero-search"
-                        type="text"
-                        value={inputVal}
-                        onChange={e => setInputVal(e.target.value)}
-                        placeholder="Search places, moods, areas…"
-                        onFocus={() => setSearchFocused(true)}
-                        onBlur={() => setSearchFocused(false)}
-                        onKeyDown={e => {
-                            if (e.key === 'Enter' && onSearch) {
-                                onSearch(inputVal)
-                                document.getElementById('activities-section')?.scrollIntoView({ behavior: 'smooth' })
-                            }
-                        }}
-                        style={{
-                            width: '100%', height: 56, paddingLeft: 52, paddingRight: 60,
-                            background: 'transparent',
-                            color: 'var(--text)', fontSize: 15,
-                            outline: 'none', fontFamily: 'inherit', border: 'none',
-                            borderRadius: 16,
-                        }}
-                    />
-                    <button
-                        onClick={() => {
-                            if (onSearch) {
-                                onSearch(inputVal)
-                                document.getElementById('activities-section')?.scrollIntoView({ behavior: 'smooth' })
-                            }
-                        }}
-                        style={{
-                            position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)',
-                            width: 40, height: 40, borderRadius: 12,
-                            background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
-                            color: 'white',
-                            border: 'none', cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            boxShadow: '0 4px 16px rgba(255,107,0,0.4)',
-                            transition: 'all 0.2s ease',
-                            flexShrink: 0,
-                        }}
-                        onMouseEnter={e => {
-                            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 6px 24px rgba(255,107,0,0.6)'
-                            ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-50%) scale(1.05)'
-                        }}
-                        onMouseLeave={e => {
-                            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 4px 16px rgba(255,107,0,0.4)'
-                            ;(e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-50%)'
-                        }}
-                    >
-                        <ArrowRight size={18} />
-                    </button>
+                    <ChevronDown size={28} strokeWidth={1.5} />
                 </div>
             </div>
 
-            {/* Scroll indicator */}
-            <div className="bounce-arrow" style={{
-                position: 'absolute', bottom: 32, left: '50%', transform: 'translateX(-50%)',
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-                color: 'var(--text-3)', zIndex: 2,
-            }}>
-                <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Scroll</span>
-                <ChevronDown size={18} />
-            </div>
         </>
     )
 

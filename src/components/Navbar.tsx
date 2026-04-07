@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { Zap, Home, Shuffle, CalendarDays, PartyPopper } from 'lucide-react'
+import { Zap, Rocket, Footprints, CalendarDays } from 'lucide-react'
 
 export default function Navbar() {
     const pathname = usePathname()
@@ -76,7 +76,7 @@ export default function Navbar() {
                     padding: '8px 16px 10px',
                     position: 'relative',
                 }}>
-                    {/* ── Home ── */}
+                    {/* ── All Activities (Home) ── */}
                     <Link
                         href={homeHref}
                         style={{
@@ -95,7 +95,7 @@ export default function Navbar() {
                             background: isHomeActive ? 'rgba(255,107,0,0.16)' : 'transparent',
                             transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
                         }}>
-                            <Home
+                            <Rocket
                                 size={20}
                                 strokeWidth={isHomeActive ? 2.5 : 1.75}
                                 color={isHomeActive ? 'var(--accent)' : 'var(--text-3)'}
@@ -105,12 +105,13 @@ export default function Navbar() {
                             fontSize: 10, fontWeight: isHomeActive ? 700 : 500,
                             letterSpacing: '0.01em',
                             transition: 'font-weight 0.2s',
+                            whiteSpace: 'nowrap',
                         }}>
-                            Home
+                            All Activities
                         </span>
                     </Link>
 
-                    {/* ── Surprise Me ── */}
+                    {/* ── outsyd ── */}
                     {isSurpriseActive ? (
                         /* When on surprise page, render as a normal nav item */
                         <Link
@@ -131,18 +132,20 @@ export default function Navbar() {
                                 background: 'rgba(255,107,0,0.16)',
                                 transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
                             }}>
-                                <PartyPopper
+                                <Footprints
                                     size={20}
                                     strokeWidth={2.5}
                                     color={'var(--accent)'}
                                 />
                             </div>
                             <span style={{
-                                fontSize: 10, fontWeight: 700,
+                                fontSize: 16, fontWeight: 700,
                                 letterSpacing: '0.01em',
                                 transition: 'font-weight 0.2s',
+                                fontFamily: "'Caveat', cursive",
+                                lineHeight: 1,
                             }}>
-                                Surprise
+                                outsyd
                             </span>
                         </Link>
                     ) : (
@@ -171,16 +174,19 @@ export default function Navbar() {
                                         width: 81, height: 81, borderRadius: '50%',
                                         background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 50%, #FF9A3C 100%)',
                                         display: 'flex', flexDirection: 'column',
-                                        alignItems: 'center', justifyContent: 'center', gap: 3,
+                                        alignItems: 'center', justifyContent: 'center', gap: 0,
                                         boxShadow: '0 6px 28px rgba(255,107,0,0.55), inset 0 1px 0 rgba(255,255,255,0.2)',
                                         transition: 'all 0.3s ease',
                                     }}>
-                                        <PartyPopper size={28} color="white" strokeWidth={2.2} />
+                                        <Footprints size={28} color="white" strokeWidth={2.2} />
                                         <span style={{
-                                            fontSize: 9, fontWeight: 800, color: 'white',
-                                            letterSpacing: '0.08em', textTransform: 'uppercase',
+                                            fontSize: 22, fontWeight: 800, color: 'white',
+                                            letterSpacing: '0.01em',
+                                            fontFamily: "'Caveat', cursive",
+                                            lineHeight: 1,
+                                            marginTop: -2,
                                         }}>
-                                            Surprise
+                                            outsyd
                                         </span>
                                     </div>
                                 </div>

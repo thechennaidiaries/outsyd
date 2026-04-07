@@ -173,16 +173,16 @@ export default function SurprisePage() {
             {/* ── Headline ───────────────────────── */}
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
                 <h1 style={{
-                    fontFamily: "'Bricolage Grotesque', sans-serif",
+                    fontFamily: "'PP Neue Montreal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                     fontSize: 'clamp(17px, 5vw, 22px)',
-                    fontWeight: 400,
-                    color: 'var(--text-2)',
+                    fontWeight: 100,
+                    color: '#ffffff',
                     lineHeight: 1.1,
                     letterSpacing: '0em',
                     marginBottom: 10,
                     whiteSpace: 'nowrap',
                 }}>
-                    Chennai la bore adikutha?
+                    {city.name === 'chennai' ? 'Chennai la bore adikutha?' : `${city.name} la bore adikutha?`}
                 </h1>
                 <p style={{
                     fontFamily: "'Caveat', cursive",

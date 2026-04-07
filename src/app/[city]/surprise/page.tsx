@@ -75,7 +75,26 @@ export default function SurprisePage() {
     const [flying, setFlying] = useState<'left' | 'right' | null>(null)
     const [saved, setSaved] = useState(false)
     const [imgErr, setImgErr] = useState(false)
+    const [showOnboarding, setShowOnboarding] = useState(false)
     const startX = useRef(0)
+
+    // Show onboarding hints only once per session
+    useEffect(() => {
+        if (!sessionStorage.getItem('surprise-onboarded')) {
+            setShowOnboarding(true)
+        }
+    }, [])
+
+    // Mark onboarding complete as soon as "swipe right" hint appears (idx 2)
+    // so if user navigates away via right-swipe, it's already persisted
+    useEffect(() => {
+        if (showOnboarding && idx >= 2) {
+            sessionStorage.setItem('surprise-onboarded', '1')
+        }
+        if (showOnboarding && idx >= 3) {
+            setShowOnboarding(false)
+        }
+    }, [idx, showOnboarding])
 
     const item = deck[idx]
     const isDone = idx >= deck.length
@@ -175,7 +194,7 @@ export default function SurprisePage() {
                 <h1 style={{
                     fontFamily: "'PP Neue Montreal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                     fontSize: 'clamp(17px, 5vw, 22px)',
-                    fontWeight: 100,
+                    fontWeight: 500,
                     color: '#ffffff',
                     lineHeight: 1.1,
                     letterSpacing: '0em',
@@ -192,7 +211,7 @@ export default function SurprisePage() {
                     lineHeight: 1,
                     paddingRight: 6,
                 }}>
-                    Swipe to Find your Scene
+                    Swipe, Discover & Go outsyd
                 </p>
             </div>
 
@@ -268,6 +287,64 @@ export default function SurprisePage() {
                             background: 'linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.9) 100%)',
                         }} />
 
+                        {/* Onboarding: Swipe left hint — first 2 cards */}
+                        {showOnboarding && idx < 2 && (
+                            <div style={{
+                                position: 'absolute', top: 16, left: 14,
+                                display: 'flex', alignItems: 'center', gap: 4,
+                                pointerEvents: 'none', zIndex: 20,
+                            }}>
+                                <span style={{
+                                    fontSize: 22, display: 'inline-block',
+                                    color: '#ffffff',
+                                    animation: 'swipeHintLeft 1s ease-in-out infinite',
+                                    textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                                }}>←</span>
+                                <span style={{
+                                    fontFamily: "'Caveat', cursive",
+                                    color: '#ffffff', fontSize: 18, fontWeight: 700,
+                                    textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                                    lineHeight: 1.1,
+                                }}>swipe left to skip</span>
+                            </div>
+                        )}
+
+                        {/* Onboarding: Swipe right hint — card 3, then mark as done */}
+                        {showOnboarding && idx === 2 && (
+                            <div style={{
+                                position: 'absolute', top: 16, right: 14,
+                                display: 'flex', alignItems: 'center', gap: 4,
+                                pointerEvents: 'none', zIndex: 20,
+                            }}>
+                                <span style={{
+                                    fontFamily: "'Caveat', cursive",
+                                    color: '#4ade80', fontSize: 18, fontWeight: 700,
+                                    textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                                    lineHeight: 1.1,
+                                }}>swipe right to know more</span>
+                                <span style={{
+                                    fontSize: 22, display: 'inline-block',
+                                    color: '#4ade80',
+                                    animation: 'swipeHintRight 1s ease-in-out infinite',
+                                    textShadow: '0 2px 12px rgba(0,0,0,0.8)',
+                                }}>→</span>
+                            </div>
+                        )}
+
+
+
+                        {/* Inline keyframes for swipe hint animations */}
+                        <style>{`
+                            @keyframes swipeHintLeft {
+                                0%, 100% { transform: translateX(0); }
+                                50% { transform: translateX(-8px); }
+                            }
+                            @keyframes swipeHintRight {
+                                0%, 100% { transform: translateX(0); }
+                                50% { transform: translateX(8px); }
+                            }
+                        `}</style>
+
                         {/* SKIP label — left swipe indicator */}
                         <div style={{
                             position: 'absolute', top: 24, left: 20,
@@ -298,22 +375,6 @@ export default function SurprisePage() {
                             GO!
                         </div>
 
-                        {/* Save button */}
-                        <button
-                            onClick={e => { e.stopPropagation(); setSaved(s => !s) }}
-                            style={{
-                                position: 'absolute', top: 16, right: 16,
-                                width: 38, height: 38, borderRadius: '50%',
-                                background: saved ? 'var(--accent)' : 'rgba(0,0,0,0.55)',
-                                backdropFilter: 'blur(10px)',
-                                border: `1px solid ${saved ? 'rgba(255,107,0,0.6)' : 'rgba(255,255,255,0.18)'}`,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                cursor: 'pointer', transition: 'all 0.2s ease',
-                                boxShadow: saved ? '0 0 14px rgba(255,107,0,0.45)' : 'none',
-                            }}
-                        >
-                            {saved ? <BookmarkCheck size={15} color="white" /> : <Bookmark size={15} color="rgba(255,255,255,0.9)" />}
-                        </button>
 
                         {/* Title + Location */}
                         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px 22px' }}>

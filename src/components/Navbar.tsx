@@ -15,8 +15,10 @@ export default function Navbar() {
     }, [pathname])
 
     useEffect(() => {
-        const fn = () => setScrolled(window.scrollY > 24)
+        const fn = () => setScrolled(window.scrollY > 50)
         window.addEventListener('scroll', fn, { passive: true })
+        // Call fn once to sync initial state
+        fn()
         return () => window.removeEventListener('scroll', fn)
     }, [])
 
@@ -32,31 +34,25 @@ export default function Navbar() {
         <>
             {/* ── Top bar — logo only, centred ── */}
             <header style={{
-                position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-                height: 60,
-                background: scrolled ? 'rgba(10,10,14,0.90)' : 'transparent',
-                backdropFilter: scrolled ? 'blur(22px) saturate(180%)' : 'none',
-                WebkitBackdropFilter: scrolled ? 'blur(22px) saturate(180%)' : 'none',
-                borderBottom: scrolled ? '1px solid rgba(255,255,255,0.07)' : 'none',
-                transition: 'background 0.35s ease, border-color 0.35s ease',
+                position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+                height: 80,
+                background: scrolled ? 'rgba(10,10,14,0.92)' : 'rgba(0,0,0,0)',
+                backdropFilter: scrolled ? 'blur(28px) saturate(180%)' : 'none',
+                WebkitBackdropFilter: scrolled ? 'blur(28px) saturate(180%)' : 'none',
+                borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'all 0.4s ease-out',
+                pointerEvents: 'none', // permit clicks through the header area only where logo is? No, just keep it normal for now.
             }}>
-                <Link href={`/${citySlug}/activities`} style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
-                    <div style={{
-                        width: 34, height: 34,
-                        background: 'linear-gradient(135deg, #FF6B00 0%, #FF9A3C 100%)',
-                        borderRadius: 10,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 0 18px rgba(255,107,0,0.42)',
-                    }}>
-                        <Zap size={16} color="white" fill="white" />
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
-                        <span style={{ fontWeight: 900, fontSize: 15, letterSpacing: '-0.04em', color: '#ffffff' }}>TBOC</span>
-                        <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: '0.09em', textTransform: 'uppercase', color: 'var(--text-3)' }}>
-                            {citySlug.charAt(0).toUpperCase() + citySlug.slice(1)}
-                        </span>
-                    </div>
+                <Link href={`/${citySlug}/activities`} style={{ 
+                    display: 'flex', alignItems: 'center', textDecoration: 'none',
+                    pointerEvents: 'auto', // ensure link is clickable
+                }}>
+                    <img 
+                        src="https://ik.imagekit.io/xqeoferlz6hbc/outsyd%20logo%20(1)_E8upmu0cU.png" 
+                        alt="Outsyd" 
+                        style={{ height: 57, width: 'auto', objectFit: 'contain' }} 
+                    />
                 </Link>
             </header>
 

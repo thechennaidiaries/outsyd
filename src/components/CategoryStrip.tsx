@@ -28,11 +28,9 @@ export default function CategoryStrip({ activeTag, onTagChange, cityId, featured
 
     if (featuredOnly) {
         tags = tags.filter(t => FEATURED_TAGS.includes(t))
-        // Add "walks" as a special tag if it's meant to be in the strip
         tags.push('walks')
     }
 
-    // Clean tag name: capitalize first letters and remove "activities"
     const getDisplayName = (t: string) => {
         if (t === 'walks') return 'City Crawls'
         let name = t.replace(/\s*activities\s*/gi, '').trim()
@@ -45,11 +43,6 @@ export default function CategoryStrip({ activeTag, onTagChange, cityId, featured
         const meta = TAG_META.find(m => m.name === t)
         return meta?.emoji ?? '🏷️'
     }
-
-    // Split tags into two rows
-    const midpoint = Math.ceil(tags.length / 2)
-    const row1Tags = tags.slice(0, midpoint)
-    const row2Tags = tags.slice(midpoint)
 
     const renderPill = (tag: string) => {
         const isActive = activeTag === tag
@@ -81,28 +74,37 @@ export default function CategoryStrip({ activeTag, onTagChange, cityId, featured
         )
     }
 
-    /* Row styles:
-       - Mobile: horizontal scroll, no wrap
-       - Desktop (md+): normal flex, no overflow via Tailwind overrides */
-    const rowStyle: React.CSSProperties = {
-        display: 'flex',
-        gap: 8,
-        overflowX: 'auto',
-        paddingBottom: 4,
-        alignItems: 'center',
-    }
-
     return (
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {/* Row 1 */}
-                <div className="no-scrollbar md:flex-wrap md:overflow-x-visible" style={rowStyle}>
-                    {row1Tags.map(renderPill)}
-                </div>
+            {/* Desktop: single horizontal-scroll row */}
+            <div
+                className="no-scrollbar hidden md:flex"
+                style={{
+                    gap: 8,
+                    overflowX: 'auto',
+                    paddingBottom: 4,
+                    alignItems: 'center',
+                }}
+            >
+                {tags.map(renderPill)}
+            </div>
 
-                {/* Row 2 */}
-                <div className="no-scrollbar md:flex-wrap md:overflow-x-visible" style={rowStyle}>
-                    {row2Tags.map(renderPill)}
+            {/* Mobile: 2-row grid that scrolls horizontally together */}
+            <div
+                className="no-scrollbar md:hidden"
+                style={{
+                    overflowX: 'auto',
+                    paddingBottom: 4,
+                }}
+            >
+                <div style={{
+                    display: 'grid',
+                    gridTemplateRows: 'auto auto',
+                    gridAutoFlow: 'column',
+                    gridAutoColumns: 'max-content',
+                    gap: 8,
+                }}>
+                    {tags.map(renderPill)}
                 </div>
             </div>
         </div>

@@ -7,6 +7,7 @@ import { Zap, Rocket, Footprints, CalendarDays } from 'lucide-react'
 export default function Navbar() {
     const pathname = usePathname()
     const [scrolled, setScrolled] = useState(false)
+    const [scrolledPast30, setScrolledPast30] = useState(false)
 
     // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai")
     const citySlug = useMemo(() => {
@@ -15,7 +16,13 @@ export default function Navbar() {
     }, [pathname])
 
     useEffect(() => {
-        const fn = () => setScrolled(window.scrollY > 50)
+        const fn = () => {
+            setScrolled(window.scrollY > 50)
+            // Check if user scrolled past 30% of the page
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight
+            const scrollPercent = docHeight > 0 ? window.scrollY / docHeight : 0
+            setScrolledPast30(scrollPercent >= 0.3)
+        }
         window.addEventListener('scroll', fn, { passive: true })
         // Call fn once to sync initial state
         fn()
@@ -30,6 +37,9 @@ export default function Navbar() {
     const isSurpriseActive = pathname === surpriseHref || pathname.startsWith(surpriseHref + '/')
     const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
 
+    // Show outsyd as FAB only when scrolled past 30% AND not on surprise page
+    const showOutsydFab = scrolledPast30 && !isSurpriseActive
+
     return (
         <>
             {/* ── Top bar — logo only, centred ── */}
@@ -42,11 +52,11 @@ export default function Navbar() {
                 borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all 0.4s ease-out',
-                pointerEvents: 'none', // permit clicks through the header area only where logo is? No, just keep it normal for now.
+                pointerEvents: 'none',
             }}>
                 <Link href={`/${citySlug}/activities`} style={{ 
                     display: 'flex', alignItems: 'center', textDecoration: 'none',
-                    pointerEvents: 'auto', // ensure link is clickable
+                    pointerEvents: 'auto',
                 }}>
                     <img 
                         src="https://ik.imagekit.io/xqeoferlz6hbc/outsyd%20logo%20(1)_E8upmu0cU.png" 
@@ -108,44 +118,8 @@ export default function Navbar() {
                     </Link>
 
                     {/* ── outsyd ── */}
-                    {isSurpriseActive ? (
-                        /* When on surprise page, render as a normal nav item */
-                        <Link
-                            href={surpriseHref}
-                            style={{
-                                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-                                textDecoration: 'none', flex: 1,
-                                padding: '6px 12px',
-                                borderRadius: 14,
-                                color: 'var(--accent)',
-                                transition: 'color 0.2s ease',
-                            }}
-                        >
-                            <div style={{
-                                width: 44, height: 30,
-                                borderRadius: 20,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                background: 'rgba(255,107,0,0.16)',
-                                transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
-                            }}>
-                                <Footprints
-                                    size={20}
-                                    strokeWidth={2.5}
-                                    color={'var(--accent)'}
-                                />
-                            </div>
-                            <span style={{
-                                fontSize: 16, fontWeight: 700,
-                                letterSpacing: '0.01em',
-                                transition: 'font-weight 0.2s',
-                                fontFamily: "'Caveat', cursive",
-                                lineHeight: 1,
-                            }}>
-                                outsyd
-                            </span>
-                        </Link>
-                    ) : (
-                        /* Floating FAB when NOT on surprise page */
+                    {showOutsydFab ? (
+                        /* Floating FAB — shown after 30% scroll on non-surprise pages */
                         <div style={{ flex: 1, display: 'flex', justifyContent: 'center', position: 'relative' }}>
                             <Link
                                 href={surpriseHref}
@@ -188,6 +162,42 @@ export default function Navbar() {
                                 </div>
                             </Link>
                         </div>
+                    ) : (
+                        /* Normal nav item — default state & always on surprise page */
+                        <Link
+                            href={surpriseHref}
+                            style={{
+                                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                                textDecoration: 'none', flex: 1,
+                                padding: '6px 12px',
+                                borderRadius: 14,
+                                color: isSurpriseActive ? 'var(--accent)' : 'var(--text-3)',
+                                transition: 'color 0.2s ease',
+                            }}
+                        >
+                            <div style={{
+                                width: 44, height: 30,
+                                borderRadius: isSurpriseActive ? 20 : 10,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                background: isSurpriseActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                                transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+                            }}>
+                                <Footprints
+                                    size={20}
+                                    strokeWidth={isSurpriseActive ? 2.5 : 1.75}
+                                    color={isSurpriseActive ? 'var(--accent)' : 'var(--text-3)'}
+                                />
+                            </div>
+                            <span style={{
+                                fontSize: 16, fontWeight: isSurpriseActive ? 700 : 500,
+                                letterSpacing: '0.01em',
+                                transition: 'font-weight 0.2s',
+                                fontFamily: "'Caveat', cursive",
+                                lineHeight: 1,
+                            }}>
+                                outsyd
+                            </span>
+                        </Link>
                     )}
 
                     {/* ── Plan My Day ── */}

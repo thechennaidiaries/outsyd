@@ -379,7 +379,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
 
     return (
         <>
-            <main style={{ minHeight: '100vh', background: 'var(--bg)' }}>
+            <main style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80 }}>
 
                 {/* ── Sticky header ── */}
                 <div style={{

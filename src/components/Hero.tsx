@@ -80,26 +80,19 @@ export default function Hero({ city }: HeroProps) {
                     </span>
                 </h1>
 
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: -10,
+                    marginBottom: 40,
+                    animation: 'fade-up 0.9s ease 0.5s both',
+                }}>
+                    <ChevronDown size={22} color="#ffffff" strokeWidth={2.5} />
+                </div>
+
                 {/* Search bar removed as per user request */}
             </div>
 
-            {/* Scroll indicator — simplified arrow */}
-            <div style={{
-                position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%)',
-                zIndex: 2,
-            }}>
-                <div className="bounce-arrow" style={{
-                    color: 'rgba(255,255,255,0.4)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }} onClick={() => {
-                    document.getElementById('activities-section')?.scrollIntoView({ behavior: 'smooth' })
-                }}>
-                    <ChevronDown size={28} strokeWidth={1.5} />
-                </div>
-            </div>
 
         </>
     )

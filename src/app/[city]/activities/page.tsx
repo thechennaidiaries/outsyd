@@ -254,7 +254,24 @@ export default function ThingsToDoPage() {
         </div>
       )}
 
-      {/* ═══ 3. Sports ════════════════════════════════════════════ */}
+      {/* ═══ 3. City Crawls ═══════════════════════════════════════ */}
+      {cityWalks.length > 0 && (
+        <div id="city-walks">
+          <HScrollSection
+            emoji="🚶"
+            heading="City Crawls"
+            viewMoreHref={`/${citySlug}/walks`}
+          >
+            {shuffledWalks.slice(0, 5).map(walk => (
+              <div key={walk.id} style={walkCardStyle}>
+                <WalkCard walk={walk} citySlug={citySlug} />
+              </div>
+            ))}
+          </HScrollSection>
+        </div>
+      )}
+
+      {/* ═══ 4. Sports ════════════════════════════════════════════ */}
       {sports.length > 0 && (
         <div id="sports">
           <HScrollSection
@@ -266,23 +283,6 @@ export default function ThingsToDoPage() {
             {shuffledSports.slice(0, 8).map(a => (
               <div key={a.id} style={cardStyle}>
                 <ActivityCard activity={a} citySlug={citySlug} />
-              </div>
-            ))}
-          </HScrollSection>
-        </div>
-      )}
-
-      {/* ═══ 4. City Crawls ═══════════════════════════════════════ */}
-      {cityWalks.length > 0 && (
-        <div id="city-walks">
-          <HScrollSection
-            emoji="🚶"
-            heading="City Crawls"
-            viewMoreHref={`/${citySlug}/walks`}
-          >
-            {shuffledWalks.slice(0, 5).map(walk => (
-              <div key={walk.id} style={walkCardStyle}>
-                <WalkCard walk={walk} citySlug={citySlug} />
               </div>
             ))}
           </HScrollSection>

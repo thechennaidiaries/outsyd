@@ -503,13 +503,6 @@ export default function ThingsToDoPage() {
         </div>
       )}
 
-      {/* Footer */}
-      <footer style={{
-        borderTop: '1px solid var(--border)', padding: '32px 24px', marginTop: 80,
-        textAlign: 'center', color: 'var(--text-3)', fontSize: 13,
-      }}>
-        ⚡ <strong style={{ color: 'var(--text-2)' }}>TBOC</strong> — Things To Do {city.name} · Never be bored again · Made with ❤️ in {city.name}
-      </footer>
     </main>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { Bookmark, BookmarkCheck, MapPin, Footprints } from 'lucide-react'
+import { MapPin, Footprints } from 'lucide-react'
 import type { Walk } from '@/data/walks'
 
 interface Props {
@@ -10,7 +10,6 @@ interface Props {
 }
 
 export default function WalkCard({ walk, citySlug }: Props) {
-    const [saved, setSaved] = useState(false)
     const [imgErr, setImgErr] = useState(false)
 
     // Use the walk's cover image
@@ -57,27 +56,6 @@ export default function WalkCard({ walk, citySlug }: Props) {
                     position: 'absolute', inset: 0,
                     background: 'linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.82) 100%)',
                 }} />
-
-                {/* Save button — top right */}
-                <button
-                    onClick={(e) => { e.preventDefault(); setSaved(s => !s) }}
-                    style={{
-                        position: 'absolute', top: 12, right: 12,
-                        width: 34, height: 34, borderRadius: '50%',
-                        background: saved ? 'var(--accent)' : 'rgba(0,0,0,0.50)',
-                        backdropFilter: 'blur(10px)',
-                        border: `1px solid ${saved ? 'rgba(255,107,0,0.6)' : 'rgba(255,255,255,0.18)'}`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        boxShadow: saved ? '0 0 14px rgba(255,107,0,0.45)' : 'none',
-                    }}
-                >
-                    {saved
-                        ? <BookmarkCheck size={14} color="white" />
-                        : <Bookmark size={14} color="rgba(255,255,255,0.9)" />
-                    }
-                </button>
 
                 {/* Places count pill — top left */}
                 <div style={{

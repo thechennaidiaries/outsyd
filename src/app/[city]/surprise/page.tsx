@@ -208,7 +208,7 @@ export default function SurprisePage() {
                     marginBottom: 10,
                     whiteSpace: 'nowrap',
                 }}>
-                    {city.name === 'chennai' ? 'Chennai la bore adikutha?' : `${city.name} la bore adikutha?`}
+                    Can’t decide where to go?
                 </h1>
                 <p style={{
                     fontFamily: "'Caveat', cursive",
@@ -218,7 +218,7 @@ export default function SurprisePage() {
                     lineHeight: 1,
                     paddingRight: 6,
                 }}>
-                    Swipe, Discover &amp; Go outsyd
+                    Swipe &amp; Go where it takes you
                 </p>
             </div>
 

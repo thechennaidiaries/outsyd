@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { Zap, Rocket, Footprints, CalendarDays } from 'lucide-react'
+import { Zap, Rocket, CalendarDays } from 'lucide-react'
 
 export default function Navbar() {
     const pathname = usePathname()
@@ -148,7 +148,7 @@ export default function Navbar() {
                                         boxShadow: '0 6px 28px rgba(255,107,0,0.55), inset 0 1px 0 rgba(255,255,255,0.2)',
                                         transition: 'all 0.3s ease',
                                     }}>
-                                        <Footprints size={28} color="white" strokeWidth={2.2} />
+                                        <Zap size={28} color="white" strokeWidth={2.2} fill="white" />
                                         <span style={{
                                             fontSize: 22, fontWeight: 800, color: 'white',
                                             letterSpacing: '0.01em',
@@ -156,7 +156,7 @@ export default function Navbar() {
                                             lineHeight: 1,
                                             marginTop: -2,
                                         }}>
-                                            outsyd
+                                            flash
                                         </span>
                                     </div>
                                 </div>
@@ -182,10 +182,11 @@ export default function Navbar() {
                                 background: isSurpriseActive ? 'rgba(255,107,0,0.16)' : 'transparent',
                                 transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
                             }}>
-                                <Footprints
+                                <Zap
                                     size={20}
                                     strokeWidth={isSurpriseActive ? 2.5 : 1.75}
                                     color={isSurpriseActive ? 'var(--accent)' : 'var(--text-3)'}
+                                    fill={isSurpriseActive ? 'var(--accent)' : 'transparent'}
                                 />
                             </div>
                             <span style={{
@@ -195,7 +196,7 @@ export default function Navbar() {
                                 fontFamily: "'Caveat', cursive",
                                 lineHeight: 1,
                             }}>
-                                outsyd
+                                flash
                             </span>
                         </Link>
                     )}

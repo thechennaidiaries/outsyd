@@ -360,43 +360,7 @@ export default function ThingsToDoPage() {
         </div>
       )}
 
-      {/* ═══ 9. Night Activities ═══════════════════════════════════ */}
-      {night.length > 0 && (
-        <div id="night">
-          <HScrollSection
-            emoji="🌙"
-            heading="Night activities"
-            subheading="Dinner dates, Night-time sports and more"
-            viewMoreHref={`/${citySlug}/activities/night-activities-in-${city.id}`}
-          >
-            {shuffledNight.slice(0, 8).map(a => (
-              <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
-              </div>
-            ))}
-          </HScrollSection>
-        </div>
-      )}
-
-      {/* ═══ 10. Kids Activities ═══════════════════════════════════ */}
-      {kids.length > 0 && (
-        <div id="kids">
-          <HScrollSection
-            emoji="🎈"
-            heading="Fun for Kids"
-            subheading="Play zones, Parks and Educational Fun"
-            viewMoreHref={`/${citySlug}/activities/kids-activities-in-${city.id}`}
-          >
-            {shuffledKids.slice(0, 8).map(a => (
-              <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
-              </div>
-            ))}
-          </HScrollSection>
-        </div>
-      )}
-
-      {/* ═══ 11. Cultural Experiences ══════════════════════════════ */}
+      {/* ═══ 9. Cultural Experiences ══════════════════════════════ */}
       {cultural.length > 0 && (
         <div id="cultural">
           <HScrollSection
@@ -414,7 +378,7 @@ export default function ThingsToDoPage() {
         </div>
       )}
 
-      {/* ═══ 12. Leisure Activities ════════════════════════════════ */}
+      {/* ═══ 10. Leisure Activities ════════════════════════════════ */}
       {leisure.length > 0 && (
         <div id="leisure">
           <HScrollSection
@@ -432,7 +396,7 @@ export default function ThingsToDoPage() {
         </div>
       )}
 
-      {/* ═══ 13. Group Activities ══════════════════════════════════ */}
+      {/* ═══ 11. Group Activities ══════════════════════════════════ */}
       {group.length > 0 && (
         <div id="group">
           <HScrollSection
@@ -442,6 +406,24 @@ export default function ThingsToDoPage() {
             viewMoreHref={`/${citySlug}/activities/group-activities-in-${city.id}`}
           >
             {shuffledGroup.slice(0, 8).map(a => (
+              <div key={a.id} style={cardStyle}>
+                <ActivityCard activity={a} citySlug={citySlug} />
+              </div>
+            ))}
+          </HScrollSection>
+        </div>
+      )}
+
+      {/* ═══ 12. Night Activities ═══════════════════════════════════ */}
+      {night.length > 0 && (
+        <div id="night">
+          <HScrollSection
+            emoji="🌙"
+            heading="Night activities"
+            subheading="Dinner dates, Night-time sports and more"
+            viewMoreHref={`/${citySlug}/activities/night-activities-in-${city.id}`}
+          >
+            {shuffledNight.slice(0, 8).map(a => (
               <div key={a.id} style={cardStyle}>
                 <ActivityCard activity={a} citySlug={citySlug} />
               </div>

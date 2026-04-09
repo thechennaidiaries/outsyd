@@ -50,6 +50,8 @@ export function generateStaticParams() {
     return [...activityParams, ...categoryParams]
 }
 
+import { generateActivitySeo } from '@/lib/seo'
+
 // ── Metadata: different for category vs activity ─────────────────
 export async function generateMetadata({ params }: Props) {
     const city = getCityBySlug(params.city)
@@ -68,9 +70,18 @@ export async function generateMetadata({ params }: Props) {
     // Activity page
     const activity = getActivityBySlug(city.id, params.slug)
     if (!activity) return {}
+
+    const { metaTitle, metaDescription } = generateActivitySeo({
+        title: activity.title,
+        placeName: activity.location,
+        area: activity.area,
+        city: city.name,
+        tags: activity.tags
+    })
+
     return {
-        title: `${activity.location} — TBOC ${city.name}`,
-        description: activity.title,
+        title: metaTitle,
+        description: metaDescription,
     }
 }
 

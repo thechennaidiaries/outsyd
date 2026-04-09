@@ -2900,7 +2900,7 @@ export const TAG_META: TagMeta[] = [
     { name: 'night activities', slug: 'night-activities', emoji: '\u{1F319}', description: 'Fun things to do after dark - night drives, stargazing, and more' },
     { name: 'kids activities', slug: 'kids-activities', emoji: '\u{1F9D2}', description: 'Family-friendly activities and fun outings for children' },
     { name: 'unique cultural experiences', slug: 'cultural-experiences', emoji: '\u{1F3AD}', description: 'Temples, heritage sites, and unique local cultural experiences' },
-    { name: 'gaming activities', slug: 'gaming-activities', emoji: '\u{2684}', description: 'PS5 gaming, PC cafes, arcade zones, and VR experiences' },
+    { name: 'gaming activities', slug: 'gaming-activities', emoji: '\u{1F3B3}', description: 'PS5 gaming, PC cafes, arcade zones, and VR experiences' },
     { name: 'sports activities', slug: 'sports-activities', emoji: '\u{26BD}', description: 'Football turfs, badminton courts, cricket, and more' },
     { name: 'art activities', slug: 'art-activities', emoji: '\u{1F3A8}', description: 'Pottery, painting, art galleries, and creative workshops' },
     { name: 'escape room activities', slug: 'escape-room', emoji: '\u{1F510}', description: 'Escape rooms and puzzle-solving adventures with friends' },

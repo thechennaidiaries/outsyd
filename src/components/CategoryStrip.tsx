@@ -12,12 +12,12 @@ interface Props {
 const FEATURED_TAGS = [
     'low budget fun activities',
     'sports activities',
+    'walks',
     'gaming activities',
     'adventure activities',
     'art activities',
     'water activities',
     'night activities',
-    'kids activities',
     'unique cultural experiences',
     'leisure activities',
     'group activities'
@@ -27,8 +27,7 @@ export default function CategoryStrip({ activeTag, onTagChange, cityId, featured
     let tags = cityId ? getTagsByCity(cityId) : ALL_TAGS
 
     if (featuredOnly) {
-        tags = tags.filter(t => FEATURED_TAGS.includes(t))
-        tags.push('walks')
+        tags = FEATURED_TAGS.filter(t => tags.includes(t) || t === 'walks')
     }
 
     const getDisplayName = (t: string) => {

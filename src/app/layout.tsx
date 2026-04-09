@@ -4,8 +4,8 @@ import Navbar from '@/components/Navbar'
 import Script from 'next/script'
 
 export const metadata: Metadata = {
-  title: 'Things To Do Chennai | Discover Activities in Chennai',
-  description: 'Discover the best things to do in Chennai — beaches, food, nightlife, culture, hidden gems and more. Never be bored in Chennai again.',
+  title: 'Find Things to Do in Chennai | Outsyd',
+  description: 'Discover the best things to do in Chennai for every mood - date ideas, nightlife, gaming, sports, adventures, beaches, clubs, and calming escapes. Pick a plan, Go Outsyd & have fun',
   keywords: 'things to do in Chennai, Chennai activities, Chennai guide, places to visit Chennai',
 }
 

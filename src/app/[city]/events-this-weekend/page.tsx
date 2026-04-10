@@ -5,87 +5,87 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, MapPin, Clock, ExternalLink, ArrowLeft } from 'lucide-react'
 
-const DUMMY_EVENTS = [
+const EVENT_DATA = [
     {
         id: '1',
-        title: 'Sunburn Arena ft. Alan Walker',
-        time: 'Saturday, 12th Oct • 4:00 PM',
-        location: 'YMCA Grounds, Nandanam',
-        image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://bookmyshow.com',
-        price: 'From ₹1500'
+        title: 'Singles Mixer by Twisty Tails',
+        time: 'Saturday, 12th April',
+        location: 'Twisty Tails',
+        image: '/events/singles-mixer-twisty-tails.png',
+        bookingLink: 'https://www.instagram.com/p/DWog7AND6y_/',
+        price: 'Event'
     },
     {
         id: '2',
-        title: 'The Great Indian Food Festival',
-        time: 'Sun, 13th Oct • 11:00 AM',
-        location: 'Island Grounds, Anna Salai',
-        image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://bookmyshow.com',
-        price: 'From ₹200'
+        title: 'Strangers Meetup by Rafiky',
+        time: 'Saturday, 12th April',
+        location: 'Rafiky Cafe',
+        image: '/events/strangers-meetup-rafiky.png',
+        bookingLink: 'https://www.instagram.com/p/DW3thdnzt1H/',
+        price: 'Event'
     },
     {
         id: '3',
-        title: 'Laughter Night with Zakir Khan',
-        time: 'Saturday, 12th Oct • 7:00 PM',
-        location: 'Music Academy, Royapettah',
-        image: 'https://images.unsplash.com/photo-1514525253361-b83f859b73c0?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://bookmyshow.com',
-        price: 'From ₹999'
+        title: 'Run & Dodge by Ahora Run Club',
+        time: 'Saturday, 12th April',
+        location: 'To be revealed soon',
+        image: '/events/run-and-dodge-ahora.png',
+        bookingLink: 'https://www.instagram.com/p/DW1oJrKkvb9/',
+        price: 'Sports'
     },
     {
         id: '4',
-        title: 'Sunrise Beach Yoga Workshop',
-        time: 'Sun, 13th Oct • 6:00 AM',
-        location: 'Besant Nagar Beach',
-        image: 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://insider.in',
-        price: 'Free'
+        title: 'Strangers Meetup by Ulaa Tribe',
+        time: 'Saturday, 12th April, 4PM',
+        location: 'Teynampet',
+        image: '/events/strangers-meetup-ulaa-tribe.png',
+        bookingLink: 'https://www.instagram.com/reels/DWy81y_RoBj/',
+        price: 'Meetup'
     },
     {
         id: '5',
-        title: 'Pottery & Sip Workshop',
-        time: 'Saturday, 12th Oct • 3:00 PM',
-        location: 'Life of Art Studios, Adyar',
-        image: 'https://images.unsplash.com/photo-1565191999001-551c187427bb?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://insider.in',
-        price: '₹1200'
+        title: 'Singles Meetup by Social Sailor',
+        time: 'Friday, 11th April, 4:30 PM',
+        location: 'Madras Food Walk',
+        image: '/events/social-sailor-singles-meetup.png',
+        bookingLink: 'https://www.district.in/events/singles-meetup-chennai-apr4-2026-buy-tickets',
+        price: 'Food Walk'
     },
     {
         id: '6',
-        title: 'Tech & Startup Mixer 2024',
-        time: 'Friday, 11th Oct • 6:30 PM',
-        location: 'IITM Research Park, Taramani',
-        image: 'https://images.unsplash.com/photo-1540575861501-7ad060e39fe1?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://insider.in',
-        price: '₹500'
+        title: 'Solo Travellers Meetup',
+        time: 'Saturday, 12th April, 5:00 PM',
+        location: 'Madras Food Walk',
+        image: '/events/solo-travellers-meetup.png',
+        bookingLink: 'https://in.bookmyshow.com/events/solo-travellers/ET00461911',
+        price: 'Travel'
     },
     {
         id: '7',
-        title: 'Midnight Cycling Tour',
-        time: 'Sat Night, Oct 12 • 10:00 PM',
-        location: 'Starting from Marina Lighthouse',
-        image: 'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://insider.in',
-        price: '₹800'
+        title: 'Lunch with Strangers',
+        time: 'Friday, 11th April, 4:30 PM',
+        location: 'Madras Food Walk',
+        image: '/events/lunch-with-strangers.png',
+        bookingLink: 'https://www.district.in/events/lunch-with-strangers-chennai-apr4-2026-buy-tickets',
+        price: 'Dining'
     },
     {
         id: '8',
-        title: 'Indie Rock Concert: The F16s',
-        time: 'Sunday, 13th Oct • 8:00 PM',
-        location: 'Barracuda Brew, Nungambakkam',
-        image: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://bookmyshow.com',
-        price: '₹1000'
+        title: 'Mafia Night',
+        time: 'Friday, 11th April, 7:00 PM',
+        location: 'Ratio Alwarpet',
+        image: '/events/mafia-night-alwarpet.png',
+        bookingLink: 'https://www.instagram.com/p/DWYvnrIEQTj/',
+        price: 'Games'
     },
     {
         id: '9',
-        title: 'Weekend Farmers Market',
-        time: 'Sun, 13th Oct • 8:00 AM',
-        location: 'Hanu Reddy Residences, Poes Garden',
-        image: 'https://images.unsplash.com/photo-1488459711615-de9b7b7a8d4b?auto=format&fit=crop&w=800&q=80',
-        bookingLink: 'https://insider.in',
-        price: 'Entry Free'
+        title: 'Sing with Strangers',
+        time: 'Saturday, 12th April',
+        location: 'Phoenix Mall',
+        image: '/events/sing-with-strangers-phoenix.png',
+        bookingLink: 'https://www.instagram.com/p/DW6XBK_CdJY/',
+        price: 'Karaoke'
     }
 ]
 
@@ -116,7 +116,7 @@ export default function EventsWeekendPage() {
 
                     <h1 style={{
                         fontSize: 'clamp(32px, 6vw, 56px)', fontWeight: 900,
-                        letterSpacing: '-0.04e m', color: 'var(--text)',
+                        letterSpacing: '-0.04em', color: 'var(--text)',
                         lineHeight: 1.1, marginBottom: 16,
                     }}>
                         Events This{' '}
@@ -132,20 +132,19 @@ export default function EventsWeekendPage() {
                         fontSize: 'clamp(15px, 2vw, 18px)', color: 'var(--text-3)',
                         lineHeight: 1.6, maxWidth: 600, fontWeight: 400
                     }}>
-                        From massive concerts and food festivals to sunrise yoga and local pop-ups. 
-                        Make the most of your weekend with our curated list.
+                        Don't stay in! Discover the best mixers, meetups, and social gatherings happening across {city.name} this weekend.
                     </p>
                 </div>
             </div>
 
             {/* Content Grid */}
-            <div style={{ maxWidth: 1200, margin: '-30px auto 0', padding: '0 24px' }}>
+            <div style={{ maxWidth: 1200, margin: '-20px auto 0', padding: '0 24px' }}>
                 <div style={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
                     gap: 32,
                 }}>
-                    {DUMMY_EVENTS.map((event) => (
+                    {EVENT_DATA.map((event) => (
                         <div key={event.id} style={{
                             background: 'var(--bg-card)',
                             borderRadius: 'var(--radius)',
@@ -215,14 +214,13 @@ export default function EventsWeekendPage() {
                                     }}
                                     className="hover:bg-[var(--accent)] hover:text-white"
                                 >
-                                    Book Tickets <ExternalLink size={14} />
+                                    View Details <ExternalLink size={14} />
                                 </a>
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-
         </main>
     )
 }

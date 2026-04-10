@@ -72,17 +72,17 @@ export default function WalkDetailPage({ params }: Props) {
                         background: 'linear-gradient(180deg, rgba(10,10,14,0.55) 0%, transparent 30%, transparent 50%, rgba(10,10,14,0.95) 100%)',
                     }} />
 
-                    {/* Back button */}
-                    <Link href={`/${city.id}/walks`} style={{
+                    {/* Back to Home button */}
+                    <Link href={`/${city.id}/activities`} style={{
                         position: 'absolute', top: 80, left: 24,
                         display: 'inline-flex', alignItems: 'center', gap: 7,
                         padding: '9px 16px', borderRadius: 100,
                         background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(12px)',
                         border: '1px solid rgba(255,255,255,0.14)',
                         color: 'white', fontSize: 13, fontWeight: 600, textDecoration: 'none',
-                        transition: 'all 0.2s ease',
-                    }}>
-                        <ArrowLeft size={14} /> Back
+                        transition: 'all 0.2s ease', zIndex: 10
+                    }} className="hover:bg-[rgba(0,0,0,0.75)]">
+                        <Home size={14} /> Back to Home
                     </Link>
 
                     {/* Title overlay */}

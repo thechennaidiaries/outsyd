@@ -37,8 +37,10 @@ export default function Navbar() {
     const isSurpriseActive = pathname === surpriseHref || pathname.startsWith(surpriseHref + '/')
     const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
 
-    // Show outsyd as FAB only when scrolled past 30% AND not on surprise page
-    const showOutsydFab = scrolledPast30 && !isSurpriseActive
+    const isEventsPage = pathname.includes('/events-this-weekend')
+
+    // Show outsyd as FAB only when scrolled past 30% AND not on surprise page AND not on events page
+    const showOutsydFab = scrolledPast30 && !isSurpriseActive && !isEventsPage
 
     return (
         <>
@@ -75,6 +77,25 @@ export default function Navbar() {
                 borderTop: '1px solid rgba(255,255,255,0.075)',
                 paddingBottom: 'env(safe-area-inset-bottom)',
             }}>
+                {/* ── Events Page CTA Banner ── Sits flush on top of nav ── */}
+                {isEventsPage && scrolledPast30 && (
+                    <Link
+                        href={homeHref}
+                        style={{
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                            width: '100%', padding: '14px 20px',
+                            background: 'linear-gradient(90deg, var(--accent) 0%, #FF8533 100%)',
+                            color: '#fff', textDecoration: 'none',
+                            fontSize: 14, fontWeight: 800, letterSpacing: '-0.01em',
+                            boxShadow: '0 -4px 16px rgba(0,0,0,0.2)',
+                            animation: 'fade-up 0.4s ease-out both',
+                        }}
+                    >
+                        <Rocket size={16} />
+                        More Activities in {citySlug.charAt(0).toUpperCase() + citySlug.slice(1)} this Weekend
+                    </Link>
+                )}
+
                 <div style={{
                     display: 'flex', alignItems: 'flex-end',
                     justifyContent: 'space-around',

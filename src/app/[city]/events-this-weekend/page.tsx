@@ -223,26 +223,6 @@ export default function EventsWeekendPage() {
                 </div>
             </div>
 
-            {/* Bottom Call to Action */}
-            <div style={{ 
-                marginTop: 80, textAlign: 'center', 
-                padding: '60px 24px', 
-                background: 'linear-gradient(to top, rgba(20,20,25,0.5), transparent)',
-                borderTop: '1px solid var(--border)'
-            }}>
-                <h4 style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', marginBottom: 8 }}>
-                    Organizing an event?
-                </h4>
-                <p style={{ color: 'var(--text-3)', fontSize: 14, marginBottom: 24 }}>
-                    Get your event featured on Outsyd and reach thousands of locals.
-                </p>
-                <Link href="#" style={{
-                    color: 'var(--accent)', fontWeight: 700, fontSize: 14, textDecoration: 'none',
-                    borderBottom: '1.5px solid var(--accent)', paddingBottom: 2
-                }}>
-                    List your event here
-                </Link>
-            </div>
         </main>
     )
 }

@@ -115,22 +115,21 @@ export default function EventsWeekendPage() {
                     </Link>
 
                     <h1 style={{
-                        fontSize: 'clamp(32px, 6vw, 56px)', fontWeight: 900,
+                        fontSize: 'clamp(32px, 6vw, 48px)', fontWeight: 900,
                         letterSpacing: '-0.04em', color: 'var(--text)',
                         lineHeight: 1.1, marginBottom: 16,
                     }}>
-                        Events This{' '}
+                        Stranger Meetups in {city.name} <br/> 
                         <span style={{
                             background: 'linear-gradient(135deg, #FF6B00, #FF9A3C)',
                             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
                         }}>
-                             Weekend
+                             to Meet New People
                         </span>
-                        {' '}in {city.name}
                     </h1>
                     <p style={{
-                        fontSize: 'clamp(15px, 2vw, 18px)', color: 'var(--text-3)',
-                        lineHeight: 1.6, maxWidth: 600, fontWeight: 400
+                        fontSize: 'clamp(15px, 2vw, 18px)', color: 'var(--text-2)',
+                        lineHeight: 1.6, maxWidth: 640, fontWeight: 400
                     }}>
                         Don't stay in! Discover the best mixers, meetups, and social gatherings happening across {city.name} this weekend.
                     </p>
@@ -187,11 +186,11 @@ export default function EventsWeekendPage() {
                                 </h3>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-2)', fontSize: 13 }}>
                                         <Calendar size={14} color="var(--accent)" />
                                         <span>{event.time}</span>
                                     </div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-3)', fontSize: 13 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-2)', fontSize: 13 }}>
                                         <MapPin size={14} color="var(--accent)" />
                                         <span>{event.location}</span>
                                     </div>

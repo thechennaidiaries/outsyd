@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /chennai/
+Allow: /walks/
+Allow: /activities/
+Allow: /areas/
+Allow: /categories/
+
+Disallow: /admin/
+Disallow: /api/
+Disallow: /preview/
+Disallow: /draft/
+Disallow: /internal/
+
+Sitemap: https://outsyd.in/sitemap.xml

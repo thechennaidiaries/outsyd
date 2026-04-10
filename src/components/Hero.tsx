@@ -80,13 +80,27 @@ export default function Hero({ city }: HeroProps) {
                     </span>
                 </h1>
 
-                <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: -10,
-                    marginBottom: 40,
-                    animation: 'fade-up 0.9s ease 0.5s both',
-                }}>
+                <div 
+                    onClick={() => {
+                        const el = document.getElementById('mood-navigator')
+                        if (el) {
+                            const offset = 80 // header offset
+                            const bodyRect = document.body.getBoundingClientRect().top
+                            const elementRect = el.getBoundingClientRect().top
+                            const elementPosition = elementRect - bodyRect
+                            const offsetPosition = elementPosition - offset
+                            window.scrollTo({ top: offsetPosition, behavior: 'smooth' })
+                        }
+                    }}
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: -10,
+                        marginBottom: 40,
+                        animation: 'fade-up 0.9s ease 0.5s both',
+                        cursor: 'pointer'
+                    }}
+                >
                     <ChevronDown size={22} color="#ffffff" strokeWidth={2.5} />
                 </div>
 

@@ -288,7 +288,7 @@ export default function ThingsToDoPage() {
       <Hero city={city} />
 
       {/* ═══ 1. Mood Navigator ═════════════════════════════════════ */}
-      <div style={{ borderBottom: '1px solid var(--border)', padding: '40px 0 60px' }}>
+      <div id="mood-navigator" style={{ borderBottom: '1px solid var(--border)', padding: '40px 0 60px' }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px', marginBottom: 20 }}>
           <h3 style={{
             fontSize: 12,

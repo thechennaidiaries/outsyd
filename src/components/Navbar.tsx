@@ -37,7 +37,7 @@ export default function Navbar() {
     const isSurpriseActive = pathname === surpriseHref || pathname.startsWith(surpriseHref + '/')
     const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
 
-    const isEventsPage = pathname.includes('/events-this-weekend')
+    const isEventsPage = pathname.includes('/events-this-weekend') || pathname.includes('/best-shawarma')
 
     // Show outsyd as FAB only when scrolled past 30% AND not on surprise page AND not on events page
     const showOutsydFab = scrolledPast30 && !isSurpriseActive && !isEventsPage
@@ -92,7 +92,10 @@ export default function Navbar() {
                         }}
                     >
                         <Rocket size={16} />
-                        More Activities in {citySlug.charAt(0).toUpperCase() + citySlug.slice(1)} this Weekend
+                        {pathname.includes('/best-shawarma')
+                            ? `Find Cool Things to do in ${citySlug.charAt(0).toUpperCase() + citySlug.slice(1)}`
+                            : `More Activities in ${citySlug.charAt(0).toUpperCase() + citySlug.slice(1)} this Weekend`
+                        }
                     </Link>
                 )}
 

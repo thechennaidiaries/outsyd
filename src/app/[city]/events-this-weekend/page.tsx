@@ -8,86 +8,69 @@ import { Calendar, MapPin, Clock, ExternalLink, ArrowLeft } from 'lucide-react'
 const EVENT_DATA = [
     {
         id: '1',
-        title: 'Singles Mixer by Twisty Tails',
-        time: 'Saturday, 12th April',
-        location: 'Twisty Tails',
-        image: '/events/singles-mixer-twisty-tails.png',
-        bookingLink: 'https://www.instagram.com/p/DWog7AND6y_/',
-        price: 'Event'
-    },
-    {
-        id: '2',
-        title: 'Strangers Meetup by Rafiky',
-        time: 'Saturday, 12th April',
-        location: 'Rafiky Cafe',
-        image: '/events/strangers-meetup-rafiky.png',
-        bookingLink: 'https://www.instagram.com/p/DW3thdnzt1H/',
-        price: 'Event'
-    },
-    {
-        id: '3',
-        title: 'Run & Dodge by Ahora Run Club',
-        time: 'Saturday, 12th April',
-        location: 'To be revealed soon',
-        image: '/events/run-and-dodge-ahora.png',
-        bookingLink: 'https://www.instagram.com/p/DW1oJrKkvb9/',
-        price: 'Sports'
-    },
-    {
-        id: '4',
-        title: 'Strangers Meetup by Ulaa Tribe',
-        time: 'Saturday, 12th April, 4PM',
-        location: 'Teynampet',
-        image: '/events/strangers-meetup-ulaa-tribe.png',
-        bookingLink: 'https://www.instagram.com/reels/DWy81y_RoBj/',
+        title: 'Strangers Meet at Thiruvanmiyur Beach',
+        time: 'Sunday, 19th April',
+        location: 'Thiruvanmiyur Beach',
+        image: '/events/strangers-meet-thiruvanmiyur.png',
+        bookingLink: 'https://www.instagram.com/p/DXKNgAHidfT/',
         price: 'Meetup'
     },
     {
+        id: '2',
+        title: 'Strangers Sunset Picnic',
+        time: 'Saturday, 18th April',
+        location: 'Semmozhi Poonga',
+        image: '/events/strangers-sunset-picnic.png',
+        bookingLink: 'https://www.instagram.com/p/DXCSVQYEye6/?igsh=YzJscWJ2dWd3NGk%3D',
+        price: 'Picnic'
+    },
+    {
+        id: '3',
+        title: 'Strangers Trip to Tada',
+        time: 'Sunday, 19th April',
+        location: 'Tada Waterfalls',
+        image: '/events/strangers-trip-tada.png',
+        bookingLink: 'https://www.instagram.com/reels/DXGbshZEU5E/',
+        price: 'Trip'
+    },
+    {
+        id: '4',
+        title: 'Strangers Zumba',
+        time: 'Sunday, 19th April',
+        location: 'Semmancheri',
+        image: '/events/strangers-zumba.png',
+        bookingLink: 'https://www.instagram.com/p/DW3_WWoFPmZ/?img_index=3',
+        price: 'Fitness'
+    },
+    {
         id: '5',
-        title: 'Singles Meetup by Social Sailor',
-        time: 'Friday, 11th April, 4:30 PM',
-        location: 'Madras Food Walk',
-        image: '/events/social-sailor-singles-meetup.png',
-        bookingLink: 'https://www.district.in/events/singles-meetup-chennai-apr4-2026-buy-tickets',
-        price: 'Food Walk'
+        title: 'Beach Games Strangers Meetup',
+        time: 'Saturday, 18th April',
+        location: 'Besant Nagar',
+        image: '/events/beach-games-besant-nagar.png',
+        bookingLink: 'https://www.instagram.com/p/DXJ_EkTADpI/',
+        price: 'Sports'
     },
     {
         id: '6',
-        title: 'Solo Travellers Meetup',
-        time: 'Saturday, 12th April, 5:00 PM',
-        location: 'Madras Food Walk',
-        image: '/events/solo-travellers-meetup.png',
-        bookingLink: 'https://in.bookmyshow.com/events/solo-travellers/ET00461911',
-        price: 'Travel'
-    },
-    {
-        id: '7',
-        title: 'Lunch with Strangers',
-        time: 'Friday, 11th April, 4:30 PM',
-        location: 'Madras Food Walk',
-        image: '/events/lunch-with-strangers.png',
-        bookingLink: 'https://www.district.in/events/lunch-with-strangers-chennai-apr4-2026-buy-tickets',
-        price: 'Dining'
-    },
-    {
-        id: '8',
-        title: 'Mafia Night',
-        time: 'Friday, 11th April, 7:00 PM',
-        location: 'Ratio Alwarpet',
-        image: '/events/mafia-night-alwarpet.png',
-        bookingLink: 'https://www.instagram.com/p/DWYvnrIEQTj/',
+        title: 'Kollywood Night',
+        time: 'Sunday, 19th April',
+        location: 'Zostel Anna Nagar',
+        image: '/events/kollywood-night-zostel.png',
+        bookingLink: 'https://www.instagram.com/reels/DXHj8T5znGt/',
         price: 'Games'
     },
     {
-        id: '9',
-        title: 'Sing with Strangers',
-        time: 'Saturday, 12th April',
-        location: 'Phoenix Mall',
-        image: '/events/sing-with-strangers-phoenix.png',
-        bookingLink: 'https://www.instagram.com/p/DW6XBK_CdJY/',
-        price: 'Karaoke'
+        id: '7',
+        title: 'Strangers Meetup',
+        time: 'Sunday, 19th April',
+        location: 'Cafe',
+        image: '/events/strangers-meetup-cafe.png',
+        bookingLink: 'https://www.instagram.com/p/DXJ6s0_gROI/',
+        price: 'Meetup'
     }
 ]
+
 
 export default function EventsWeekendPage() {
     const params = useParams()

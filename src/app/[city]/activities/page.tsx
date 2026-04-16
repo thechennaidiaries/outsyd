@@ -8,7 +8,7 @@ import Hero from '@/components/Hero'
 import ActivityCard from '@/components/ActivityCard'
 import WalkCard from '@/components/WalkCard'
 import CategoryStrip from '@/components/CategoryStrip'
-import { getActivitiesByCity, TAG_META } from '@/data/activities'
+import { getActivitiesByCity, getNewlyAddedActivities, TAG_META } from '@/data/activities'
 import { getWalksByCity } from '@/data/walks'
 import { getCityBySlug } from '@/data/cities'
 
@@ -181,6 +181,9 @@ export default function ThingsToDoPage() {
   const cityActivities = getActivitiesByCity(city.id)
   const cityWalks = getWalksByCity(city.id)
 
+  // Newly added activities (last 7 days, sorted newest-first, NOT shuffled)
+  const newlyAdded = getNewlyAddedActivities(city.id, 7).slice(0, 15)
+
   // Curated sections (base lists)
   const lowBudget = cityActivities.filter(a => a.tags?.includes('low budget fun activities'))
   const sports = cityActivities.filter(a => a.tags?.includes('sports activities'))
@@ -306,6 +309,24 @@ export default function ThingsToDoPage() {
         </div>
         <CategoryStrip activeTag={null} onTagChange={handleTagChange} cityId={city.id} featuredOnly={true} />
       </div>
+
+      {/* ═══ 1.5. Newly Added ═══════════════════════════════════════ */}
+      {newlyAdded.length > 0 && (
+        <div id="newly-added">
+          <HScrollSection
+            emoji="🆕"
+            heading="Newly Added"
+            subheading="Fresh discoveries added this week"
+            viewMoreHref={`/${citySlug}/activities`}
+          >
+            {newlyAdded.map(a => (
+              <div key={a.id} style={cardStyle}>
+                <ActivityCard activity={a} citySlug={citySlug} />
+              </div>
+            ))}
+          </HScrollSection>
+        </div>
+      )}
 
       {/* ═══ 2. Low Budget Fun ════════════════════════════════════ */}
       {lowBudget.length > 0 && (

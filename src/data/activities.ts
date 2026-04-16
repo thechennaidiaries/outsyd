@@ -17,6 +17,7 @@ export interface Activity {
     pricing?: string         // Pricing details text, e.g. "₹200 per person"
     cityId: string           // References City.id
     placeId: string          // References Place.id
+    addedDate?: string       // ISO date string (YYYY-MM-DD) when activity was added
 }
 
 export const ACTIVITIES: Activity[] = [
@@ -2875,6 +2876,7 @@ export const ACTIVITIES: Activity[] = [
         tags: ['water activities', 'outdoor activities', 'adventure activities'],
         pricingType: 'paid',
         pricing: 'Rs 500',
+        addedDate: '2026-04-14',
     },
     {
         title: 'Explore the sea & ride the waves on a private sail ride',
@@ -2891,6 +2893,7 @@ export const ACTIVITIES: Activity[] = [
         tags: ['water activities', 'outdoor activities', 'adventure activities', 'group activities'],
         pricingType: 'paid',
         pricing: 'Starts from Rs 10,500 for 2 people',
+        addedDate: '2026-04-14',
     },
     {
         title: 'Scuba with the sharks at largest marine aquarium',
@@ -2907,6 +2910,7 @@ export const ACTIVITIES: Activity[] = [
         tags: ['water activities', 'adventure activities'],
         pricingType: 'paid',
         pricing: 'Rs 4,500 per person',
+        addedDate: '2026-04-14',
     },
     {
         title: 'Explore beautiful fish and fauna going on a Scuba Dive',
@@ -2923,6 +2927,7 @@ export const ACTIVITIES: Activity[] = [
         tags: ['water activities', 'outdoor activities', 'adventure activities'],
         pricingType: 'paid',
         pricing: 'from Rs 7100 per person',
+        addedDate: '2026-04-14',
     }
 ]
 
@@ -3003,6 +3008,15 @@ export function getTagsByCity(cityId: string): string[] {
     const tagSet = new Set<string>()
     cityActivities.forEach(a => a.tags?.forEach(t => tagSet.add(t)))
     return Array.from(tagSet)
+}
+
+/** Get activities added within the last N days for a city, sorted newest-first */
+export function getNewlyAddedActivities(cityId: string, days: number = 7): Activity[] {
+    const now = new Date()
+    const cutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000)
+    return ACTIVITIES
+        .filter(a => a.cityId === cityId && a.addedDate && new Date(a.addedDate) >= cutoff)
+        .reverse() // latest entries (at end of array) come first
 }
 
 

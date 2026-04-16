@@ -135,11 +135,67 @@ export default function WalkDetailPage({ params }: Props) {
                     </p>
                 </div>
 
-                {/* Place cards (activity-card style — 3:4 portrait) */}
-                <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 14, marginBottom: 40 }}>
-                    {walk.places.map((place, idx) => (
-                        <PlaceCard key={idx} title={place.title} image={place.image} index={idx + 1} />
-                    ))}
+                {/* Places table */}
+                <div style={{
+                    borderRadius: 'var(--radius)',
+                    border: '1px solid var(--border)',
+                    overflow: 'hidden',
+                    marginBottom: 40,
+                    background: 'var(--bg-card)',
+                }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead>
+                            <tr style={{
+                                borderBottom: '1px solid var(--border)',
+                                background: 'rgba(255,107,0,0.06)',
+                            }}>
+                                <th style={{
+                                    padding: '14px 20px', textAlign: 'left',
+                                    fontSize: 12, fontWeight: 700, color: 'var(--accent)',
+                                    letterSpacing: '0.04em', textTransform: 'uppercase',
+                                    width: 60,
+                                }}>#</th>
+                                <th style={{
+                                    padding: '14px 20px', textAlign: 'left',
+                                    fontSize: 12, fontWeight: 700, color: 'var(--accent)',
+                                    letterSpacing: '0.04em', textTransform: 'uppercase',
+                                }}>Place</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {walk.places.map((place, idx) => (
+                                <tr
+                                    key={idx}
+                                    style={{
+                                        borderBottom: idx < walk.places.length - 1 ? '1px solid var(--border)' : 'none',
+                                        transition: 'background 0.2s ease',
+                                    }}
+                                    className="hover:bg-[rgba(255,107,0,0.04)]"
+                                >
+                                    <td style={{ padding: '16px 20px', verticalAlign: 'middle' }}>
+                                        <div style={{
+                                            width: 28, height: 28, borderRadius: '50%',
+                                            background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            fontSize: 12, fontWeight: 800, color: 'white',
+                                            boxShadow: '0 2px 8px rgba(255,107,0,0.3)',
+                                        }}>
+                                            {idx + 1}
+                                        </div>
+                                    </td>
+                                    <td style={{
+                                        padding: '16px 20px',
+                                        fontSize: 14, fontWeight: 600,
+                                        color: 'var(--text)',
+                                        letterSpacing: '-0.01em',
+                                        lineHeight: 1.4,
+                                    }}>
+                                        {place.title}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
 
                 {/* Share + Maps buttons */}

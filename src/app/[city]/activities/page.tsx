@@ -19,12 +19,14 @@ function HScrollSection({
   subheading,
   viewMoreHref,
   children,
+  hideViewMore = false,
 }: {
   emoji: string
   heading: string
   subheading?: string
   viewMoreHref: string
   children: React.ReactNode
+  hideViewMore?: boolean
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [showLeft, setShowLeft] = useState(false)
@@ -106,36 +108,36 @@ function HScrollSection({
           }}
         >
           {children}
-
-          {/* "View More" inline card */}
-          <Link
-            href={viewMoreHref}
-            style={{
-              minWidth: 160,
-              flexShrink: 0,
-              display: 'flex', flexDirection: 'column',
-              alignItems: 'center', justifyContent: 'center',
-              gap: 10,
-              borderRadius: 'var(--radius)',
-              border: '1.5px dashed rgba(255,107,0,0.35)',
-              background: 'rgba(255,107,0,0.04)',
-              textDecoration: 'none',
-              transition: 'all 0.25s ease',
-              scrollSnapAlign: 'start',
-              aspectRatio: '3/4',
-            }}
-            className="hover:border-[var(--accent)] hover:bg-[rgba(255,107,0,0.08)]"
-          >
-            <div style={{
-              width: 44, height: 44, borderRadius: '50%',
-              border: '2px solid rgba(255,107,0,0.5)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transition: 'all 0.25s ease',
-            }}>
-              <ArrowRight size={18} color="var(--accent)" />
-            </div>
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>View More</span>
-          </Link>
+          {!hideViewMore && (
+            <Link
+              href={viewMoreHref}
+              style={{
+                minWidth: 160,
+                flexShrink: 0,
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', justifyContent: 'center',
+                gap: 10,
+                borderRadius: 'var(--radius)',
+                border: '1.5px dashed rgba(255,107,0,0.35)',
+                background: 'rgba(255,107,0,0.04)',
+                textDecoration: 'none',
+                transition: 'all 0.25s ease',
+                scrollSnapAlign: 'start',
+                aspectRatio: '3/4',
+              }}
+              className="hover:border-[var(--accent)] hover:bg-[rgba(255,107,0,0.08)]"
+            >
+              <div style={{
+                width: 44, height: 44, borderRadius: '50%',
+                border: '2px solid rgba(255,107,0,0.5)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                transition: 'all 0.25s ease',
+              }}>
+                <ArrowRight size={18} color="var(--accent)" />
+              </div>
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>View More</span>
+            </Link>
+          )}
         </div>
 
         {/* Right Arrow */}
@@ -318,6 +320,7 @@ export default function ThingsToDoPage() {
             heading="Newly Added"
             subheading="Fresh discoveries added this week"
             viewMoreHref={`/${citySlug}/activities`}
+            hideViewMore={true}
           >
             {newlyAdded.map(a => (
               <div key={a.id} style={cardStyle}>

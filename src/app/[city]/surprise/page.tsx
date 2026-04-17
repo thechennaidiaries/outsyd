@@ -14,7 +14,8 @@ interface SurpriseItem {
     type: 'activity' | 'walk'
     title: string
     image: string
-    location: string    // area for walks
+    location: string    // venue name
+    area: string        // neighbourhood / area
     tags: string[]
     slug: string
 }
@@ -53,6 +54,7 @@ export default function SurprisePage() {
                 title: a.title,
                 image: a.image!,
                 location: a.location ?? a.area ?? '',
+                area: a.area ?? '',
                 tags: a.tags ?? [],
                 slug: a.slug!,
             }))
@@ -62,6 +64,7 @@ export default function SurprisePage() {
             title: w.title,
             image: w.image,
             location: w.area,
+            area: w.area,
             tags: ['Crawl'],
             slug: w.slug,
         }))
@@ -400,19 +403,19 @@ export default function SurprisePage() {
 
                             {/* Title + Location */}
                             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px 22px' }}>
-                                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
-                                    {item.tags.slice(0, 2).map(tag => (
-                                        <span key={tag} style={{
+                                {item.area && (
+                                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                                        <span style={{
                                             padding: '3px 10px', borderRadius: 100,
                                             background: 'rgba(255,107,0,0.2)', border: '1px solid rgba(255,107,0,0.4)',
                                             color: '#FF9A3C', fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
                                             display: 'inline-flex', alignItems: 'center', gap: 4,
                                         }}>
-                                            {tag === 'Crawl' && <Footprints size={9} />}
-                                            {tag}
+                                            <MapPin size={9} />
+                                            {item.area}
                                         </span>
-                                    ))}
-                                </div>
+                                    </div>
+                                )}
                                 <p style={{
                                     fontSize: 17, fontWeight: 800, color: '#fff',
                                     lineHeight: 1.3, marginBottom: 6, letterSpacing: '-0.02em',

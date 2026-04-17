@@ -20,13 +20,13 @@ export default function WalksPage() {
     <main style={{ minHeight: '100vh', paddingTop: '100px' }}>
       {/* ── Simple Hero Section ── */}
       <div style={{ maxWidth: 1400, margin: '0 auto', padding: '40px 28px 20px' }}>
-        <Link href={`/${citySlug}/activities`} style={{
+        <Link href="/" style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           fontSize: 13, fontWeight: 600, color: 'var(--text-3)',
           textDecoration: 'none', marginBottom: 32,
           transition: 'color 0.2s',
         }}>
-          <ArrowLeft size={14} /> Back to Activities
+          <ArrowLeft size={14} /> Back to Home
         </Link>
 
         <h1 style={{

@@ -29,7 +29,7 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', fn)
     }, [])
 
-    const homeHref = `/${citySlug}/activities`
+    const homeHref = '/'
     const surpriseHref = `/${citySlug}/surprise`
     const planHref = `/${citySlug}/plan`
 
@@ -56,7 +56,7 @@ export default function Navbar() {
                 transition: 'all 0.4s ease-out',
                 pointerEvents: 'none',
             }}>
-                <Link href={`/${citySlug}/activities`} style={{ 
+                <Link href="/" style={{ 
                     display: 'flex', alignItems: 'center', textDecoration: 'none',
                     pointerEvents: 'auto',
                 }}>

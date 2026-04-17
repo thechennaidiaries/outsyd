@@ -162,11 +162,12 @@ export default function RootPage() {
     const [shuffledLowBudget, setShuffledLowBudget] = useState(lowBudget)
     const [shuffledNight, setShuffledNight] = useState(night)
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
         setShuffledWalks(shuffleArray(cityWalks))
         setShuffledLowBudget(shuffleArray(lowBudget))
         setShuffledNight(shuffleArray(night))
-    }, [cityActivities, cityWalks, lowBudget, night])
+    }, [])
 
     const cardStyle: React.CSSProperties = {
         minWidth: 260, maxWidth: 320, flexShrink: 0, scrollSnapAlign: 'start'
@@ -183,31 +184,50 @@ export default function RootPage() {
                 height: '80vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 textAlign: 'center', overflow: 'hidden', padding: '0 24px'
             }}>
-                {/* Background Video (Mobile/tablet) and Image (Desktop) */}
+                {/* Background Image */}
                 <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-                    <video
-                        autoPlay muted loop playsInline
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.4)' }}
-                    >
-                        <source src="https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/herocompressstreaming.mp4?updatedAt=1776366306071" type="video/mp4" />
-                    </video>
+                    <img
+                        src="https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/sunrisechennai.jpeg?updatedAt=1775389293078"
+                        alt="Chennai skyline at sunset"
+                        style={{
+                            width: '100%', height: '100%',
+                            objectFit: 'cover', objectPosition: 'center',
+                            filter: 'saturate(0.8) brightness(0.42)',
+                        }}
+                    />
                 </div>
                 
                 {/* Gradients */}
                 <div style={{
                     position: 'absolute', inset: 0, zIndex: 1,
-                    background: 'linear-gradient(180deg, rgba(10,10,14,0.4) 0%, rgba(10,10,14,0.8) 100%)'
+                    background: [
+                        'radial-gradient(ellipse 100% 55% at 50% 100%, rgba(10,10,14,0.98) 0%, transparent 70%)',
+                        'linear-gradient(180deg, rgba(10,10,14,0.3) 0%, rgba(10,10,14,0.15) 40%, rgba(10,10,14,0.85) 100%)',
+                    ].join(', '),
                 }} />
 
                 <div style={{ position: 'relative', zIndex: 2, maxWidth: 900 }}>
                     <h1 style={{
-                        fontSize: 'clamp(32px, 8vw, 64px)', fontWeight: 800, color: 'white', lineHeight: 1.1,
-                        marginBottom: 32, letterSpacing: '-0.03em', fontFamily: "'PP Neue Montreal', sans-serif"
+                        fontSize: 'clamp(32px, 6vw, 72px)', lineHeight: 1.1,
+                        marginBottom: 32, color: '#fff',
+                        fontFamily: "'PP Neue Montreal', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                        fontWeight: 100,
+                        letterSpacing: '-0.02em',
+                        animation: 'fade-up 0.7s ease 0.1s both',
                     }}>
-                        Never feel bored or lonely, <br />
-                        <span style={{ 
-                            fontFamily: "'Caveat', cursive", color: 'var(--accent)', 
-                            fontSize: '1.2em', display: 'inline-block', marginTop: 10 
+                        Never feel bored or lonely,<br />
+                        <span style={{
+                            display: 'inline-block',
+                            fontFamily: "'Caveat', cursive",
+                            fontSize: '1.25em',
+                            background: 'linear-gradient(135deg, #FF6B00 0%, #FF9A3C 50%, #FFB870 100%)',
+                            backgroundSize: '200% auto',
+                            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+                            animation: 'hero-shine 4s linear infinite',
+                            fontWeight: 700,
+                            fontStyle: 'normal',
+                            paddingRight: 10,
+                            marginTop: 4,
                         }}>
                             Find sidequests & activities in Chennai
                         </span>
@@ -272,7 +292,7 @@ export default function RootPage() {
                 display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 
             }}>
                 <Link href="/chennai/events-this-weekend" style={{
-                    aspectRatio: '1/1', borderRadius: 32, overflow: 'hidden', position: 'relative',
+                    aspectRatio: '16/9', borderRadius: 32, overflow: 'hidden', position: 'relative',
                     background: 'var(--bg-card)', border: '1px solid var(--border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40,
                     textDecoration: 'none', transition: 'all 0.3s ease'
@@ -300,7 +320,7 @@ export default function RootPage() {
                 </Link>
 
                 <Link href="/chennai/best-shawarma" style={{
-                    aspectRatio: '1/1', borderRadius: 32, overflow: 'hidden', position: 'relative',
+                    aspectRatio: '16/9', borderRadius: 32, overflow: 'hidden', position: 'relative',
                     background: 'var(--bg-card)', border: '1px solid var(--border)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 40,
                     textDecoration: 'none', transition: 'all 0.3s ease'

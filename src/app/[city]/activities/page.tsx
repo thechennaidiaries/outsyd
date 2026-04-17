@@ -338,125 +338,125 @@ export default function ThingsToDoPage() {
           </h3>
         </div>
         <CategoryStrip activeTag={null} onTagChange={handleTagChange} cityId={city.id} featuredOnly={true} />
-      </div>
 
-      {/* ═══ 1.5. Search Bar ═══════════════════════════════════════ */}
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
-        <div ref={searchRef} style={{ position: 'relative', maxWidth: 600, margin: '0 auto', paddingTop: 8 }}>
-          {/* Search Input */}
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 12,
-            background: 'var(--bg-card)',
-            border: `1.5px solid ${isSearchFocused ? 'var(--accent)' : 'var(--border)'}`,
-            borderRadius: 14,
-            padding: '14px 18px',
-            transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
-            boxShadow: isSearchFocused ? '0 0 0 3px rgba(255,107,0,0.12)' : 'none',
-          }}>
-            <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} style={{ flexShrink: 0, transition: 'color 0.2s ease' }} />
-            <input
-              type="text"
-              placeholder="Search activities, places, areas..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              style={{
-                flex: 1, border: 'none', outline: 'none',
-                background: 'transparent',
-                color: 'var(--text)', fontSize: 15, fontWeight: 500,
-                letterSpacing: '-0.01em',
-              }}
-            />
-            {searchQuery && (
-              <button
-                onClick={() => { setSearchQuery(''); setIsSearchFocused(false) }}
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  width: 24, height: 24, borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.08)',
-                  border: 'none', cursor: 'pointer', flexShrink: 0,
-                  transition: 'background 0.2s ease',
-                }}
-                className="hover:bg-[rgba(255,255,255,0.15)]"
-              >
-                <X size={13} color="var(--text-3)" />
-              </button>
-            )}
-          </div>
-
-          {/* Search Results Dropdown */}
-          {isSearchFocused && searchQuery.trim().length >= 2 && (
+        {/* Search Bar */}
+        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
+          <div ref={searchRef} style={{ position: 'relative', maxWidth: 600, margin: '0 auto', paddingTop: 24 }}>
+            {/* Search Input */}
             <div style={{
-              position: 'absolute', top: '100%', left: 0, right: 0,
-              marginTop: 8, zIndex: 50,
+              display: 'flex', alignItems: 'center', gap: 12,
               background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
+              border: `1.5px solid ${isSearchFocused ? 'var(--accent)' : 'var(--border)'}`,
               borderRadius: 14,
-              overflow: 'hidden',
-              boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
-              maxHeight: 400,
-              overflowY: 'auto',
-            }} className="no-scrollbar">
-              {searchResults.length > 0 ? (
-                searchResults.map((a, idx) => (
-                  <Link
-                    key={a.id || idx}
-                    href={`/${citySlug}/activities/${a.slug ?? ''}`}
-                    onClick={() => { setIsSearchFocused(false); setSearchQuery('') }}
-                    style={{
-                      display: 'flex', alignItems: 'flex-start', gap: 14,
-                      padding: '14px 18px',
-                      borderBottom: idx < searchResults.length - 1 ? '1px solid var(--border)' : 'none',
-                      textDecoration: 'none',
-                      transition: 'background 0.15s ease',
-                    }}
-                    className="hover:bg-[rgba(255,107,0,0.06)]"
-                  >
-                    {/* Icon */}
-                    <div style={{
-                      width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                      background: 'var(--accent-dim)',
-                      border: '1px solid var(--accent-border)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginTop: 2,
-                    }}>
-                      <MapPin size={15} color="var(--accent)" />
-                    </div>
-                    {/* Text */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{
-                        fontSize: 14, fontWeight: 600, color: 'var(--text)',
-                        lineHeight: 1.35, margin: 0, marginBottom: 3,
-                        display: '-webkit-box', WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical', overflow: 'hidden',
-                      }}>
-                        {a.title}
-                      </p>
-                      <p style={{
-                        fontSize: 12, color: 'var(--text-3)',
-                        fontWeight: 500, margin: 0,
-                        display: 'flex', alignItems: 'center', gap: 4,
-                      }}>
-                        {a.location || a.placeId}{a.area ? `, ${a.area}` : ''}
-                      </p>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <div style={{
-                  padding: '32px 18px',
-                  textAlign: 'center',
-                }}>
-                  <p style={{ fontSize: 14, color: 'var(--text-3)', margin: 0, fontWeight: 500 }}>
-                    No activities found for &ldquo;{searchQuery}&rdquo;
-                  </p>
-                  <p style={{ fontSize: 12, color: 'var(--text-3)', margin: '6px 0 0', opacity: 0.6 }}>
-                    Try a different keyword
-                  </p>
-                </div>
+              padding: '14px 18px',
+              transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
+              boxShadow: isSearchFocused ? '0 0 0 3px rgba(255,107,0,0.12)' : 'none',
+            }}>
+              <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} style={{ flexShrink: 0, transition: 'color 0.2s ease' }} />
+              <input
+                type="text"
+                placeholder="Search activities, places, areas..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                style={{
+                  flex: 1, border: 'none', outline: 'none',
+                  background: 'transparent',
+                  color: 'var(--text)', fontSize: 15, fontWeight: 500,
+                  letterSpacing: '-0.01em',
+                }}
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => { setSearchQuery(''); setIsSearchFocused(false) }}
+                  style={{
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    width: 24, height: 24, borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.08)',
+                    border: 'none', cursor: 'pointer', flexShrink: 0,
+                    transition: 'background 0.2s ease',
+                  }}
+                  className="hover:bg-[rgba(255,255,255,0.15)]"
+                >
+                  <X size={13} color="var(--text-3)" />
+                </button>
               )}
             </div>
-          )}
+
+            {/* Search Results Dropdown */}
+            {isSearchFocused && searchQuery.trim().length >= 2 && (
+              <div style={{
+                position: 'absolute', top: '100%', left: 0, right: 0,
+                marginTop: 8, zIndex: 50,
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
+                borderRadius: 14,
+                overflow: 'hidden',
+                boxShadow: '0 16px 48px rgba(0,0,0,0.5)',
+                maxHeight: 400,
+                overflowY: 'auto',
+              }} className="no-scrollbar">
+                {searchResults.length > 0 ? (
+                  searchResults.map((a, idx) => (
+                    <Link
+                      key={a.id || idx}
+                      href={`/${citySlug}/activities/${a.slug ?? ''}`}
+                      onClick={() => { setIsSearchFocused(false); setSearchQuery('') }}
+                      style={{
+                        display: 'flex', alignItems: 'flex-start', gap: 14,
+                        padding: '14px 18px',
+                        borderBottom: idx < searchResults.length - 1 ? '1px solid var(--border)' : 'none',
+                        textDecoration: 'none',
+                        transition: 'background 0.15s ease',
+                      }}
+                      className="hover:bg-[rgba(255,107,0,0.06)]"
+                    >
+                      {/* Icon */}
+                      <div style={{
+                        width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                        background: 'var(--accent-dim)',
+                        border: '1px solid var(--accent-border)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        marginTop: 2,
+                      }}>
+                        <MapPin size={15} color="var(--accent)" />
+                      </div>
+                      {/* Text */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{
+                          fontSize: 14, fontWeight: 600, color: 'var(--text)',
+                          lineHeight: 1.35, margin: 0, marginBottom: 3,
+                          display: '-webkit-box', WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                        }}>
+                          {a.title}
+                        </p>
+                        <p style={{
+                          fontSize: 12, color: 'rgba(255,255,255,0.55)',
+                          fontWeight: 500, margin: 0,
+                          display: 'flex', alignItems: 'center', gap: 4,
+                        }}>
+                          {a.location || a.placeId}{a.area ? `, ${a.area}` : ''}
+                        </p>
+                      </div>
+                    </Link>
+                  ))
+                ) : (
+                  <div style={{
+                    padding: '32px 18px',
+                    textAlign: 'center',
+                  }}>
+                    <p style={{ fontSize: 14, color: 'var(--text-3)', margin: 0, fontWeight: 500 }}>
+                      No activities found for &ldquo;{searchQuery}&rdquo;
+                    </p>
+                    <p style={{ fontSize: 12, color: 'var(--text-3)', margin: '6px 0 0', opacity: 0.6 }}>
+                      Try a different keyword
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

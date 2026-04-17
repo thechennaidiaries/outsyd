@@ -341,7 +341,7 @@ export default function ThingsToDoPage() {
 
         {/* Search Bar */}
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
-          <div ref={searchRef} style={{ position: 'relative', maxWidth: 600, margin: '0 auto', paddingTop: 24 }}>
+          <div ref={searchRef} style={{ position: 'relative', margin: '0 auto', paddingTop: 24 }}>
             {/* Search Input */}
             <div style={{
               display: 'flex', alignItems: 'center', gap: 12,
@@ -355,7 +355,7 @@ export default function ThingsToDoPage() {
               <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} style={{ flexShrink: 0, transition: 'color 0.2s ease' }} />
               <input
                 type="text"
-                placeholder="Search activities, places, areas..."
+                placeholder="Boardgames, Surfing, Bowling, Horse Riding"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchFocused(true)}

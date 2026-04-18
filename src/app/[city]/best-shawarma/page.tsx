@@ -156,7 +156,7 @@ export default function BestShawarmaPage() {
                 borderBottom: '1px solid var(--border)',
             }}>
                 <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
-                    <Link href={`/${citySlug}/activities`} style={{
+                    <Link href="/" style={{
                         display: 'inline-flex', alignItems: 'center', gap: 6,
                         fontSize: 13, fontWeight: 600, color: 'var(--text-2)',
                         textDecoration: 'none', marginBottom: 28,

@@ -73,7 +73,7 @@ export default function WalkDetailPage({ params }: Props) {
                     }} />
 
                     {/* Back to Home button */}
-                    <Link href={`/${city.id}/activities`} style={{
+                    <Link href="/" style={{
                         position: 'absolute', top: 80, left: 24,
                         display: 'inline-flex', alignItems: 'center', gap: 7,
                         padding: '9px 16px', borderRadius: 100,

@@ -8,6 +8,20 @@ export const metadata: Metadata = {
   title: 'Find Things to Do in Chennai | Outsyd',
   description: 'Discover the best things to do in Chennai for every mood - date ideas, nightlife, gaming, sports, adventures, beaches, clubs, and calming escapes. Pick a plan, Go Outsyd & have fun',
   keywords: 'things to do in Chennai, Chennai activities, Chennai guide, places to visit Chennai',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180' }
+    ],
+  },
+  appleWebApp: {
+    title: 'Outsyd',
+  },
+  manifest: '/site.webmanifest',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

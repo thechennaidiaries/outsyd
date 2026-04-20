@@ -37,7 +37,7 @@ export default function WalkCard({ walk, citySlug, eager = false }: Props) {
             <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: 'var(--bg-elevated)', flexShrink: 0 }}>
                 {!imgErr && coverImage ? (
                     <img
-                        src={optimizeImageUrl(coverImage, 'w-600,q-60,f-auto')}
+                        src={optimizeImageUrl(coverImage, 'w-800,q-60,f-auto')}
                         alt={walk.title}
                         loading={eager ? 'eager' : 'lazy'}
                         style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}

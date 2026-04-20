@@ -6,7 +6,7 @@
  * @param tr Transformation parameters (e.g. 'w-400,q-60,f-auto')
  * @returns The optimized URL string, or original URL if invalid
  */
-export function optimizeImageUrl(url: string | undefined | null, tr: string = 'w-400,q-60,f-auto'): string {
+export function optimizeImageUrl(url: string | undefined | null, tr: string = 'w-640,q-60,f-auto'): string {
     if (!url) return ''
 
     try {

@@ -131,7 +131,16 @@ export const PLACES: Place[] = [
     { name: 'Wiggle Room', area: 'T nagar', cityId: 'chennai' },
     { name: 'Anna Sivagami Nagar Pond', area: 'Ennore', cityId: 'chennai' },
     { name: 'Royal Madras Yacht Club', area: 'Chennai Harbor', cityId: 'chennai' },
-    { name: 'Ocean Delight Scuba', area: 'Kovalam', cityId: 'chennai' }
+    { name: 'Ocean Delight Scuba', area: 'Kovalam', cityId: 'chennai' },
+    { name: 'Chennai Light House', area: 'Mylapore', cityId: 'chennai' },
+    { name: 'Faunus Park Chennai', area: 'ECR', cityId: 'chennai' },
+    { name: 'Aerodon Heli Station', area: 'Kovalam', cityId: 'chennai' },
+    { name: 'AVM Heritage Museum', area: 'Vadapalani', cityId: 'chennai' },
+    { name: 'Myeon Hub', area: 'Thoraipakkam', cityId: 'chennai' },
+    { name: 'RH ARENA Chennai', area: 'Thousand Lights', cityId: 'chennai' },
+    { name: 'thegaietycorner', area: 'Shared by Organizer', cityId: 'chennai' },
+    { name: 'Clay Beach Studio', area: 'Kilpauk', cityId: 'chennai' },
+    { name: 'No Name Club', area: 'Nandanam', cityId: 'chennai' }
 ]
 
 /** Get all places for a city */

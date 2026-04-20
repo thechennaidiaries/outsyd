@@ -63,8 +63,8 @@ export default function WalksPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 20 }}>
-          {cityWalks.map((walk, index) => (
-            <WalkCard key={walk.id} walk={walk} citySlug={citySlug} eager={index < 8} />
+          {cityWalks.map(walk => (
+            <WalkCard key={walk.id} walk={walk} citySlug={citySlug} />
           ))}
         </div>
       </div>

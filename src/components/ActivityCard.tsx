@@ -3,15 +3,14 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { MapPin } from 'lucide-react'
 import type { Activity } from '@/data/activities'
-import LazyImage from '@/components/LazyImage'
+import { optimizeImageUrl } from '@/utils/image'
 
 interface Props {
     activity: Activity
     citySlug: string
-    eager?: boolean
 }
 
-export default function ActivityCard({ activity, citySlug, eager = false }: Props) {
+export default function ActivityCard({ activity, citySlug }: Props) {
     const [imgErr, setImgErr] = useState(false)
 
     return (
@@ -33,11 +32,10 @@ export default function ActivityCard({ activity, citySlug, eager = false }: Prop
             {/* Image — 3:4 portrait */}
             <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: 'var(--bg-elevated)', flexShrink: 0 }}>
                 {!imgErr ? (
-                    <LazyImage
-                        src={activity.image}
+                    <img
+                        src={optimizeImageUrl(activity.image)}
                         alt={activity.title}
-                        eager={eager}
-                        imageStyle={{ transition: 'transform 0.5s ease' }}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
                         className="group-hover:scale-[1.05]"
                         onError={() => setImgErr(true)}
                     />

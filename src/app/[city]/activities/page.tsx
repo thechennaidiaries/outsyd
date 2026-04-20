@@ -63,8 +63,8 @@ export default function ActivitiesPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
-          {cityActivities.map((activity, index) => (
-            <ActivityCard key={activity.id} activity={activity} citySlug={citySlug} eager={index < 8} />
+          {cityActivities.map(activity => (
+            <ActivityCard key={activity.id} activity={activity} citySlug={citySlug} />
           ))}
         </div>
       </div>

@@ -24,7 +24,9 @@ export default function LazyImage({
   const [isInView, setIsInView] = useState(eager)
   const [isLoaded, setIsLoaded] = useState(false)
   const divRef = useRef<HTMLDivElement>(null)
+  const imgRef = useRef<HTMLImageElement>(null)
 
+  // Intersection Observer — only for non-eager images
   useEffect(() => {
     if (eager) {
       setIsInView(true)
@@ -48,6 +50,15 @@ export default function LazyImage({
     return () => observer.disconnect()
   }, [eager])
 
+  // ── Fallback for eager images: if the browser loaded the image from
+  // cache before React could attach the onLoad handler, img.complete
+  // is already true. We detect this after mount and flip isLoaded.
+  useEffect(() => {
+    if (isInView && imgRef.current?.complete) {
+      setIsLoaded(true)
+    }
+  }, [isInView])
+
   if (!src) {
     return <div ref={divRef} style={{ width: '100%', height: '100%' }} />
   }
@@ -59,24 +70,26 @@ export default function LazyImage({
   return (
     <div ref={divRef} style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
       
-      {/* Blurry Background Placeholder */}
+      {/* Blurry Background Placeholder — hidden once hi-res is loaded */}
       <img
         src={blurSrc}
         alt={alt}
         style={{ 
           position: 'absolute', inset: 0, 
           width: '100%', height: '100%', objectFit: 'cover',
-          // Combine ImageKit blur with a slight CSS blur to smooth out heavy pixelation
           filter: 'blur(5px)',
-          transform: 'scale(1.05)', // Prevent blurry edges from bleeding inward
+          transform: 'scale(1.05)',
+          opacity: isLoaded ? 0 : 1,
+          transition: 'opacity 0.4s ease-out',
           ...style
         }}
         className={className}
       />
       
-      {/* High-res Image (Injects when intersecting) */}
+      {/* High-res Image (renders when in view) */}
       {isInView && (
         <img
+          ref={imgRef}
           src={highResSrc}
           alt={alt}
           onLoad={() => setIsLoaded(true)}
@@ -85,8 +98,9 @@ export default function LazyImage({
             position: 'absolute', inset: 0, 
             width: '100%', height: '100%', objectFit: 'cover',
             opacity: isLoaded ? 1 : 0,
-            // Fade-in duration for the buttery transition
-            transition: style?.transition ? `${style.transition}, opacity 0.5s ease-out` : 'opacity 0.5s ease-out',
+            transition: style?.transition
+              ? `${style.transition}, opacity 0.5s ease-out`
+              : 'opacity 0.5s ease-out',
             zIndex: 1,
             ...style
           }}

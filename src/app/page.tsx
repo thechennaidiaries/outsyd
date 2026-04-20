@@ -466,9 +466,9 @@ export default function RootPage() {
             viewMoreHref={`/${citySlug}/activities`}
             hideViewMore={true}
           >
-            {newlyAdded.map(a => (
+            {newlyAdded.map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -484,9 +484,9 @@ export default function RootPage() {
             subheading="Find activities starting from ₹0"
             viewMoreHref={`/${citySlug}/activities/low-budget-fun-activities-in-${city.id}`}
           >
-            {shuffledLowBudget.slice(0, 8).map(a => (
+            {shuffledLowBudget.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -501,9 +501,9 @@ export default function RootPage() {
             heading="City Crawls"
             viewMoreHref={`/${citySlug}/walks`}
           >
-            {shuffledWalks.slice(0, 5).map(walk => (
+            {shuffledWalks.slice(0, 5).map((walk, index) => (
               <div key={walk.id} style={walkCardStyle}>
-                <WalkCard walk={walk} citySlug={citySlug} />
+                <WalkCard walk={walk} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -519,9 +519,9 @@ export default function RootPage() {
             subheading="Football, Cricket, Tennis, Pickleball, Swimming and many more"
             viewMoreHref={`/${citySlug}/activities/sports-activities-in-${city.id}`}
           >
-            {shuffledSports.slice(0, 8).map(a => (
+            {shuffledSports.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -537,9 +537,9 @@ export default function RootPage() {
             subheading="Laser tag, bowling, board games, RC gaming and many more"
             viewMoreHref={`/${citySlug}/activities/gaming-activities-in-${city.id}`}
           >
-            {shuffledGaming.slice(0, 8).map(a => (
+            {shuffledGaming.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -554,9 +554,9 @@ export default function RootPage() {
             heading="Activities for Adrenaline Junkies"
             viewMoreHref={`/${citySlug}/activities/adventure-activities-in-${city.id}`}
           >
-            {shuffledAdventure.slice(0, 8).map(a => (
+            {shuffledAdventure.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -572,9 +572,9 @@ export default function RootPage() {
             subheading="Pottery, Painting, DIY Workshops and more"
             viewMoreHref={`/${citySlug}/activities/art-activities-in-${city.id}`}
           >
-            {shuffledArt.slice(0, 8).map(a => (
+            {shuffledArt.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -590,9 +590,9 @@ export default function RootPage() {
             subheading="Boating, Kayaking, Surfing and many more"
             viewMoreHref={`/${citySlug}/activities/water-activities-in-${city.id}`}
           >
-            {shuffledWater.slice(0, 8).map(a => (
+            {shuffledWater.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -608,9 +608,9 @@ export default function RootPage() {
             subheading="Museums, Heritage sites and local culture"
             viewMoreHref={`/${citySlug}/activities/unique-cultural-experiences-in-${city.id}`}
           >
-            {shuffledCultural.slice(0, 8).map(a => (
+            {shuffledCultural.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -626,9 +626,9 @@ export default function RootPage() {
             subheading="Unwind with peaceful walks and scenic views"
             viewMoreHref={`/${citySlug}/activities/leisure-activities-in-${city.id}`}
           >
-            {shuffledLeisure.slice(0, 8).map(a => (
+            {shuffledLeisure.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -644,9 +644,9 @@ export default function RootPage() {
             subheading="Activities best enjoyed with friends"
             viewMoreHref={`/${citySlug}/activities/group-activities-in-${city.id}`}
           >
-            {shuffledGroup.slice(0, 8).map(a => (
+            {shuffledGroup.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>
@@ -662,9 +662,9 @@ export default function RootPage() {
             subheading="Dinner dates, Night-time sports and more"
             viewMoreHref={`/${citySlug}/activities/night-activities-in-${city.id}`}
           >
-            {shuffledNight.slice(0, 8).map(a => (
+            {shuffledNight.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 4} />
               </div>
             ))}
           </HScrollSection>

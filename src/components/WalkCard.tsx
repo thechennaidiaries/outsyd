@@ -3,13 +3,15 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { MapPin, Footprints } from 'lucide-react'
 import type { Walk } from '@/data/walks'
+import { optimizeImageUrl } from '@/utils/image'
 
 interface Props {
     walk: Walk
     citySlug: string
+    eager?: boolean
 }
 
-export default function WalkCard({ walk, citySlug }: Props) {
+export default function WalkCard({ walk, citySlug, eager = false }: Props) {
     const [imgErr, setImgErr] = useState(false)
 
     // Use the walk's cover image
@@ -35,8 +37,9 @@ export default function WalkCard({ walk, citySlug }: Props) {
             <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: 'var(--bg-elevated)', flexShrink: 0 }}>
                 {!imgErr && coverImage ? (
                     <img
-                        src={coverImage}
+                        src={optimizeImageUrl(coverImage, 'w-800,q-60,f-auto')}
                         alt={walk.title}
+                        loading={eager ? 'eager' : 'lazy'}
                         style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
                         className="group-hover:scale-[1.05]"
                         onError={() => setImgErr(true)}

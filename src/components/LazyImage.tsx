@@ -74,7 +74,7 @@ export default function LazyImage({
     // like gradient overlays and text captions in the parent card.
     <div
       ref={divRef}
-      style={{ position: 'relative', width: '100%', height: '100%', isolation: 'isolate' }}
+      style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', isolation: 'isolate' }}
     >
       {/* Blurry Placeholder — fades out once hi-res is loaded */}
       <img

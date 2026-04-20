@@ -2928,25 +2928,7 @@ export const ACTIVITIES: Activity[] = [
         pricingType: 'paid',
         pricing: 'from Rs 7100 per person',
         addedDate: '2026-04-14',
-    }
-]
-
-// All unique tags derived from activities
-export const ALL_TAGS: string[] = [
-    'outdoor activities',
-    'leisure activities',
-    'low budget fun activities',
-    'water activities',
-    'group activities',
-    'indoor activities',
-    'adventure activities',
-    'night activities',
-    'kids activities',
-    'unique cultural experiences',
-    'gaming activities',
-    'sports activities',
-    'art activities',
-    'escape room activities',
+    },
     {
         title: 'Catch a panaromic view of the sunset from iconic chennai light house',
         cityId: 'chennai',
@@ -3148,6 +3130,7 @@ export const ALL_TAGS: string[] = [
         address: 'no 128, New no 22, Old, Chamiers Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035',
         timings: 'Friday	7 PM - 12 PM Sunday	7 PM - 12 PM',
         tags: ['indoor activities', 'group activities', 'night activities'],
+        pricingType: 'paid',
         pricing: 'Starting from Rs 2000 for couple & Rs 2000 for stag',
         addedDate: '2026-04-20',
     },
@@ -3164,9 +3147,28 @@ export const ALL_TAGS: string[] = [
         address: 'no 128, New no 22, Old, Chamiers Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035',
         timings: 'Saturday  7 PM - 12 PM',
         tags: ['indoor activities', 'group activities', 'night activities'],
+        pricingType: 'paid',
         pricing: 'Starting from Rs 2000 for couple & Rs 2000 for stag',
         addedDate: '2026-04-20',
     }
+]
+
+// All unique tags derived from activities
+export const ALL_TAGS: string[] = [
+    'outdoor activities',
+    'leisure activities',
+    'low budget fun activities',
+    'water activities',
+    'group activities',
+    'indoor activities',
+    'adventure activities',
+    'night activities',
+    'kids activities',
+    'unique cultural experiences',
+    'gaming activities',
+    'sports activities',
+    'art activities',
+    'escape room activities',
 ]
 
 // ── Tag / Category metadata (for SEO category pages) ─────────────

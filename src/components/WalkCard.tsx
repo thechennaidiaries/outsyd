@@ -41,7 +41,7 @@ export default function WalkCard({ walk, citySlug, eager = false }: Props) {
                         alt={walk.title}
                         eager={eager}
                         highResTr="w-600,q-60,f-auto"
-                        style={{ transition: 'transform 0.5s ease' }}
+                        imageStyle={{ transition: 'transform 0.5s ease' }}
                         className="group-hover:scale-[1.05]"
                         onError={() => setImgErr(true)}
                     />

@@ -37,7 +37,7 @@ export default function ActivityCard({ activity, citySlug, eager = false }: Prop
                         src={activity.image}
                         alt={activity.title}
                         eager={eager}
-                        style={{ transition: 'transform 0.5s ease' }}
+                        imageStyle={{ transition: 'transform 0.5s ease' }}
                         className="group-hover:scale-[1.05]"
                         onError={() => setImgErr(true)}
                     />

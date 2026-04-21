@@ -37,7 +37,7 @@ const PLACES = [
   { name: 'Serenity Beach', description: 'One of the few beaches where you can surf. Good for sunset or cafes.', maps: 'https://maps.app.goo.gl/AF1i8t5PfLim1fwR7', tag: 'Surf' },
   { name: 'Pichavaram Mangrove Forests', description: 'Boat through narrow mangrove tunnels — very unique experience. Best as a short trip.', maps: 'https://maps.app.goo.gl/eXrnNGMPsVWsdDMJ6', tag: 'Adventure' },
   { name: 'Mason & Co Chocolate Factory', description: 'Learn how chocolate is made from bean to bar. Great place to buy dark chocolate.', maps: 'https://maps.app.goo.gl/FK96zCL9YbXGWLyt9', tag: 'Food' },
-  { name: 'Vinayak Temple', description: 'Famous Ganesha temple right in White Town. 40+ forms of Ganesha sculpted on walls.', maps: 'https://maps.app.goo.gl/SHm87DbnkSPpUxB89', tag: 'Heritage' },
+  { name: 'Vinayak Temple', description: 'Famous Ganesha temple right in White Town. 40+ forms of Ganesha sculpted on walls.', maps: 'https://maps.app.goo.gl/SHm87DbnkSPpUxB89', tag: 'Temple' },
   { name: 'French War Memorial', description: 'Small, well-kept memorial near the beach. Looks best in the evening when lit up.', maps: 'https://maps.app.goo.gl/SgYJRoPj2y4gtJJs9', tag: 'History' },
   { name: 'Chunnambar Boat House', description: 'Starting point for Paradise Beach boats. Go early to avoid queues.', maps: 'https://maps.app.goo.gl/mZLE5E1T6SjAHRWT9', tag: 'Boating' },
   { name: 'Sacred Heart Basilica', description: 'Stunning Gothic-style church with exquisite stained-glass windows.', maps: 'https://maps.app.goo.gl/Uhk8Mu5JLxfDc4XS6', tag: 'Heritage' }
@@ -123,7 +123,24 @@ export default function PondicherryGuide() {
     if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' })
   }
 
-  // Common grid style for 2 cards per row on desktop
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Pondicherry Trip Guide',
+          text: 'Pondicherry Slow Living Guide: Real experiences and honest picks.',
+          url: window.location.href,
+        })
+      } catch (err) {
+        console.error('Error sharing:', err)
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      navigator.clipboard.writeText(window.location.href)
+      alert('Link copied to clipboard!')
+    }
+  }
+
   const gridStyle = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 460px), 1fr))',
@@ -143,7 +160,17 @@ export default function PondicherryGuide() {
         <Link href="/" style={{ color: 'var(--text)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, background: 'rgba(0,0,0,0.4)', padding: '8px 16px', borderRadius: 100, border: '1px solid rgba(255,255,255,0.1)' }}>
           <ArrowLeft size={16} /> Back
         </Link>
-        <button style={{ color: 'var(--text)', background: 'rgba(0,0,0,0.4)', padding: '8px 16px', borderRadius: 100, border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>
+        <button 
+          onClick={handleShare}
+          style={{ 
+            color: 'var(--text)', 
+            background: 'rgba(0,0,0,0.4)', 
+            padding: '8px 16px', 
+            borderRadius: 100, 
+            border: '1px solid rgba(255,255,255,0.1)', 
+            cursor: 'pointer',
+            transition: 'all 0.2s active:scale-95'
+          }}>
           <Share2 size={16} />
         </button>
       </nav>
@@ -256,9 +283,7 @@ export default function PondicherryGuide() {
 
       </div>
 
-      <footer style={{ padding: '60px 24px', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
-        <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-0.04em' }}>PONDY FULL</h2>
-        <p style={{ color: 'var(--text-3)', fontSize: 13, marginTop: 8, fontWeight: 500 }}>Team Outsyd × Pondicherry</p>
+      <footer style={{ padding: '40px 24px', borderTop: '1px solid var(--border)' }}>
       </footer>
       
       <style jsx global>{`

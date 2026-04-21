@@ -13,82 +13,217 @@ import {
   Compass,
   ChevronRight,
   ExternalLink,
-  MessageSquareQuote
+  MessageSquareQuote,
+  Camera,
+  Bike,
+  Waves,
+  ShoppingBag,
+  Music,
+  Trees,
+  Navigation
 } from 'lucide-react'
 
-// --- Mock Data ---
-const SECTIONS = [
-  { id: 'overview', title: 'Overview', icon: <Compass size={18} /> },
-  { id: 'stay', title: 'Stay', icon: <Bed size={18} /> },
-  { id: 'eat', title: 'Eat', icon: <Coffee size={18} /> },
-  { id: 'explore', title: 'Explore', icon: <Palmtree size={18} /> },
+// --- Content Data ---
+
+const PLACES = [
+  {
+    name: 'Rock Beach',
+    description: "Pondicherry's most iconic waterfront - a rocky coastline, not a sandy beach. Car-free promenade makes evening and early morning walks genuinely peaceful.",
+    maps: 'https://maps.app.goo.gl/VQymYTyQ1hZpKimf9',
+    tag: 'Iconic'
+  },
+  {
+    name: 'Botanical Garden',
+    description: 'Quiet green space with lots of old trees and shade. Good for a relaxed walk.',
+    maps: 'https://maps.app.goo.gl/ofViM1bc8zQNc3es7',
+    tag: 'Nature'
+  },
+  {
+    name: 'Sadhana Forest',
+    description: 'A peaceful eco-community focused on sustainable living. Visit on Fridays for free tour + simple vegan meal.',
+    maps: 'https://maps.app.goo.gl/S19r8vpfAN1NSMC36',
+    tag: 'Eco-Living'
+  },
+  {
+    name: 'Paradise Beach',
+    description: 'Clean beach you reach by boat - the ride is part of the experience. Best on weekdays to avoid crowds.',
+    maps: 'https://maps.app.goo.gl/TganrSjpL29qSkM76',
+    tag: 'Beach'
+  },
+  {
+    name: 'Sri Aurobindo Ashram',
+    description: 'Very calm and silent space in the middle of the city. Short visit, but worth it for a quiet break.',
+    maps: 'https://maps.app.goo.gl/wnSShXkXbV724qn27',
+    tag: 'Spiritual'
+  },
+  {
+    name: 'Serenity Beach',
+    description: 'One of the few beaches where you can actually surf. Good for sunset or a chill café session nearby.',
+    maps: 'https://maps.app.goo.gl/AF1i8t5PfLim1fwR7',
+    tag: 'Surf'
+  },
+  {
+    name: 'Pichavaram Mangrove Forests',
+    description: 'Boat through narrow mangrove tunnels — very unique experience. Takes half a day, best done as a short trip.',
+    maps: 'https://maps.app.goo.gl/eXrnNGMPsVWsdDMJ6',
+    tag: 'Adventure'
+  },
+  {
+    name: 'Mason & Co Chocolate Factory',
+    description: 'Learn how chocolate is made from bean to bar. Great place to try and buy dark chocolate.',
+    maps: 'https://maps.app.goo.gl/FK96zCL9YbXGWLyt9',
+    tag: 'Culinary'
+  },
+  {
+    name: 'Vinayak Temple',
+    description: 'Famous Ganesha temple right in White Town. 40+ forms of Ganesha are sculpted on the walls.',
+    maps: 'https://maps.app.goo.gl/SHm87DbnkSPpUxB89',
+    tag: 'Heritage'
+  }
+]
+
+const ACTIVITIES = [
+  {
+    name: 'Surfing at Serenity Beach',
+    description: 'Great place to try surfing, even as a beginner. Morning sessions are best.',
+    icon: <Waves size={20} />,
+    maps: 'https://maps.app.goo.gl/EKw9FCps9xxux9H36'
+  },
+  {
+    name: 'Pottery Workshops in Auroville',
+    description: 'Hands-on pottery sessions with local artists. Calm, slow activity for a few hours.',
+    icon: <Camera size={20} />,
+    maps: 'https://maps.app.goo.gl/CawmHbNrxPSwXRPP9'
+  },
+  {
+    name: 'Night Walk on Promenade',
+    description: "The car-free promenade comes alive after 7pm. Street food, families, and waves crashing.",
+    icon: <Clock size={20} />,
+    maps: 'https://maps.app.goo.gl/KzjP24Zj21qNsJf6A'
+  },
+  {
+    name: 'Sunrise Cycling in White Town',
+    description: 'Early morning cycling is peaceful and empty. One of the best ways to explore the area.',
+    icon: <Bike size={20} />,
+    maps: 'https://maps.app.goo.gl/VPoaNu7DENNGAuWE9'
+  },
+  {
+    name: 'Walk Aimlessly in French Lanes',
+    description: 'The best activity that requires no planning. Every lane has colour-washed colonial villas and bougainvillea.',
+    icon: <Navigation size={20} />,
+    maps: 'https://maps.app.goo.gl/kUP9fgKxpxJUsTmh9'
+  },
+  {
+    name: 'Karaoke at Mel Whisks',
+    description: 'Rooftop gastro bar with lively karaoke nights. Great piri piri wings and cocktails.',
+    icon: <Music size={20} />,
+    maps: 'https://maps.app.goo.gl/oUNmV9FjgqxBEZsf6'
+  }
+]
+
+const FOOD = [
+  {
+    name: 'Le Cafe',
+    mustTry: 'Lasagna',
+    description: 'Sea view is the main highlight. Open 24/7, best for late night coffee or chill.',
+    maps: 'https://maps.app.goo.gl/FC9zQV7cW1e4taDp9'
+  },
+  {
+    name: 'Cafe Ole',
+    mustTry: 'Hot Chocolate (Dark & Dense)',
+    description: 'Small cosy spot with really good hot chocolate. Perfect place to sit and relax.',
+    maps: 'https://maps.app.goo.gl/3f6hXf75LNSxis1v9'
+  },
+  {
+    name: 'Canteen 18',
+    mustTry: 'Burgers (Miami Beef or Cajun Chicken)',
+    description: 'A tiny corner joint run by an American owner. Burgers are some of the best in Pondy.',
+    maps: 'https://maps.app.goo.gl/FXLfi5HkfHSC9daP9'
+  },
+  {
+    name: 'Kamatchi',
+    mustTry: 'Biryani (Mutton or Prawn)',
+    description: 'A packed, no-frills institution serving on banana leaves in South Indian style.',
+    maps: 'https://maps.app.goo.gl/r5VHqxcar8r3GaqeA'
+  },
+  {
+    name: 'Villa Shanti',
+    mustTry: 'Continental dishes (pasta, fish tikka)',
+    description: 'A stunning 19th-century French colonial villa courtyard. Premium feel, great for slow meals.',
+    maps: 'https://maps.app.goo.gl/gqpQgviB96Nvy2kbA'
+  },
+  {
+    name: 'Cafe Des Arts',
+    mustTry: 'Coffee + Crepes',
+    description: 'Legendary art-filled Franco-Tamil heritage house. The building is half the experience.',
+    maps: 'https://maps.app.goo.gl/QxEvrPnt5TM133Qq5'
+  },
+  {
+    name: 'Marc\'s Cafe',
+    mustTry: 'Pesto Pasta + Specialty Coffee',
+    description: 'Auroville\'s celebrated specialty coffee destination. Owner-roasted South Indian beans.',
+    maps: 'https://maps.app.goo.gl/Wz92FsYnL5cosxqS6'
+  },
+  {
+    name: 'Zuka',
+    mustTry: 'Pastries (Tiramisu, Brownies)',
+    description: 'The chocolate sibling of Cafe Ole. Tiramisu and Pecan Nut Pie Cake are outstanding.',
+    maps: 'https://maps.app.goo.gl/9ugsWZ67LTupLzEt8'
+  },
+  {
+    name: 'GMT',
+    mustTry: 'Gelato (Pistachio, Dark Chocolate)',
+    description: 'Italian gelato institution right on Promenade Beach. Over 60 flavours with organic milk.',
+    maps: 'https://maps.app.goo.gl/zfLcupAvkoJ1pX269'
+  }
 ]
 
 const STAYS = [
   {
-    id: '1',
     name: 'Palais de Mahe',
-    tags: ['Luxury', 'French Quarter'],
-    description: 'A stunning colonial-style boutique hotel in the heart of the French Quarter, featuring a rooftop terrace and a beautiful pool.',
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop',
-    link: '#'
+    type: 'Luxury Boutique',
+    description: 'The finest stay in Pondicherry. A CGH Earth property with 18 luxury suites in the French Quarter.',
+    maps: 'https://maps.app.goo.gl/Tb5PJ2SLjMzfaEMG6'
   },
   {
-    id: '2',
-    name: 'La Villa',
-    tags: ['Boutique', 'Minimalist'],
-    description: 'An old colonial house transformed into a sleek, contemporary retreat with just six rooms and a secret garden.',
-    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop',
-    link: '#'
-  }
-]
-
-const EATS = [
-  {
-    id: 'e1',
-    name: 'Coromandel Cafe',
-    vibe: 'Romantic Garden setting',
-    mustTry: 'Eggs Benedict & Pink Pasta',
-    description: 'Set in a beautifully restored French villa, this is the most Instagrammable spot in town with incredible food to match.',
-    maps: '#'
-  },
-  {
-    id: 'e2',
-    name: 'Baker Street',
-    vibe: 'Classic Bakery',
-    mustTry: 'Almond Croissants',
-    description: 'The legendary spot for authentic French pastries. Go early before the croissants sell out!',
-    maps: '#'
-  },
-  {
-    id: 'e3',
     name: 'Villa Shanti',
-    vibe: 'Elegant Courtyard',
-    mustTry: 'Grilled Fish & Cocktails',
-    description: 'Perfect for a sophisticated dinner. The courtyard atmosphere is magical especially at night.',
-    maps: '#'
+    type: 'Colonial Boutique',
+    description: 'Colonial boutique hotel and restaurant in White Town. Rooms overlook a lush courtyard.',
+    maps: 'https://maps.app.goo.gl/dbsC8mNyJneKMGeq7'
+  },
+  {
+    name: 'Micasa',
+    type: 'Premium Hostel',
+    description: 'A premium budget hostel on MG Road. Walkable to cafes, Rock Beach, and French Quarter.',
+    maps: 'https://maps.app.goo.gl/aqFrgojoL7rXMfSJ9'
+  },
+  {
+    name: 'Zostel',
+    type: 'Social Hostel',
+    description: 'Part of India\'s most trusted chain. Good base on Auroville Road for a no-surprises experience.',
+    maps: 'https://maps.app.goo.gl/1Nis7RnBGrrYSr8W6'
+  },
+  {
+    name: 'Savana Stay',
+    type: 'Boutique Hotel',
+    description: 'TripAdvisor Travellers\' Choice near Auroville Beach with a pool and garden. Very clean.',
+    maps: 'https://maps.app.goo.gl/skNUKjG9GS9X2WvPA'
   }
 ]
 
 export default function PondicherryGuide() {
   const [activeSection, setActiveSection] = useState('overview')
   const [isScrolled, setIsScrolled] = useState(false)
-  const [isLiked, setIsLiked] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 100)
-      
-      // Update active section based on scroll position
       const scrollPos = window.scrollY + 100
-      for (const section of SECTIONS) {
-        const element = document.getElementById(section.id)
-        if (element) {
-          const top = element.offsetTop
-          const height = element.offsetHeight
-          if (scrollPos >= top && scrollPos < top + height) {
-            setActiveSection(section.id)
-          }
+      const sections = ['overview', 'explore', 'do', 'eat', 'stay']
+      for (const id of sections) {
+        const el = document.getElementById(id)
+        if (el && scrollPos >= el.offsetTop && scrollPos < el.offsetTop + el.offsetHeight) {
+           setActiveSection(id)
         }
       }
     }
@@ -96,384 +231,142 @@ export default function PondicherryGuide() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
-    if (element) {
-      window.scrollTo({
-        top: element.offsetTop - 80,
-        behavior: 'smooth'
-      })
-    }
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id)
+    if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' })
   }
 
   return (
     <main style={{ background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)' }}>
-      {/* Floating Header */}
+      {/* Header */}
       <nav style={{
-        position: 'fixed',
-        top: 0, left: 0, right: 0,
-        zIndex: 100,
-        padding: '16px 24px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        transition: 'all 0.3s ease',
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, padding: 16,
         background: isScrolled ? 'var(--bg-glass)' : 'transparent',
         backdropFilter: isScrolled ? 'blur(20px)' : 'none',
         borderBottom: isScrolled ? '1px solid var(--border)' : 'none',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
       }}>
-        <Link href="/" style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          color: 'var(--text)',
-          textDecoration: 'none',
-          fontSize: 14,
-          fontWeight: 600,
-          background: 'rgba(0,0,0,0.3)',
-          padding: '8px 16px',
-          borderRadius: 100,
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255,255,255,0.1)'
-        }}>
-          <ArrowLeft size={16} />
-          Back
+        <Link href="/" style={{ color: 'var(--text)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, background: 'rgba(0,0,0,0.4)', padding: '8px 16px', borderRadius: 100, border: '1px solid rgba(255,255,255,0.1)' }}>
+          <ArrowLeft size={16} /> Back
         </Link>
-
-        <div style={{ display: 'flex', gap: 12 }}>
-          <button 
-            onClick={() => setIsLiked(!isLiked)}
-            style={{
-              width: 40, height: 40, borderRadius: '50%',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: 'rgba(0,0,0,0.3)',
-              color: isLiked ? '#ff4757' : 'white',
-              border: '1px solid rgba(255,255,255,0.1)',
-              backdropFilter: 'blur(10px)',
-              cursor: 'pointer',
-              transition: 'all 0.2s'
-            }}>
-            <Heart size={18} fill={isLiked ? '#ff4757' : 'none'} />
-          </button>
-          <button style={{
-            width: 40, height: 40, borderRadius: '50%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'rgba(0,0,0,0.3)',
-            color: 'white',
-            border: '1px solid rgba(255,255,255,0.1)',
-            backdropFilter: 'blur(10px)',
-            cursor: 'pointer'
-          }}>
-            <Share2 size={18} />
-          </button>
-        </div>
+        <button style={{ color: 'var(--text)', background: 'rgba(0,0,0,0.4)', padding: '8px 16px', borderRadius: 100, border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer' }}>
+          <Share2 size={16} />
+        </button>
       </nav>
 
-      {/* Hero Section */}
-      <section style={{
-        height: '80vh',
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'flex-end',
-        padding: '0 24px 80px',
-        overflow: 'hidden'
-      }}>
-        {/* Background Image with Ken Burns */}
+      {/* Hero */}
+      <section style={{ height: '70vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
         <div style={{
-          position: 'absolute',
-          top: 0, left: 0, right: 0, bottom: 0,
-          backgroundImage: 'url(https://images.unsplash.com/photo-1548013146-72479768bada?q=80&w=2076&auto=format&fit=crop)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          animation: 'kenBurns 20s infinite alternate linear',
-          zIndex: -1
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundImage: 'url(https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop)',
+          backgroundSize: 'cover', backgroundPosition: 'center', zIndex: -1
         }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to bottom, rgba(10,10,14,0.3), var(--bg))', zIndex: -1 }} />
         
-        {/* Gradients */}
-        <div style={{
-          position: 'absolute',
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: 'linear-gradient(to bottom, rgba(10,10,14,0.2) 0%, rgba(10,10,14,0.6) 50%, rgba(10,10,14,1) 100%)',
-          zIndex: -1
-        }} />
-
-        <div style={{ maxWidth: 900, margin: '0 auto', width: '100%', textAlign: 'center' }}>
-          <div style={{ 
-            display: 'inline-flex', 
-            alignItems: 'center', 
-            gap: 8, 
-            padding: '6px 12px', 
-            background: 'rgba(255,107,0,0.15)', 
-            borderRadius: 100,
-            border: '1px solid var(--accent-border)',
-            marginBottom: 24,
-            animation: 'fade-up 0.8s ease'
-          }}>
-            <MapPin size={14} color="var(--accent)" />
-            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Weekend Trips</span>
-          </div>
-          
-          <h1 style={{
-            fontSize: 'clamp(48px, 10vw, 96px)',
-            fontFamily: '"Bodoni Moda", serif',
-            fontWeight: 800,
-            lineHeight: 0.9,
-            marginBottom: 20,
-            animation: 'fade-up 1s ease'
-          }}>
-            Pondicherry <br />
-            <span style={{ fontFamily: '"Caveat", cursive', color: 'var(--accent)', fontSize: '0.6em', marginLeft: '0.2em' }}>Slow Living Guide</span>
-          </h1>
-          
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            gap: 24,
-            color: 'var(--text-2)',
-            fontSize: 14,
-            animation: 'fade-up 1.2s ease'
-          }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Clock size={16} /> 2 Nights / 3 Days
-            </span>
-            <span style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--border)' }} />
-            <span>By Team Outsyd</span>
-          </div>
+        <div style={{ padding: 24 }}>
+          <div style={{ display: 'inline-block', padding: '6px 12px', background: 'var(--accent-dim)', borderRadius: 100, color: 'var(--accent)', fontSize: 12, fontWeight: 800, textTransform: 'uppercase', marginBottom: 16 }}>Pondicherry Guide</div>
+          <h1 style={{ fontSize: 'clamp(40px, 8vw, 80px)', fontFamily: '"Bodoni Moda", serif', fontWeight: 800, lineHeight: 1, marginBottom: 16 }}>Real Picks by <br/><span style={{ fontFamily: '"Caveat", cursive', color: 'var(--accent)' }}>Locals & Travelers</span></h1>
+          <p style={{ color: 'var(--text-2)', maxWidth: 600, margin: '0 auto', fontSize: 16, lineHeight: 1.6 }}>Curated from insights shared by Redditors and solo travellers who actually explored the city. Honesty over hype.</p>
         </div>
       </section>
 
-      {/* Sticky Sub-nav */}
-      <div style={{
-        position: 'sticky',
-        top: 72,
-        zIndex: 90,
-        background: 'rgba(10,10,14,0.8)',
-        backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid var(--border)',
-        padding: '12px 0'
-      }}>
-        <div style={{ 
-          maxWidth: 1200, 
-          margin: '0 auto', 
-          display: 'flex', 
-          justifyContent: 'center', 
-          gap: 8,
-          padding: '0 20px'
-        }}>
-          {SECTIONS.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => scrollToSection(section.id)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '8px 16px',
-                borderRadius: 100,
-                border: '1px solid transparent',
-                background: activeSection === section.id ? 'var(--accent-dim)' : 'transparent',
-                color: activeSection === section.id ? 'var(--accent)' : 'var(--text-2)',
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                borderColor: activeSection === section.id ? 'var(--accent-border)' : 'transparent'
-              }}
-            >
-              {section.icon}
-              {section.title}
-            </button>
+      {/* Nav */}
+      <div style={{ position: 'sticky', top: 0, zIndex: 90, background: 'var(--bg)', borderBottom: '1px solid var(--border)', padding: '12px 0' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'center', gap: 12, overflowX: 'auto', padding: '0 20px' }} className="no-scrollbar">
+          {['overview', 'explore', 'do', 'eat', 'stay'].map(s => (
+            <button key={s} onClick={() => scrollTo(s)} style={{
+              padding: '8px 20px', borderRadius: 100, fontSize: 14, fontWeight: 700, cursor: 'pointer', border: '1px solid transparent',
+              background: activeSection === s ? 'var(--accent-dim)' : 'transparent',
+              color: activeSection === s ? 'var(--accent)' : 'var(--text-3)',
+              borderColor: activeSection === s ? 'var(--accent-border)' : 'transparent'
+            }}>{s.toUpperCase()}</button>
           ))}
         </div>
       </div>
 
-      {/* Content Container */}
-      <div style={{ maxWidth: 800, margin: '80px auto', padding: '0 24px' }}>
+      <div style={{ maxWidth: 900, margin: '60px auto', padding: '0 24px' }}>
         
-        {/* Overview Section */}
-        <section id="overview" style={{ marginBottom: 120 }}>
-          <h2 style={{ fontSize: 32, marginBottom: 32, fontFamily: '"Bodoni Moda", serif', color: 'var(--accent)' }}>Vibe Check</h2>
-          <div style={{ fontSize: 18, lineHeight: 1.8, color: 'var(--text-2)' }}>
-            <p style={{ marginBottom: 24 }}>
-              Pondicherry (or Puducherry) is more than just a destination; it's a feeling. It's the smell of fresh baguettes in the morning, the vibrant colors of bougainvillea against mustard yellow walls, and the sound of waves hitting the Promenade.
-            </p>
-            <p>
-              Whether you're looking to meditate at the Matrimandir, explore the quaint streets of the French Quarter, or just café-hop through the weekend, we've curated the perfect guide to help you do it in style.
+        {/* Overview */}
+        <section id="overview" style={{ marginBottom: 100 }}>
+          <div className="glass-panel" style={{ padding: 40, borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
+            <MessageSquareQuote size={40} color="var(--accent)" style={{ marginBottom: 20 }} />
+            <p style={{ fontSize: 20, lineHeight: 1.8, color: 'var(--text-2)', fontStyle: 'italic' }}>
+              "Pondicherry is more than just a destination; it's a feeling. This guide focuses on real experiences, honest picks, and places that are truly worth your time."
             </p>
           </div>
         </section>
 
-        {/* Stay Section */}
-        <section id="stay" style={{ marginBottom: 120 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 40 }}>
-            <div>
-              <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', color: 'var(--accent)' }}>Le Stay</h2>
-              <p style={{ color: 'var(--text-2)', fontSize: 15 }}>Curated boutique gems</p>
-            </div>
+        {/* Explore */}
+        <section id="explore" style={{ marginBottom: 120 }}>
+          <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', marginBottom: 40, color: 'var(--accent)' }}>Places to Visit</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
+            {PLACES.map(p => (
+              <div key={p.name} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 24, borderRadius: 'var(--radius)', position: 'relative' }}>
+                <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, display: 'block' }}>{p.tag}</span>
+                <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>{p.name}</h3>
+                <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 20 }}>{p.description}</p>
+                <a href={p.maps} target="_blank" style={{ color: 'var(--text-3)', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}><MapPin size={14} /> Open Maps</a>
+              </div>
+            ))}
           </div>
-          
-          <div style={{ display: 'grid', gap: 32 }}>
-            {STAYS.map((stay) => (
-              <div key={stay.id} className="glass-panel" style={{ 
-                borderRadius: 'var(--radius-lg)', 
-                overflow: 'hidden',
-                transition: 'transform 0.3s ease'
-              }}>
-                <div style={{ position: 'relative', height: 400 }}>
-                  <img src={stay.image} alt={stay.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', bottom: 20, left: 20, display: 'flex', gap: 8 }}>
-                    {stay.tags.map(tag => (
-                      <span key={tag} style={{ 
-                        padding: '6px 12px', 
-                        background: 'rgba(0,0,0,0.6)', 
-                        backdropFilter: 'blur(10px)', 
-                        borderRadius: 100, 
-                        fontSize: 12, 
-                        fontWeight: 600,
-                        border: '1px solid rgba(255,255,255,0.1)'
-                      }}>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div style={{ padding: 32 }}>
-                  <h3 style={{ fontSize: 24, marginBottom: 12 }}>{stay.name}</h3>
-                  <p style={{ color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 24 }}>{stay.description}</p>
-                  <Link href={stay.link} style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    padding: '12px 24px',
-                    background: 'var(--accent)',
-                    color: 'white',
-                    borderRadius: 100,
-                    textDecoration: 'none',
-                    fontWeight: 700,
-                    fontSize: 14
-                  }}>
-                    Check Availability <ChevronRight size={16} />
-                  </Link>
+        </section>
+
+        {/* Do */}
+        <section id="do" style={{ marginBottom: 120 }}>
+          <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', marginBottom: 40, color: 'var(--accent)' }}>Things to Do</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            {ACTIVITIES.map(a => (
+              <div key={a.name} style={{ display: 'flex', gap: 20, background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 24, borderRadius: 'var(--radius)' }}>
+                <div style={{ width: 48, height: 48, background: 'var(--accent-dim)', color: 'var(--accent)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{a.icon}</div>
+                <div>
+                  <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 6 }}>{a.name}</h3>
+                  <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.5 }}>{a.description}</p>
                 </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Eat Section */}
+        {/* Eat */}
         <section id="eat" style={{ marginBottom: 120 }}>
-          <h2 style={{ fontSize: 32, marginBottom: 32, fontFamily: '"Bodoni Moda", serif', color: 'var(--accent)' }}>Café Culture</h2>
-          <div style={{ display: 'grid', gap: 24 }}>
-            {EATS.map((eat) => (
-              <div key={eat.id} style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius)',
-                padding: 24,
-                display: 'flex',
-                gap: 20,
-                transition: 'all 0.3s ease'
-              }}>
-                <div style={{ 
-                  width: 60, height: 60, borderRadius: 'var(--radius-sm)', 
-                  background: 'var(--accent-dim)', 
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'var(--accent)',
-                  flexShrink: 0
-                }}>
-                  <Coffee size={24} />
-                </div>
+          <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', marginBottom: 40, color: 'var(--accent)' }}>Must Try Food</h2>
+          <div style={{ display: 'grid', gap: 16 }}>
+            {FOOD.map(f => (
+              <div key={f.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '20px 24px', borderRadius: 'var(--radius)' }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <h3 style={{ fontSize: 20, fontWeight: 700 }}>{eat.name}</h3>
-                    <a href={eat.maps} style={{ color: 'var(--text-3)' }}><ExternalLink size={18} /></a>
-                  </div>
-                  <div style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600, marginBottom: 12 }}>{eat.vibe}</div>
-                  <p style={{ color: 'var(--text-2)', fontSize: 15, lineHeight: 1.6, marginBottom: 16 }}>{eat.description}</p>
-                  <div style={{ 
-                    padding: '12px 16px', 
-                    borderRadius: 12, 
-                    background: 'rgba(255,107,0,0.05)', 
-                    border: '1px dashed var(--accent-border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12
-                  }}>
-                    <MessageSquareQuote size={18} color="var(--accent)" />
-                    <span style={{ fontSize: 14 }}>Must try: <strong style={{color: 'var(--text)'}}>{eat.mustTry}</strong></span>
-                  </div>
+                  <h3 style={{ fontSize: 18, fontWeight: 800 }}>{f.name}</h3>
+                  <p style={{ fontSize: 14, color: 'var(--text-2)', margin: '4px 0' }}>{f.description}</p>
+                  <div style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>Must try: {f.mustTry}</div>
                 </div>
+                <a href={f.maps} target="_blank" style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-3)' }}><ExternalLink size={18} /></a>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Explore Section */}
-        <section id="explore">
-          <h2 style={{ fontSize: 32, marginBottom: 32, fontFamily: '"Bodoni Moda", serif', color: 'var(--accent)' }}>The Itinerary</h2>
-          <div style={{ borderLeft: '2px solid var(--border)', paddingLeft: 32, marginLeft: 8 }}>
-            <div style={{ position: 'relative', marginBottom: 48 }}>
-              <div style={{ 
-                position: 'absolute', left: -41, top: 0, 
-                width: 16, height: 16, borderRadius: '50%', 
-                background: 'var(--accent)',
-                boxShadow: '0 0 0 4px var(--bg), 0 0 0 6px var(--accent-dim)'
-               }} />
-              <h4 style={{ color: 'var(--accent)', fontWeight: 800, fontSize: 14, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Day 1: French Flair</h4>
-              <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 16 }}>Promenade & White Town</h3>
-              <p style={{ color: 'var(--text-2)', lineHeight: 1.6 }}>Start with a sunrise walk at the Promenade Beach. Spend your afternoon wandering through the mustard-yellow lanes of the French Quarter, capturing every corner.</p>
-            </div>
-            
-            <div style={{ position: 'relative', marginBottom: 48 }}>
-              <div style={{ 
-                position: 'absolute', left: -41, top: 0, 
-                width: 16, height: 16, borderRadius: '50%', 
-                background: 'var(--border)'
-               }} />
-              <h4 style={{ color: 'var(--text-3)', fontWeight: 800, fontSize: 14, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 8 }}>Day 2: Spirituality & Surfing</h4>
-              <h3 style={{ fontSize: 22, fontWeight: 700, marginBottom: 16 }}>Auroville & Serenity Beach</h3>
-              <p style={{ color: 'var(--text-2)', lineHeight: 1.6 }}>A morning trip to Auroville to witness the Matrimandir. Later, head to Serenity Beach for a surfing lesson or just some sunset vibes.</p>
-            </div>
+        {/* Stay */}
+        <section id="stay">
+          <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', marginBottom: 40, color: 'var(--accent)' }}>Stays We Recommend</h2>
+          <div style={{ display: 'grid', gap: 24 }}>
+            {STAYS.map(s => (
+              <div key={s.name} className="glass-panel" style={{ padding: 32, borderRadius: 'var(--radius-lg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 4, display: 'block' }}>{s.type}</span>
+                  <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>{s.name}</h3>
+                  <p style={{ color: 'var(--text-2)', fontSize: 15, maxWidth: 500 }}>{s.description}</p>
+                </div>
+                <a href={s.maps} target="_blank" style={{ padding: '12px 24px', background: 'var(--accent)', color: 'white', fontWeight: 800, borderRadius: 100, textDecoration: 'none', fontSize: 14 }}>View Deals</a>
+              </div>
+            ))}
           </div>
         </section>
 
       </div>
 
-      {/* Footer / CTA */}
-      <footer style={{ 
-        padding: '100px 24px', 
-        textAlign: 'center', 
-        borderTop: '1px solid var(--border)',
-        background: 'linear-gradient(to bottom, transparent, var(--bg-card))'
-      }}>
-        <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: 32, marginBottom: 16 }}>Ready for your escape?</h2>
-        <p style={{ color: 'var(--text-2)', marginBottom: 32 }}>Share this guide with your travel partner</p>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 16 }}>
-          <button style={{
-            padding: '16px 32px',
-            borderRadius: 100,
-            background: 'var(--accent)',
-            color: 'white',
-            fontWeight: 800,
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 12,
-            cursor: 'pointer'
-          }}>
-            <Share2 size={20} /> Share Guide
-          </button>
-        </div>
+      <footer style={{ padding: '100px 24px', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
+        <p style={{ color: 'var(--text-3)', fontSize: 13 }}>Follow for more weekend guides</p>
+        <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: 24, marginTop: 12 }}>Stay Outsyd.</h2>
       </footer>
-
-      {/* Custom Styles for animations if not already in globals */}
-      <style jsx global>{`
-        @keyframes kenBurns {
-          0% { transform: scale(1); background-position: center; }
-          100% { transform: scale(1.1); background-position: center; }
-        }
-      `}</style>
     </main>
   )
 }

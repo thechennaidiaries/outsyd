@@ -83,8 +83,8 @@ export default function EventsPage() {
                 }}>
                     {/* Date Picker */}
                     <div style={{ flex: '1 1 200px', minWidth: 200 }}>
-                        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
-                            <Calendar size={11} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Pick a Date
+                        <label style={{ display: 'flex', alignItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                            <Calendar size={11} style={{ marginRight: 6 }} /> Pick a Date
                         </label>
                         <input 
                             type="date"
@@ -101,8 +101,8 @@ export default function EventsPage() {
 
                     {/* Pricing Dropdown */}
                     <div style={{ flex: '1 1 180px', minWidth: 150 }}>
-                        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
-                            💰 Pricing
+                        <label style={{ display: 'flex', alignItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                            <span style={{ marginRight: 6 }}>💰</span> Pricing
                         </label>
                         <select 
                             value={selectedPricing}
@@ -124,8 +124,8 @@ export default function EventsPage() {
 
                     {/* Category Dropdown */}
                     <div style={{ flex: '1 1 180px', minWidth: 150 }}>
-                        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
-                            🏷️ Category
+                        <label style={{ display: 'flex', alignItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                            <span style={{ marginRight: 6 }}>🏷️</span> Category
                         </label>
                         <select 
                             value={selectedCategory}

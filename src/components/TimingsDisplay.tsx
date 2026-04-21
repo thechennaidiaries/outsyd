@@ -92,7 +92,7 @@ export default function TimingsDisplay({ timings }: { timings: string }) {
                         </span>
                         <span style={{
                             fontSize: 13, fontWeight: isToday ? 600 : 400,
-                            color: isClosed ? '#f87171' : isToday ? 'var(--text)' : 'var(--text-2)',
+                            color: (isClosed && isToday) ? '#f87171' : isToday ? 'var(--text)' : 'var(--text-2)',
                             textAlign: 'right',
                         }}>
                             {time}

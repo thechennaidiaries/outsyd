@@ -26,81 +26,21 @@ import {
   Info
 } from 'lucide-react'
 
-// --- Content Data (Shortened for Readability) ---
+// --- Content Data ---
 
 const PLACES = [
-  {
-    name: 'Rock Beach',
-    description: "Pondicherry's most iconic waterfront - a rocky coastline. Car-free promenade makes evening/morning walks genuinely peaceful.",
-    maps: 'https://maps.app.goo.gl/VQymYTyQ1hZpKimf9',
-    tag: 'Iconic'
-  },
-  {
-    name: 'Botanical Garden',
-    description: 'Quiet green space with lots of old trees and shade. Good for a relaxed walk.',
-    maps: 'https://maps.app.goo.gl/ofViM1bc8zQNc3es7',
-    tag: 'Nature'
-  },
-  {
-    name: 'Sadhana Forest',
-    description: 'Peaceful eco-community focused on sustainable living. Visit on Fridays for free tour + vegan meal.',
-    maps: 'https://maps.app.goo.gl/S19r8vpfAN1NSMC36',
-    tag: 'Eco'
-  },
-  {
-    name: 'Paradise Beach',
-    description: 'Clean beach reached by boatride. Best on weekdays to avoid crowds.',
-    maps: 'https://maps.app.goo.gl/TganrSjpL29qSkM76',
-    tag: 'Beach'
-  },
-  {
-    name: 'Sri Aurobindo Ashram',
-    description: 'Very calm and silent space in the middle of the city. Worth it for a spiritual break.',
-    maps: 'https://maps.app.goo.gl/wnSShXkXbV724qn27',
-    tag: 'Spiritual'
-  },
-  {
-    name: 'Serenity Beach',
-    description: 'One of the few beaches where you can surf. Good for sunset or cafes.',
-    maps: 'https://maps.app.goo.gl/AF1i8t5PfLim1fwR7',
-    tag: 'Surf'
-  },
-  {
-    name: 'Pichavaram Mangrove Forests',
-    description: 'Boat through narrow mangrove tunnels — very unique experience. Best as a short trip.',
-    maps: 'https://maps.app.goo.gl/eXrnNGMPsVWsdDMJ6',
-    tag: 'Adventure'
-  },
-  {
-    name: 'Mason & Co Chocolate Factory',
-    description: 'Learn how chocolate is made from bean to bar. Great place to buy dark chocolate.',
-    maps: 'https://maps.app.goo.gl/FK96zCL9YbXGWLyt9',
-    tag: 'Culinary'
-  },
-  {
-    name: 'Vinayak Temple',
-    description: 'Famous Ganesha temple right in White Town. 40+ forms of Ganesha sculpted on walls.',
-    maps: 'https://maps.app.goo.gl/SHm87DbnkSPpUxB89',
-    tag: 'Heritage'
-  },
-  {
-    name: 'French War Memorial',
-    description: 'Small, well-kept memorial near the beach. Looks best in the evening when lit up.',
-    maps: 'https://maps.app.goo.gl/SgYJRoPj2y4gtJJs9',
-    tag: 'History'
-  },
-  {
-    name: 'Chunnambar Boat House',
-    description: 'Starting point for Paradise Beach boats. Go early to avoid queues.',
-    maps: 'https://maps.app.goo.gl/mZLE5E1T6SjAHRWT9',
-    tag: 'Boating'
-  },
-  {
-    name: 'Sacred Heart Basilica',
-    description: 'Stunning Gothic-style church with exquisite stained-glass windows.',
-    maps: 'https://maps.app.goo.gl/Uhk8Mu5JLxfDc4XS6',
-    tag: 'Heritage'
-  }
+  { name: 'Rock Beach', description: "Pondicherry's most iconic waterfront - a rocky coastline. Car-free promenade makes evening/morning walks genuinely peaceful.", maps: 'https://maps.app.goo.gl/VQymYTyQ1hZpKimf9', tag: 'Iconic' },
+  { name: 'Botanical Garden', description: 'Quiet green space with lots of old trees and shade. Good for a relaxed walk.', maps: 'https://maps.app.goo.gl/ofViM1bc8zQNc3es7', tag: 'Nature' },
+  { name: 'Sadhana Forest', description: 'Peaceful eco-community focused on sustainable living. Visit on Fridays for free tour + vegan meal.', maps: 'https://maps.app.goo.gl/S19r8vpfAN1NSMC36', tag: 'Eco' },
+  { name: 'Paradise Beach', description: 'Clean beach reached by boatride. Best on weekdays to avoid crowds.', maps: 'https://maps.app.goo.gl/TganrSjpL29qSkM76', tag: 'Beach' },
+  { name: 'Sri Aurobindo Ashram', description: 'Very calm and silent space in the middle of the city. Worth it for a spiritual break.', maps: 'https://maps.app.goo.gl/wnSShXkXbV724qn27', tag: 'Spiritual' },
+  { name: 'Serenity Beach', description: 'One of the few beaches where you can surf. Good for sunset or cafes.', maps: 'https://maps.app.goo.gl/AF1i8t5PfLim1fwR7', tag: 'Surf' },
+  { name: 'Pichavaram Mangrove Forests', description: 'Boat through narrow mangrove tunnels — very unique experience. Best as a short trip.', maps: 'https://maps.app.goo.gl/eXrnNGMPsVWsdDMJ6', tag: 'Adventure' },
+  { name: 'Mason & Co Chocolate Factory', description: 'Learn how chocolate is made from bean to bar. Great place to buy dark chocolate.', maps: 'https://maps.app.goo.gl/FK96zCL9YbXGWLyt9', tag: 'Food' },
+  { name: 'Vinayak Temple', description: 'Famous Ganesha temple right in White Town. 40+ forms of Ganesha sculpted on walls.', maps: 'https://maps.app.goo.gl/SHm87DbnkSPpUxB89', tag: 'Temple' },
+  { name: 'French War Memorial', description: 'Small, well-kept memorial near the beach. Looks best in the evening when lit up.', maps: 'https://maps.app.goo.gl/SgYJRoPj2y4gtJJs9', tag: 'History' },
+  { name: 'Chunnambar Boat House', description: 'Starting point for Paradise Beach boats. Go early to avoid queues.', maps: 'https://maps.app.goo.gl/mZLE5E1T6SjAHRWT9', tag: 'Boating' },
+  { name: 'Sacred Heart Basilica', description: 'Stunning Gothic-style church with exquisite stained-glass windows.', maps: 'https://maps.app.goo.gl/Uhk8Mu5JLxfDc4XS6', tag: 'Heritage' }
 ]
 
 const ACTIVITIES = [
@@ -177,6 +117,13 @@ export default function PondicherryGuide() {
     if (el) window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' })
   }
 
+  // Common grid style for 2 cards per row on desktop
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 460px), 1fr))',
+    gap: 20
+  }
+
   return (
     <main style={{ background: 'var(--bg)', minHeight: '100vh', color: 'var(--text)', fontFamily: '"Inter", sans-serif', overflowX: 'hidden' }}>
       {/* Header */}
@@ -196,7 +143,7 @@ export default function PondicherryGuide() {
       </nav>
 
       {/* Hero */}
-      <section style={{ height: '65vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 20px' }}>
+      <section style={{ height: '60vh', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 20px' }}>
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
           backgroundImage: 'url(https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=2070&auto=format&fit=crop)',
@@ -227,15 +174,14 @@ export default function PondicherryGuide() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1000, margin: '40px auto', padding: '0 20px', width: '100%', boxSizing: 'border-box' }}>
+      <div style={{ maxWidth: 1100, margin: '40px auto', padding: '0 20px', width: '100%', boxSizing: 'border-box' }}>
         
         {/* Explore */}
         <section id="explore" style={{ marginBottom: 100 }}>
           <div style={{ borderLeft: '4px solid var(--accent)', paddingLeft: 20, marginBottom: 32 }}>
             <h2 style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.02em' }}>Places to Visit</h2>
-            <p style={{ color: 'var(--text-3)', fontSize: 14, fontWeight: 500 }}>Must-see spots and hidden gems</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 20 }}>
+          <div style={gridStyle}>
             {PLACES.map(p => (
               <div key={p.name} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 24, borderRadius: 'var(--radius-lg)' }}>
                 <span style={{ fontSize: 10, fontWeight: 900, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 8, display: 'block' }}>{p.tag}</span>
@@ -251,9 +197,8 @@ export default function PondicherryGuide() {
         <section id="do" style={{ marginBottom: 100 }}>
           <div style={{ borderLeft: '4px solid var(--accent)', paddingLeft: 20, marginBottom: 32 }}>
             <h2 style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.02em' }}>Activities</h2>
-            <p style={{ color: 'var(--text-3)', fontSize: 14, fontWeight: 500 }}>Things you should actually do</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: 16 }}>
+          <div style={gridStyle}>
             {ACTIVITIES.map(a => (
               <div key={a.name} style={{ display: 'flex', gap: 16, background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 20, borderRadius: 'var(--radius-lg)' }}>
                 <div style={{ width: 44, height: 44, background: 'var(--accent-dim)', color: 'var(--accent)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '1px solid var(--accent-border)' }}>{a.icon}</div>
@@ -270,9 +215,8 @@ export default function PondicherryGuide() {
         <section id="eat" style={{ marginBottom: 100 }}>
           <div style={{ borderLeft: '4px solid var(--accent)', paddingLeft: 20, marginBottom: 32 }}>
             <h2 style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.02em' }}>Must Try Food</h2>
-            <p style={{ color: 'var(--text-3)', fontSize: 14, fontWeight: 500 }}>20+ curated cafes and eateries</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 12 }}>
+          <div style={gridStyle}>
             {FOOD.map(f => (
               <div key={f.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '16px 20px', borderRadius: 14 }}>
                 <div style={{ minWidth: 0, flex: 1, marginRight: 16 }}>
@@ -290,9 +234,8 @@ export default function PondicherryGuide() {
         <section id="stay" style={{ marginBottom: 60 }}>
           <div style={{ borderLeft: '4px solid var(--accent)', paddingLeft: 20, marginBottom: 32 }}>
             <h2 style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.02em' }}>Stays</h2>
-            <p style={{ color: 'var(--text-3)', fontSize: 14, fontWeight: 500 }}>Hostels and boutique hotels</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 16 }}>
+          <div style={gridStyle}>
             {STAYS.map(s => (
               <div key={s.name} className="glass-panel" style={{ padding: 28, borderRadius: 'var(--radius-lg)', display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <span style={{ fontSize: 10, fontWeight: 900, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 12, display: 'block' }}>{s.type}</span>

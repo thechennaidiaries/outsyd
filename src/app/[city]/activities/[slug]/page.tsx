@@ -186,7 +186,7 @@ export default function SlugPage({ params }: Props) {
                 <div style={{ display: 'flex', gap: 12, marginTop: 8, marginBottom: 56 }} className="flex-col md:flex-row">
                     <ShareButton title={activity.title} text={`Check out ${activity.location} on TBOC ${city.name}`} />
                     <a
-                        href={activity.locationLink}
+                        href={activity.bookingLink || activity.locationLink}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
@@ -201,7 +201,7 @@ export default function SlugPage({ params }: Props) {
                         }}
                     >
                         <Navigation size={18} fill="white" />
-                        Take me to Maps
+                        {activity.bookingLink ? 'Book a Slot' : 'Take me to Maps'}
                     </a>
                 </div>
             </div>

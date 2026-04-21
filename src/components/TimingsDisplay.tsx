@@ -13,21 +13,28 @@ function expandTimings(raw: string): { day: string; short: string; time: string 
     if (/open 24 hours/i.test(cleaned)) {
         DAY_NAMES.forEach(d => (result[d] = 'Open 24 hours'))
     }
-    // ── New format: multiline "DayName<tab or spaces>Time" per line ──
-    else if (/\n/.test(cleaned)) {
-        const lines = cleaned.split('\n').map(l => l.trim()).filter(Boolean)
-        for (const line of lines) {
-            // Match "Tuesday   11 am–10 pm" or "Tuesday\t11 am–10 pm" or "Tuesday  Closed"
-            const match = line.match(/^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\s+(.+)$/i)
-            if (match) {
-                const dayName = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase()
-                result[dayName] = match[2].trim()
+    // ── New/Maps format: "DayName Time" potentially on newlines or just spaces ──
+    const dayNameRegex = /(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/gi
+    const matches = Array.from(cleaned.matchAll(dayNameRegex))
+
+    if (matches.length > 1 || (matches.length === 1 && /\n/.test(cleaned))) {
+        // We have multiple days in one string or a newline-separated list
+        // Split by the start of day names
+        const parts = cleaned.split(/(?=Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)/i)
+            .map(p => p.trim())
+            .filter(Boolean)
+
+        for (const part of parts) {
+            const m = part.match(/^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)[\s\t:—-]+(.+)$/i)
+            if (m) {
+                const dayName = m[1].charAt(0).toUpperCase() + m[1].slice(1).toLowerCase()
+                result[dayName] = m[2].trim()
             }
         }
         // Fill any missing days with '—'
         DAY_NAMES.forEach(d => { if (!result[d]) result[d] = '—' })
     }
-    // ── Old format: single-line like "All days 9AM-6PM. Thursday Closed" ──
+    // ── Old format fallback: single-line like "All days 9AM-6PM. Thursday Closed" ──
     else {
         let main = cleaned
         main = main.replace(/^All days\s+/i, '')

@@ -41,27 +41,6 @@ export default function EventsPage() {
         setSelectedCategory('all')
     }
 
-    // Format date for filter pills
-    const formatDatePill = (dateStr: string) => {
-        const d = new Date(dateStr + 'T00:00:00')
-        return d.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' })
-    }
-
-    const pillStyle = (isActive: boolean): React.CSSProperties => ({
-        padding: '8px 16px',
-        borderRadius: 100,
-        fontSize: 12,
-        fontWeight: 700,
-        cursor: 'pointer',
-        border: '1px solid',
-        borderColor: isActive ? 'var(--accent-border)' : 'var(--border)',
-        background: isActive ? 'var(--accent-dim)' : 'var(--bg-card)',
-        color: isActive ? 'var(--accent)' : 'var(--text-3)',
-        transition: 'all 0.2s',
-        whiteSpace: 'nowrap',
-        textTransform: 'capitalize',
-    })
-
     return (
         <main style={{ minHeight: '100vh', paddingTop: '100px', background: 'var(--bg)' }}>
             {/* ── Breadcrumb & Title ── */}
@@ -93,71 +72,95 @@ export default function EventsPage() {
                 </p>
             </div>
 
-            {/* ── Filters ── */}
+            {/* ── Filter Bar ── */}
             <div style={{
-                maxWidth: 1400, margin: '0 auto', padding: '20px 28px 0',
+                maxWidth: 1400, margin: '0 auto', padding: '10px 28px 0',
             }}>
                 <div style={{
-                    display: 'flex', flexDirection: 'column', gap: 16,
+                    display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: 16,
                     background: 'var(--bg-card)', border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius)', padding: '20px 24px',
+                    borderRadius: 'var(--radius)', padding: '24px',
                 }}>
-                    {/* Date Filter */}
-                    <div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
-                            <Calendar size={12} style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />Date
-                        </div>
-                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                            <button onClick={() => setSelectedDate('all')} style={pillStyle(selectedDate === 'all')}>All Dates</button>
-                            {allDates.map(d => (
-                                <button key={d} onClick={() => setSelectedDate(d)} style={pillStyle(selectedDate === d)}>
-                                    {formatDatePill(d)}
-                                </button>
-                            ))}
-                        </div>
+                    {/* Date Picker */}
+                    <div style={{ flex: '1 1 200px', minWidth: 200 }}>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                            <Calendar size={11} style={{ marginRight: 6, verticalAlign: 'middle' }} /> Pick a Date
+                        </label>
+                        <input 
+                            type="date"
+                            value={selectedDate === 'all' ? '' : selectedDate}
+                            onChange={(e) => setSelectedDate(e.target.value || 'all')}
+                            style={{
+                                width: '100%', padding: '12px 14px', borderRadius: 12,
+                                background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+                                color: 'var(--text)', fontSize: 13, fontWeight: 500,
+                                colorScheme: 'dark', cursor: 'pointer'
+                            }}
+                        />
                     </div>
 
-                    {/* Pricing Filter */}
-                    <div>
-                        <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                    {/* Pricing Dropdown */}
+                    <div style={{ flex: '1 1 180px', minWidth: 150 }}>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
                             💰 Pricing
-                        </div>
-                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                            <button onClick={() => setSelectedPricing('all')} style={pillStyle(selectedPricing === 'all')}>All</button>
-                            <button onClick={() => setSelectedPricing('free')} style={pillStyle(selectedPricing === 'free')}>Free</button>
-                            <button onClick={() => setSelectedPricing('paid')} style={pillStyle(selectedPricing === 'paid')}>Paid</button>
-                        </div>
+                        </label>
+                        <select 
+                            value={selectedPricing}
+                            onChange={(e) => setSelectedPricing(e.target.value)}
+                            style={{
+                                width: '100%', padding: '12px 14px', borderRadius: 12,
+                                background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+                                color: 'var(--text)', fontSize: 13, fontWeight: 500,
+                                cursor: 'pointer', appearance: 'none',
+                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+                                backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center',
+                            }}
+                        >
+                            <option value="all">All Pricing</option>
+                            <option value="free">Free</option>
+                            <option value="paid">Paid</option>
+                        </select>
                     </div>
 
-                    {/* Category Filter */}
-                    {allCategories.length > 0 && (
-                        <div>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
-                                🏷️ Category
-                            </div>
-                            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                <button onClick={() => setSelectedCategory('all')} style={pillStyle(selectedCategory === 'all')}>All</button>
-                                {allCategories.map(c => (
-                                    <button key={c} onClick={() => setSelectedCategory(c)} style={pillStyle(selectedCategory === c)}>
-                                        {c}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                    {/* Category Dropdown */}
+                    <div style={{ flex: '1 1 180px', minWidth: 150 }}>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
+                            🏷️ Category
+                        </label>
+                        <select 
+                            value={selectedCategory}
+                            onChange={(e) => setSelectedCategory(e.target.value)}
+                            style={{
+                                width: '100%', padding: '12px 14px', borderRadius: 12,
+                                background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+                                color: 'var(--text)', fontSize: 13, fontWeight: 500,
+                                cursor: 'pointer', appearance: 'none',
+                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+                                backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center',
+                                textTransform: 'capitalize'
+                            }}
+                        >
+                            <option value="all">All Categories</option>
+                            {allCategories.map(c => (
+                                <option key={c} value={c}>{c}</option>
+                            ))}
+                        </select>
+                    </div>
 
-                    {/* Clear Filters */}
-                    {hasActiveFilters && (
-                        <button onClick={clearFilters} style={{
-                            display: 'inline-flex', alignItems: 'center', gap: 6,
-                            padding: '8px 16px', borderRadius: 100,
-                            background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)',
-                            color: '#f87171', fontSize: 12, fontWeight: 700,
-                            cursor: 'pointer', width: 'fit-content',
-                        }}>
-                            <X size={12} /> Clear all filters
-                        </button>
-                    )}
+                    {/* Reset Button */}
+                    <div style={{ flexShrink: 0, paddingBottom: 2 }}>
+                        {hasActiveFilters && (
+                            <button onClick={clearFilters} style={{
+                                display: 'inline-flex', alignItems: 'center', gap: 6,
+                                padding: '12px 20px', borderRadius: 100,
+                                background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)',
+                                color: '#f87171', fontSize: 12, fontWeight: 700,
+                                cursor: 'pointer', transition: 'all 0.2s',
+                            }} className="hover:bg-[rgba(248,113,113,0.15)]">
+                                <X size={14} /> Reset
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 

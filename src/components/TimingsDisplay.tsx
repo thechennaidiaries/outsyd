@@ -53,7 +53,7 @@ function expandTimings(raw: string): { day: string; short: string; time: string 
     return DAY_NAMES.map((d, i) => ({ 
         day: d, 
         short: DAY_SHORT[i], 
-        time: result[d] || '—' 
+        time: result[d] || 'Closed' 
     }))
 }
 

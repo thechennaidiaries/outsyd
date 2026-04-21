@@ -12,44 +12,49 @@ function expandTimings(raw: string): { day: string; short: string; time: string 
 
     if (/open 24 hours/i.test(cleaned)) {
         DAY_NAMES.forEach(d => (result[d] = 'Open 24 hours'))
+        return DAY_NAMES.map((d, i) => ({ day: d, short: DAY_SHORT[i], time: result[d] }))
     }
-    // ── New format: multiline "DayName<tab or spaces>Time" per line ──
-    else if (/\n/.test(cleaned)) {
-        const lines = cleaned.split('\n').map(l => l.trim()).filter(Boolean)
-        for (const line of lines) {
-            // Match "Tuesday   11 am–10 pm" or "Tuesday\t11 am–10 pm" or "Tuesday  Closed"
-            const match = line.match(/^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\s+(.+)$/i)
-            if (match) {
-                const dayName = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase()
-                result[dayName] = match[2].trim()
-            }
-        }
-        // Fill any missing days with '—'
-        DAY_NAMES.forEach(d => { if (!result[d]) result[d] = '—' })
+
+    // ── Smart Regex Detection ──
+    // Detects day names followed by their timings, handles single-line or multi-line
+    const dayRegex = /(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)(?:\s*[:\-–\s]\s*|\s+)([\w\d\s\–\-\:apm,]+?)(?=\s*(?:Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)|$)/gi
+    
+    let match
+    let foundDays = false
+    while ((match = dayRegex.exec(cleaned)) !== null) {
+        foundDays = true
+        const dayName = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase()
+        const timeValue = match[2].trim().replace(/^[:\-–\s]+/, '')
+        result[dayName] = timeValue
     }
-    // ── Old format: single-line like "All days 9AM-6PM. Thursday Closed" ──
-    else {
+
+    if (!foundDays) {
+        // ── Fallback: Old format "All days 9AM-6PM" ──
         let main = cleaned
         main = main.replace(/^All days\s+/i, '')
         main = main.replace(/^Daily\s+/i, '')
-        main = main.replace(/^[A-Z][a-z]{1,2}[–-][A-Z][a-z]{1,2}\s+/i, '')
-        main = main.replace(/\s*\(Sunday[^)]+\)/gi, '')
-        main = main.replace(/[,\.]\s*(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+Closed\s*$/gi, '')
         main = main.replace(/\s+daily$/i, '')
         main = main.trim()
 
         DAY_NAMES.forEach(d => (result[d] = main))
 
-        // Closed day override
-        const closedMatch = cleaned.match(/(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\s+Closed/i)
-        if (closedMatch) result[closedMatch[1]] = 'Closed'
-
-        // Sunday exception  "(Sunday 5 am–1 pm, 3–9 pm)"
+        // Sunday exception "(Sunday 5 am–1 pm, 3–9 pm)"
         const sunEx = cleaned.match(/\(Sunday\s+([^)]+)\)/i)
         if (sunEx) result['Sunday'] = sunEx[1].trim()
     }
 
-    return DAY_NAMES.map((d, i) => ({ day: d, short: DAY_SHORT[i], time: result[d] ?? '—' }))
+    // Always check for explicit "Closed" overrides regardless of format
+    const closedDays = cleaned.matchAll(/(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\s+Closed/gi)
+    for (const c of closedDays) {
+        const dayName = c[1].charAt(0).toUpperCase() + c[1].slice(1).toLowerCase()
+        result[dayName] = 'Closed'
+    }
+
+    return DAY_NAMES.map((d, i) => ({ 
+        day: d, 
+        short: DAY_SHORT[i], 
+        time: result[d] || '—' 
+    }))
 }
 
 export default function TimingsDisplay({ timings }: { timings: string }) {

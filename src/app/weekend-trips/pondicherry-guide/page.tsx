@@ -20,15 +20,18 @@ import {
   ShoppingBag,
   Music,
   Trees,
-  Navigation
+  Navigation,
+  Utensils,
+  History,
+  Info
 } from 'lucide-react'
 
-// --- Content Data ---
+// --- Raw PDF Content Organized ---
 
 const PLACES = [
   {
     name: 'Rock Beach',
-    description: "Pondicherry's most iconic waterfront - a rocky coastline, not a sandy beach. Car-free promenade makes evening and early morning walks genuinely peaceful.",
+    description: "Pondicherry's most iconic waterfront - a rocky coastline. Car-free promenade makes evening/morning walks genuinely peaceful.",
     maps: 'https://maps.app.goo.gl/VQymYTyQ1hZpKimf9',
     tag: 'Iconic'
   },
@@ -40,44 +43,62 @@ const PLACES = [
   },
   {
     name: 'Sadhana Forest',
-    description: 'A peaceful eco-community focused on sustainable living. Visit on Fridays for free tour + simple vegan meal.',
+    description: 'Peaceful eco-community. Visit on Fridays for free tour + simple vegan meal.',
     maps: 'https://maps.app.goo.gl/S19r8vpfAN1NSMC36',
-    tag: 'Eco-Living'
+    tag: 'Eco'
   },
   {
     name: 'Paradise Beach',
-    description: 'Clean beach you reach by boat - the ride is part of the experience. Best on weekdays to avoid crowds.',
+    description: 'Clean beach reached by boat. Ride is part of the experience. Best on weekdays.',
     maps: 'https://maps.app.goo.gl/TganrSjpL29qSkM76',
     tag: 'Beach'
   },
   {
     name: 'Sri Aurobindo Ashram',
-    description: 'Very calm and silent space in the middle of the city. Short visit, but worth it for a quiet break.',
+    description: 'Very calm and silent space in the middle of the city. Worth it for a quiet break.',
     maps: 'https://maps.app.goo.gl/wnSShXkXbV724qn27',
     tag: 'Spiritual'
   },
   {
     name: 'Serenity Beach',
-    description: 'One of the few beaches where you can actually surf. Good for sunset or a chill café session nearby.',
+    description: 'One of the few beaches where you can surf. Good for sunset or cafes.',
     maps: 'https://maps.app.goo.gl/AF1i8t5PfLim1fwR7',
     tag: 'Surf'
   },
   {
     name: 'Pichavaram Mangrove Forests',
-    description: 'Boat through narrow mangrove tunnels — very unique experience. Takes half a day, best done as a short trip.',
+    description: 'Boat through narrow mangrove tunnels — very unique experience. Half-day trip.',
     maps: 'https://maps.app.goo.gl/eXrnNGMPsVWsdDMJ6',
-    tag: 'Adventure'
+    tag: 'Eco'
   },
   {
     name: 'Mason & Co Chocolate Factory',
-    description: 'Learn how chocolate is made from bean to bar. Great place to try and buy dark chocolate.',
+    description: 'Learn how chocolate is made from bean to bar. Great place to try and buy chocolate.',
     maps: 'https://maps.app.goo.gl/FK96zCL9YbXGWLyt9',
-    tag: 'Culinary'
+    tag: 'Food'
   },
   {
-    name: 'Vinayak Temple',
-    description: 'Famous Ganesha temple right in White Town. 40+ forms of Ganesha are sculpted on the walls.',
+    name: 'Vinayak Temple (Manakula Vinayagar)',
+    description: 'Famous Ganesha temple in White Town. 40+ forms of Ganesha sculpted on walls.',
     maps: 'https://maps.app.goo.gl/SHm87DbnkSPpUxB89',
+    tag: 'Temple'
+  },
+  {
+    name: 'French War Memorial',
+    description: 'Small but well-kept memorial near the beach. Looks best in evening when lit up.',
+    maps: 'https://maps.app.goo.gl/SgYJRoPj2y4gtJJs9',
+    tag: 'History'
+  },
+  {
+    name: 'Chunnambar Boat House',
+    description: 'Starting point for Paradise Beach boats and water activities. Go early.',
+    maps: 'https://maps.app.goo.gl/mZLE5E1T6SjAHRWT9',
+    tag: 'Boating'
+  },
+  {
+    name: 'Sacred Heart Basilica',
+    description: 'Stunning Gothic-style Catholic church. Exquisite stained-glass windows depicting Biblical scenes.',
+    maps: 'https://maps.app.goo.gl/Uhk8Mu5JLxfDc4XS6',
     tag: 'Heritage'
   }
 ]
@@ -86,129 +107,115 @@ const ACTIVITIES = [
   {
     name: 'Surfing at Serenity Beach',
     description: 'Great place to try surfing, even as a beginner. Morning sessions are best.',
-    icon: <Waves size={20} />,
+    icon: <Waves size={18} />,
     maps: 'https://maps.app.goo.gl/EKw9FCps9xxux9H36'
   },
   {
-    name: 'Pottery Workshops in Auroville',
-    description: 'Hands-on pottery sessions with local artists. Calm, slow activity for a few hours.',
-    icon: <Camera size={20} />,
-    maps: 'https://maps.app.goo.gl/CawmHbNrxPSwXRPP9'
-  },
-  {
-    name: 'Night Walk on Promenade',
-    description: "The car-free promenade comes alive after 7pm. Street food, families, and waves crashing.",
-    icon: <Clock size={20} />,
-    maps: 'https://maps.app.goo.gl/KzjP24Zj21qNsJf6A'
-  },
-  {
-    name: 'Sunrise Cycling in White Town',
-    description: 'Early morning cycling is peaceful and empty. One of the best ways to explore the area.',
-    icon: <Bike size={20} />,
+    name: 'Cafe Hopping in White Town',
+    description: 'Most satisfying thing to do. Cafe Des Arts for coffee, Baker Street for croissants, Zuka for dessert.',
+    icon: <Utensils size={18} />,
     maps: 'https://maps.app.goo.gl/VPoaNu7DENNGAuWE9'
   },
   {
-    name: 'Walk Aimlessly in French Lanes',
-    description: 'The best activity that requires no planning. Every lane has colour-washed colonial villas and bougainvillea.',
-    icon: <Navigation size={20} />,
+    name: 'Pottery Workshops in Auroville',
+    description: 'Hands-on pottery sessions with local artists. Calm, slow activity.',
+    icon: <Compass size={18} />,
+    maps: 'https://maps.app.goo.gl/CawmHbNrxPSwXRPP9'
+  },
+  {
+    name: 'Street Shopping (Mission St)',
+    description: 'Busiest commercial stretch. Good for cotton kurtas, wooden curios, and Auroville products.',
+    icon: <ShoppingBag size={18} />,
+    maps: 'https://maps.app.goo.gl/TQUXKLb7yYAoHVuH6'
+  },
+  {
+    name: 'Night Walk on Promenade',
+    description: 'Comes alive after 7pm. Street food, families, waves crashing against rocks.',
+    icon: <Clock size={18} />,
+    maps: 'https://maps.app.goo.gl/KzjP24Zj21qNsJf6A'
+  },
+  {
+    name: 'Auroville Full-Day Experience',
+    description: 'Deserves a full day. Start at Visitors Centre, catch documentary, view Matrimandir.',
+    icon: <Palmtree size={18} />,
+    maps: 'https://maps.app.goo.gl/UkEmvVXan4AknDZw8'
+  },
+  {
+    name: 'Kayaking in Backwaters',
+    description: 'Quieter alternative to standard Paradise Beach boat ride. near Chunnambar.',
+    icon: <Waves size={18} />,
+    maps: 'https://maps.app.goo.gl/yUekyCb1wrUoqQK29'
+  },
+  {
+    name: 'Mangrove Boating (Pichavaram)',
+    description: "Row boats through narrow tunnels in Asia's second-largest mangrove.",
+    icon: <Trees size={18} />,
+    maps: 'https://maps.app.goo.gl/aCabNJWBQjGxTiWC7'
+  },
+  {
+    name: 'Sunrise Cycling',
+    description: 'Peaceful and empty in the early morning. Best way to explore White Town.',
+    icon: <Bike size={18} />,
+    maps: 'https://maps.app.goo.gl/VPoaNu7DENNGAuWE9'
+  },
+  {
+    name: 'Walk Aimlessly (French Lanes)',
+    description: 'Requires no planning. Colour-washed villas, bougainvillea, and quiet courtyards.',
+    icon: <Navigation size={18} />,
     maps: 'https://maps.app.goo.gl/kUP9fgKxpxJUsTmh9'
   },
   {
+    name: 'Visit Arikamedu Ruins',
+    description: 'Quiet historical site with very few visitors. Interesting if you like history.',
+    icon: <History size={18} />,
+    maps: 'https://maps.app.goo.gl/FiuzgFXWRmAKJKBh9'
+  },
+  {
     name: 'Karaoke at Mel Whisks',
-    description: 'Rooftop gastro bar with lively karaoke nights. Great piri piri wings and cocktails.',
-    icon: <Music size={20} />,
+    description: 'Rooftop gastro bar with active karaoke nights. Good cocktails and piri piri wings.',
+    icon: <Music size={18} />,
     maps: 'https://maps.app.goo.gl/oUNmV9FjgqxBEZsf6'
   }
 ]
 
 const FOOD = [
-  {
-    name: 'Le Cafe',
-    mustTry: 'Lasagna',
-    description: 'Sea view is the main highlight. Open 24/7, best for late night coffee or chill.',
-    maps: 'https://maps.app.goo.gl/FC9zQV7cW1e4taDp9'
-  },
-  {
-    name: 'Cafe Ole',
-    mustTry: 'Hot Chocolate (Dark & Dense)',
-    description: 'Small cosy spot with really good hot chocolate. Perfect place to sit and relax.',
-    maps: 'https://maps.app.goo.gl/3f6hXf75LNSxis1v9'
-  },
-  {
-    name: 'Canteen 18',
-    mustTry: 'Burgers (Miami Beef or Cajun Chicken)',
-    description: 'A tiny corner joint run by an American owner. Burgers are some of the best in Pondy.',
-    maps: 'https://maps.app.goo.gl/FXLfi5HkfHSC9daP9'
-  },
-  {
-    name: 'Kamatchi',
-    mustTry: 'Biryani (Mutton or Prawn)',
-    description: 'A packed, no-frills institution serving on banana leaves in South Indian style.',
-    maps: 'https://maps.app.goo.gl/r5VHqxcar8r3GaqeA'
-  },
-  {
-    name: 'Villa Shanti',
-    mustTry: 'Continental dishes (pasta, fish tikka)',
-    description: 'A stunning 19th-century French colonial villa courtyard. Premium feel, great for slow meals.',
-    maps: 'https://maps.app.goo.gl/gqpQgviB96Nvy2kbA'
-  },
-  {
-    name: 'Cafe Des Arts',
-    mustTry: 'Coffee + Crepes',
-    description: 'Legendary art-filled Franco-Tamil heritage house. The building is half the experience.',
-    maps: 'https://maps.app.goo.gl/QxEvrPnt5TM133Qq5'
-  },
-  {
-    name: 'Marc\'s Cafe',
-    mustTry: 'Pesto Pasta + Specialty Coffee',
-    description: 'Auroville\'s celebrated specialty coffee destination. Owner-roasted South Indian beans.',
-    maps: 'https://maps.app.goo.gl/Wz92FsYnL5cosxqS6'
-  },
-  {
-    name: 'Zuka',
-    mustTry: 'Pastries (Tiramisu, Brownies)',
-    description: 'The chocolate sibling of Cafe Ole. Tiramisu and Pecan Nut Pie Cake are outstanding.',
-    maps: 'https://maps.app.goo.gl/9ugsWZ67LTupLzEt8'
-  },
-  {
-    name: 'GMT',
-    mustTry: 'Gelato (Pistachio, Dark Chocolate)',
-    description: 'Italian gelato institution right on Promenade Beach. Over 60 flavours with organic milk.',
-    maps: 'https://maps.app.goo.gl/zfLcupAvkoJ1pX269'
-  }
+  { name: 'Le Cafe', details: 'Sea view highlight, open 24/7. Must try: Lasagna', maps: 'https://maps.app.goo.gl/FC9zQV7cW1e4taDp9' },
+  { name: 'Cafe Ole', details: 'Cosy spot, great break. Must try: Hot Chocolate (Dark & Dense)', maps: 'https://maps.app.goo.gl/3f6hXf75LNSxis1v9' },
+  { name: 'Brother\'s Pizzeria', details: 'Thin crust, simple and tasty. Must try: Chicken Tikka Pizza', maps: 'https://maps.app.goo.gl/7q6jcTPg1xXgZq249' },
+  { name: 'Cafe Veloute', details: 'Rooftop, good vibe. Must try: Ratatouille', maps: 'https://maps.app.goo.gl/q7Wo2KaUKvV8mYuXA' },
+  { name: 'Canteen 18', details: 'Tiny joint, American owner. Must try: Burgers', maps: 'https://maps.app.goo.gl/FXLfi5HkfHSC9daP9' },
+  { name: 'Kamatchi', details: 'South Indian institution, banana leaf. Must try: Biryani (Mutton/Prawn)', maps: 'https://maps.app.goo.gl/r5VHqxcar8r3GaqeA' },
+  { name: 'Red Chillies', details: 'Simple, reliable pizza place. Must try: Firewood Pizza', maps: 'https://share.google/AjFjnwjMjIBhPdUn7' },
+  { name: 'Villa Shanti', details: '19th-century courtyard, premium feel. Must try: Continental (Pasta, Fish Tikka)', maps: 'https://maps.app.goo.gl/gqpQgviB96Nvy2kbA' },
+  { name: 'Pasta Bar Veneto', details: 'Relaxed dinner, rich sauces. Must try: Pasta (Primavera/White Sauce)', maps: 'https://maps.app.goo.gl/uE76XiffdBaFUyjV8' },
+  { name: 'Cafe Rendezvous', details: 'Rooftop with live music. Must try: Pork Ribs in BBQ Sauce', maps: 'https://maps.app.goo.gl/wPKQxPSjpu86xpGp7' },
+  { name: 'Mel Whisks', details: 'Rooftop gastro bar, newer scene. Must try: Chicken Wings (Piri Piri)', maps: 'https://maps.app.goo.gl/FU7qTkn2j2XfnWS2A' },
+  { name: 'Cafe Des Arts', details: 'Legendary art-filled heritage house. Must try: Coffee + Crepes', maps: 'https://maps.app.goo.gl/QxEvrPnt5TM133Qq5' },
+  { name: 'Marc\'s Cafe', details: 'Celebrated specialty coffee in Auroville. Must try: Pesto Pasta', maps: 'https://maps.app.goo.gl/Wz92FsYnL5cosxqS6' },
+  { name: 'Hope Cafe', details: 'Graffiti building, neon art. Must try: Wood Fired Pizza', maps: 'https://maps.app.goo.gl/LUuhTPrDdpjREJRK6' },
+  { name: 'The Spot', details: 'Beachfront colonial property. Must try: Malabar Fish Curry', maps: 'https://maps.app.goo.gl/QBByRwhdR6fJnJVG6' },
+  { name: 'Baker Street', details: '8 generations of heritage. Must try: Almond Croissant', maps: 'https://maps.app.goo.gl/UraRpnxDZdxVDH9T7' },
+  { name: 'Zuka', details: 'The chocolate sibling of Cafe Ole. Must try: Pastries (Tiramisu, Brownies)', maps: 'https://maps.app.goo.gl/9ugsWZ67LTupLzEt8' },
+  { name: 'GMT', details: ' Gelato institution on Promenade. Must try: Gelato (Pistachio, Dark Chocolate)', maps: 'https://maps.app.goo.gl/zfLcupAvkoJ1pX269' },
+  { name: 'Frites Corner', details: 'Family-run garden café in Auroville. Must try: Sandwiches', maps: 'https://maps.app.goo.gl/ybAjfR72cKnnv9mV6' },
+  { name: 'Tanto Pizzeria', details: 'Very popular firewood pizza in Auroville. Must try: Normandy/Feta Mushroom', maps: 'https://maps.app.goo.gl/rBmZg24CfugVQx236' },
+  { name: 'Bread & Chocolate', details: 'Great brunch spot, healthy options. Must try: Almond Croissant', maps: 'https://maps.app.goo.gl/y9c45S6hrNjUnPEcA' },
+  { name: 'Auroville Bakery & Cafe', details: 'Simple bakery, fresh items daily. Must try: Brownie (Walnut/Choco-date)', maps: 'https://maps.app.goo.gl/T78AR1yHfboyszFk6' }
 ]
 
 const STAYS = [
-  {
-    name: 'Palais de Mahe',
-    type: 'Luxury Boutique',
-    description: 'The finest stay in Pondicherry. A CGH Earth property with 18 luxury suites in the French Quarter.',
-    maps: 'https://maps.app.goo.gl/Tb5PJ2SLjMzfaEMG6'
-  },
-  {
-    name: 'Villa Shanti',
-    type: 'Colonial Boutique',
-    description: 'Colonial boutique hotel and restaurant in White Town. Rooms overlook a lush courtyard.',
-    maps: 'https://maps.app.goo.gl/dbsC8mNyJneKMGeq7'
-  },
-  {
-    name: 'Micasa',
-    type: 'Premium Hostel',
-    description: 'A premium budget hostel on MG Road. Walkable to cafes, Rock Beach, and French Quarter.',
-    maps: 'https://maps.app.goo.gl/aqFrgojoL7rXMfSJ9'
-  },
-  {
-    name: 'Zostel',
-    type: 'Social Hostel',
-    description: 'Part of India\'s most trusted chain. Good base on Auroville Road for a no-surprises experience.',
-    maps: 'https://maps.app.goo.gl/1Nis7RnBGrrYSr8W6'
-  },
-  {
-    name: 'Savana Stay',
-    type: 'Boutique Hotel',
-    description: 'TripAdvisor Travellers\' Choice near Auroville Beach with a pool and garden. Very clean.',
-    maps: 'https://maps.app.goo.gl/skNUKjG9GS9X2WvPA'
-  }
+  { name: 'Micasa', details: 'Premium budget hostel on MG Road. Walkable to everything.', maps: 'https://maps.app.goo.gl/aqFrgojoL7rXMfSJ9' },
+  { name: 'Nomad House', details: 'Quiet, homely hostel with a calm atmosphere.', maps: 'https://maps.app.goo.gl/qi6evKRkfcGjsCFbA' },
+  { name: 'Woodpacker', details: 'Nature-surrounded Auroville hostel, popular with solo females.', maps: 'https://maps.app.goo.gl/25ajwe5WqAU3MKni7' },
+  { name: 'Ostel.in', details: 'Clean and well-managed hostel, good comfort + affordability.', maps: 'https://maps.app.goo.gl/6JYatQXJhb54F2u78' },
+  { name: 'Zostel', details: 'Trusted chain, good base on Auroville Road.', maps: 'https://maps.app.goo.gl/1Nis7RnBGrrYSr8W6' },
+  { name: 'Unpack Hostel', details: 'Consistently well-reviewed, popular with solo and couples alike.', maps: 'https://maps.app.goo.gl/nhwqKFsNQHkVp7jk6' },
+  { name: 'The Last Stop', details: 'Fun hostel with social vibe and activities.', maps: 'https://maps.app.goo.gl/r3aQb5V6fC1GtgHX9' },
+  { name: 'Savana Stay', details: 'Boutique hotel near Auroville Beach with pool.', maps: 'https://maps.app.goo.gl/skNUKjG9GS9X2WvPA' },
+  { name: 'Le Pondy', details: 'Large beachfront resort near Paradise Beach.', maps: 'https://maps.app.goo.gl/xYMHasYgaaWpeqVm7' },
+  { name: 'Accord Puducherry', details: 'Top full-service hotel, South Indian thali is highly rated.', maps: 'https://maps.app.goo.gl/oisq44idSFGjbYrs9' },
+  { name: 'Palais de Mahe', details: 'Finest stay in French Quarter. Iconic CGH Earth property.', maps: 'https://maps.app.goo.gl/Tb5PJ2SLjMzfaEMG6' },
+  { name: 'Villa Shanti', details: 'Colonial boutique hotel, great eat-and-stay experience.', maps: 'https://maps.app.goo.gl/dbsC8mNyJneKMGeq7' }
 ]
 
 export default function PondicherryGuide() {
@@ -265,17 +272,17 @@ export default function PondicherryGuide() {
         
         <div style={{ padding: 24 }}>
           <div style={{ display: 'inline-block', padding: '6px 12px', background: 'var(--accent-dim)', borderRadius: 100, color: 'var(--accent)', fontSize: 12, fontWeight: 800, textTransform: 'uppercase', marginBottom: 16 }}>Pondicherry Guide</div>
-          <h1 style={{ fontSize: 'clamp(40px, 8vw, 80px)', fontFamily: '"Bodoni Moda", serif', fontWeight: 800, lineHeight: 1, marginBottom: 16 }}>Real Picks by <br/><span style={{ fontFamily: '"Caveat", cursive', color: 'var(--accent)' }}>Locals & Travelers</span></h1>
-          <p style={{ color: 'var(--text-2)', maxWidth: 600, margin: '0 auto', fontSize: 16, lineHeight: 1.6 }}>Curated from insights shared by Redditors and solo travellers who actually explored the city. Honesty over hype.</p>
+          <h1 style={{ fontSize: 'clamp(40px, 8vw, 80px)', fontFamily: '"Bodoni Moda", serif', fontWeight: 800, lineHeight: 1, marginBottom: 16 }}>Pondy Full <br/><span style={{ fontFamily: '"Caveat", cursive', color: 'var(--accent)' }}>Trip Guide</span></h1>
+          <p style={{ color: 'var(--text-2)', maxWidth: 600, margin: '0 auto', fontSize: 16, lineHeight: 1.6 }}>Curated from insights shared by Redditors, locals, and solo travellers who’ve actually explored the city.</p>
         </div>
       </section>
 
       {/* Nav */}
       <div style={{ position: 'sticky', top: 0, zIndex: 90, background: 'var(--bg)', borderBottom: '1px solid var(--border)', padding: '12px 0' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'center', gap: 12, overflowX: 'auto', padding: '0 20px' }} className="no-scrollbar">
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', justifyContent: 'center', gap: 6, overflowX: 'auto', padding: '0 20px' }} className="no-scrollbar">
           {['overview', 'explore', 'do', 'eat', 'stay'].map(s => (
             <button key={s} onClick={() => scrollTo(s)} style={{
-              padding: '8px 20px', borderRadius: 100, fontSize: 14, fontWeight: 700, cursor: 'pointer', border: '1px solid transparent',
+              padding: '6px 14px', borderRadius: 100, fontSize: 13, fontWeight: 700, cursor: 'pointer', border: '1px solid transparent',
               background: activeSection === s ? 'var(--accent-dim)' : 'transparent',
               color: activeSection === s ? 'var(--accent)' : 'var(--text-3)',
               borderColor: activeSection === s ? 'var(--accent-border)' : 'transparent'
@@ -284,28 +291,31 @@ export default function PondicherryGuide() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 900, margin: '60px auto', padding: '0 24px' }}>
+      <div style={{ maxWidth: 1000, margin: '60px auto', padding: '0 24px' }}>
         
         {/* Overview */}
         <section id="overview" style={{ marginBottom: 100 }}>
           <div className="glass-panel" style={{ padding: 40, borderRadius: 'var(--radius-lg)', textAlign: 'center' }}>
-            <MessageSquareQuote size={40} color="var(--accent)" style={{ marginBottom: 20 }} />
-            <p style={{ fontSize: 20, lineHeight: 1.8, color: 'var(--text-2)', fontStyle: 'italic' }}>
-              "Pondicherry is more than just a destination; it's a feeling. This guide focuses on real experiences, honest picks, and places that are truly worth your time."
+            <MessageSquareQuote size={40} color="var(--accent)" style={{ marginBottom: 20, margin: '0 auto 20px' }} />
+            <p style={{ fontSize: 18, lineHeight: 1.8, color: 'var(--text-2)', margin: 0 }}>
+              "This guide focuses on real experiences, honest picks, and places that are truly worth your time. No fluff, just the best of Pondicherry."
             </p>
           </div>
         </section>
 
         {/* Explore */}
         <section id="explore" style={{ marginBottom: 120 }}>
-          <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', marginBottom: 40, color: 'var(--accent)' }}>Places to Visit</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
+          <div style={{ borderLeft: '4px solid var(--accent)', paddingLeft: 20, marginBottom: 40 }}>
+            <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif' }}>Places to Visit</h2>
+            <p style={{ color: 'var(--text-3)', fontSize: 14 }}>Must-see spots and hidden gems</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
             {PLACES.map(p => (
-              <div key={p.name} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 24, borderRadius: 'var(--radius)', position: 'relative' }}>
-                <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 8, display: 'block' }}>{p.tag}</span>
-                <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 12 }}>{p.name}</h3>
+              <div key={p.name} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 24, borderRadius: 'var(--radius)', transition: 'all 0.3s ease' }}>
+                <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 12, display: 'block' }}>{p.tag}</span>
+                <h3 style={{ fontSize: 18, fontWeight: 800, marginBottom: 8 }}>{p.name}</h3>
                 <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.6, marginBottom: 20 }}>{p.description}</p>
-                <a href={p.maps} target="_blank" style={{ color: 'var(--text-3)', display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}><MapPin size={14} /> Open Maps</a>
+                <a href={p.maps} target="_blank" style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: 'var(--text)', textDecoration: 'none', background: 'var(--bg-elevated)', width: 'fit-content', padding: '6px 12px', borderRadius: 8 }}><Navigation size={12} /> View on Maps</a>
               </div>
             ))}
           </div>
@@ -313,14 +323,18 @@ export default function PondicherryGuide() {
 
         {/* Do */}
         <section id="do" style={{ marginBottom: 120 }}>
-          <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', marginBottom: 40, color: 'var(--accent)' }}>Things to Do</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+          <div style={{ borderLeft: '4px solid var(--accent)', paddingLeft: 20, marginBottom: 40 }}>
+            <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif' }}>Activities</h2>
+            <p style={{ color: 'var(--text-3)', fontSize: 14 }}>Things you should actually do</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
             {ACTIVITIES.map(a => (
-              <div key={a.name} style={{ display: 'flex', gap: 20, background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 24, borderRadius: 'var(--radius)' }}>
-                <div style={{ width: 48, height: 48, background: 'var(--accent-dim)', color: 'var(--accent)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{a.icon}</div>
+              <div key={a.name} style={{ display: 'flex', gap: 16, background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 20, borderRadius: 'var(--radius)' }}>
+                <div style={{ width: 44, height: 44, background: 'var(--accent-dim)', color: 'var(--accent)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{a.icon}</div>
                 <div>
-                  <h3 style={{ fontSize: 17, fontWeight: 700, marginBottom: 6 }}>{a.name}</h3>
-                  <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.5 }}>{a.description}</p>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>{a.name}</h3>
+                  <p style={{ fontSize: 14, color: 'var(--text-2)', lineHeight: 1.5, marginBottom: 12 }}>{a.description}</p>
+                  <a href={a.maps} target="_blank" style={{ fontSize: 12, color: 'var(--text-3)', display: 'flex', alignItems: 'center', gap: 4, textDecoration: 'none' }}>Location <ExternalLink size={12} /></a>
                 </div>
               </div>
             ))}
@@ -329,33 +343,35 @@ export default function PondicherryGuide() {
 
         {/* Eat */}
         <section id="eat" style={{ marginBottom: 120 }}>
-          <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', marginBottom: 40, color: 'var(--accent)' }}>Must Try Food</h2>
-          <div style={{ display: 'grid', gap: 16 }}>
+          <div style={{ borderLeft: '4px solid var(--accent)', paddingLeft: 20, marginBottom: 40 }}>
+            <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif' }}>Must Try Food</h2>
+            <p style={{ color: 'var(--text-3)', fontSize: 14 }}>20+ curated cafes and restaurants</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: 12 }}>
             {FOOD.map(f => (
-              <div key={f.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '20px 24px', borderRadius: 'var(--radius)' }}>
+              <div key={f.name} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '16px 20px', borderRadius: 14 }}>
                 <div style={{ flex: 1 }}>
-                  <h3 style={{ fontSize: 18, fontWeight: 800 }}>{f.name}</h3>
-                  <p style={{ fontSize: 14, color: 'var(--text-2)', margin: '4px 0' }}>{f.description}</p>
-                  <div style={{ fontSize: 13, color: 'var(--accent)', fontWeight: 600 }}>Must try: {f.mustTry}</div>
+                  <h3 style={{ fontSize: 17, fontWeight: 800 }}>{f.name}</h3>
+                  <p style={{ fontSize: 14, color: 'var(--text-2)', margin: '2px 0' }}>{f.details}</p>
                 </div>
-                <a href={f.maps} target="_blank" style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-3)' }}><ExternalLink size={18} /></a>
+                <a href={f.maps} target="_blank" style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-3)', marginLeft: 16 }}><ExternalLink size={16} /></a>
               </div>
             ))}
           </div>
         </section>
 
         {/* Stay */}
-        <section id="stay">
-          <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif', marginBottom: 40, color: 'var(--accent)' }}>Stays We Recommend</h2>
-          <div style={{ display: 'grid', gap: 24 }}>
+        <section id="stay" style={{ marginBottom: 60 }}>
+          <div style={{ borderLeft: '4px solid var(--accent)', paddingLeft: 20, marginBottom: 40 }}>
+            <h2 style={{ fontSize: 32, fontFamily: '"Bodoni Moda", serif' }}>Stays</h2>
+            <p style={{ color: 'var(--text-3)', fontSize: 14 }}>From hostels to luxury boutiques</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
             {STAYS.map(s => (
-              <div key={s.name} className="glass-panel" style={{ padding: 32, borderRadius: 'var(--radius-lg)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: 4, display: 'block' }}>{s.type}</span>
-                  <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>{s.name}</h3>
-                  <p style={{ color: 'var(--text-2)', fontSize: 15, maxWidth: 500 }}>{s.description}</p>
-                </div>
-                <a href={s.maps} target="_blank" style={{ padding: '12px 24px', background: 'var(--accent)', color: 'white', fontWeight: 800, borderRadius: 100, textDecoration: 'none', fontSize: 14 }}>View Deals</a>
+              <div key={s.name} style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: 24, borderRadius: 'var(--radius)', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ fontSize: 19, fontWeight: 800, marginBottom: 8 }}>{s.name}</h3>
+                <p style={{ color: 'var(--text-2)', fontSize: 14, lineHeight: 1.6, marginBottom: 20, flex: 1 }}>{s.details}</p>
+                <a href={s.maps} target="_blank" style={{ textAlign: 'center', padding: '10px 0', background: 'var(--accent-dim)', color: 'var(--accent)', fontWeight: 800, borderRadius: 10, textDecoration: 'none', fontSize: 13, border: '1px solid var(--accent-border)' }}>View Location</a>
               </div>
             ))}
           </div>
@@ -363,10 +379,15 @@ export default function PondicherryGuide() {
 
       </div>
 
-      <footer style={{ padding: '100px 24px', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
-        <p style={{ color: 'var(--text-3)', fontSize: 13 }}>Follow for more weekend guides</p>
-        <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: 24, marginTop: 12 }}>Stay Outsyd.</h2>
+      <footer style={{ padding: '60px 24px', textAlign: 'center', borderTop: '1px solid var(--border)' }}>
+        <h2 style={{ fontFamily: '"Bodoni Moda", serif', fontSize: 24 }}>Pondicherry Guide</h2>
+        <p style={{ color: 'var(--text-3)', fontSize: 12, marginTop: 8 }}>All information curated from traveler reviews and local insights.</p>
       </footer>
+      
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </main>
   )
 }

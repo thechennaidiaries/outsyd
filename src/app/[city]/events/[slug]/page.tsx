@@ -90,9 +90,11 @@ export default function EventDetailPage({ params }: Props) {
                         }}>
                             {event.title}
                         </h1>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,0.65)', fontSize: 14, fontWeight: 500 }}>
-                            <MapPin size={13} /> {event.venue}
-                        </div>
+                        {event.venue && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'rgba(255,255,255,0.65)', fontSize: 14, fontWeight: 500 }}>
+                                <MapPin size={13} /> {event.venue}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -113,9 +115,11 @@ export default function EventDetailPage({ params }: Props) {
                     </p>
                 </DetailCard>
 
-                <DetailCard icon={<Home size={18} />} label="Venue">
-                    <p style={{ fontSize: 14, color: 'var(--text)', lineHeight: 1.6, margin: 0 }}>{event.venue}</p>
-                </DetailCard>
+                {event.venue && (
+                    <DetailCard icon={<Home size={18} />} label="Venue">
+                        <p style={{ fontSize: 14, color: 'var(--text)', lineHeight: 1.6, margin: 0 }}>{event.venue}</p>
+                    </DetailCard>
+                )}
 
                 {event.address && (
                     <DetailCard icon={<MapPin size={18} />} label="Address">

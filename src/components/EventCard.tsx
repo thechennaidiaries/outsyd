@@ -61,15 +61,18 @@ export default function EventCard({ event, citySlug }: Props) {
                 }} />
 
                 {/* Pricing badge */}
-                <div style={{
-                    position: 'absolute', top: 10, right: 10,
-                    padding: '4px 10px', borderRadius: 100,
-                    background: event.pricingType === 'free' ? 'rgba(34,197,94,0.9)' : 'rgba(255,107,0,0.9)',
-                    color: '#fff', fontSize: 10, fontWeight: 800,
-                    textTransform: 'uppercase', letterSpacing: '0.05em',
-                }}>
-                    {event.pricingType === 'free' ? 'Free' : event.pricing ?? 'Paid'}
-                </div>
+                {(event.pricingType || event.pricing) && (
+                    <div style={{
+                        position: 'absolute', top: 10, right: 10,
+                        padding: '4px 10px', borderRadius: 100,
+                        background: event.pricingType === 'free' ? 'rgba(34,197,94,0.9)' : 'rgba(255,107,0,0.9)',
+                        color: '#fff', fontSize: 10, fontWeight: 800,
+                        textTransform: 'uppercase', letterSpacing: '0.05em',
+                        zIndex: 1,
+                    }}>
+                        {event.pricingType === 'free' ? 'Free' : event.pricing ?? 'Paid'}
+                    </div>
+                )}
 
                 {/* Title + Date overlay at bottom */}
                 <div style={{

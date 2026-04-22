@@ -6,7 +6,7 @@ export interface Event {
     title: string
     description?: string        // 1 line about the event
     cityId: string              // References City.id
-    venue: string               // Venue name
+    venue?: string               // Venue name
     address?: string            // Address of the venue
     mapsLink?: string           // Google Maps link
     bookingLink?: string        // Booking URL
@@ -14,7 +14,7 @@ export interface Event {
     date: string                // ISO date string (YYYY-MM-DD)
     time?: string               // e.g. "7:00 PM – 10:00 PM"
     categories?: string[]       // Event categories for filtering
-    pricingType: PricingType    // 'free' or 'paid'
+    pricingType?: PricingType    // 'free' or 'paid'
     pricing?: string            // Pricing details text, e.g. "₹499 per person"
 }
 

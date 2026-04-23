@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Calendar } from 'lucide-react'
 import type { Event } from '@/data/events'
+import SaveItemButton from '@/components/SaveItemButton'
 
 interface Props {
     event: Event
@@ -19,21 +20,31 @@ export default function EventCard({ event, citySlug }: Props) {
     })
 
     return (
-        <Link
-            href={`/${citySlug}/events/${event.slug}`}
+        <div
             style={{
+                position: 'relative',
                 display: 'flex', flexDirection: 'column',
                 background: 'var(--bg-card)',
                 borderRadius: 'var(--radius)',
                 border: '1px solid var(--border)',
                 overflow: 'hidden',
-                textDecoration: 'none',
-                cursor: 'pointer',
                 transition: 'transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease',
                 boxShadow: 'var(--shadow-card)',
             }}
             className="group hover:border-[var(--accent-border)] hover:-translate-y-[4px] hover:shadow-[0_16px_48px_rgba(0,0,0,0.6)]"
         >
+            <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+                <SaveItemButton type="event" slug={event.slug} citySlug={citySlug} compact iconOnly />
+            </div>
+
+            <Link
+                href={`/${citySlug}/events/${event.slug}`}
+                style={{
+                    display: 'flex', flexDirection: 'column',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                }}
+            >
             {/* Image — 3:4 portrait (same as ActivityCard) */}
             <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: 'var(--bg-elevated)', flexShrink: 0 }}>
                 {!imgErr ? (
@@ -63,7 +74,7 @@ export default function EventCard({ event, citySlug }: Props) {
                 {/* Pricing badge */}
                 {(event.pricingType || event.pricing) && (
                     <div style={{
-                        position: 'absolute', top: 10, right: 10,
+                        position: 'absolute', top: 10, left: 10,
                         padding: '4px 10px', borderRadius: 100,
                         background: event.pricingType === 'free' ? 'rgba(34,197,94,0.9)' : 'rgba(255,107,0,0.9)',
                         color: '#fff', fontSize: 10, fontWeight: 800,
@@ -98,6 +109,7 @@ export default function EventCard({ event, citySlug }: Props) {
                     </span>
                 </div>
             </div>
-        </Link>
+            </Link>
+        </div>
     )
 }

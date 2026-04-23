@@ -7,7 +7,8 @@ import { getWalksByCity } from '@/data/walks'
 import { getEventsByCity } from '@/data/events'
 import { getCityBySlug } from '@/data/cities'
 import { notFound } from 'next/navigation'
-import { MapPin, Calendar, X, ArrowRight, RefreshCw, Bookmark, BookmarkCheck, Footprints } from 'lucide-react'
+import { MapPin, Calendar, X, ArrowRight, RefreshCw, Footprints } from 'lucide-react'
+import SaveItemButton from '@/components/SaveItemButton'
 
 // Unified type for both activities and walks in the surprise deck
 interface SurpriseItem {
@@ -100,7 +101,6 @@ export default function SurprisePage() {
     const [offset, setOffset] = useState(0)
     const [dragging, setDragging] = useState(false)
     const [flying, setFlying] = useState<'left' | 'right' | null>(null)
-    const [saved, setSaved] = useState(false)
     const [imgErr, setImgErr] = useState(false)
     const [showOnboarding, setShowOnboarding] = useState(false)
     const startX = useRef(0)
@@ -152,7 +152,6 @@ export default function SurprisePage() {
                         : `/${citySlug}/activities/${item.slug}`
                     router.push(route)
                 } else {
-                    setSaved(false)
                     setImgErr(false)
                     setIdx(i => i + 1)
                     setFlying(null)
@@ -170,7 +169,7 @@ export default function SurprisePage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [citySlug])
 
-    const onReset = () => { setDeck(buildPool()); setIdx(0); setOffset(0); setFlying(null); setSaved(false); setImgErr(false) }
+    const onReset = () => { setDeck(buildPool()); setIdx(0); setOffset(0); setFlying(null); setImgErr(false) }
 
     // Return nothing until deck is ready (avoids hydration mismatch)
     if (deck.length === 0) return null
@@ -397,6 +396,10 @@ export default function SurprisePage() {
                                 }
                             `}</style>
 
+                            <div style={{ position: 'absolute', top: 16, right: 14, zIndex: 25 }}>
+                                <SaveItemButton type={item.type} slug={item.slug} citySlug={citySlug} compact iconOnly />
+                            </div>
+
                             {/* SKIP label — left swipe indicator */}
                             <div style={{
                                 position: 'absolute', top: 24, left: 20,
@@ -477,7 +480,7 @@ export default function SurprisePage() {
                         onClick={() => {
                             setFlying('left')
                             setOffset(-700)
-                            setTimeout(() => { setSaved(false); setImgErr(false); setIdx(i => i + 1); setFlying(null); setOffset(0) }, 380)
+                            setTimeout(() => { setImgErr(false); setIdx(i => i + 1); setFlying(null); setOffset(0) }, 380)
                         }}
                         style={{
                             width: 62, height: 62, borderRadius: '50%',
@@ -525,4 +528,3 @@ export default function SurprisePage() {
         </div>
     )
 }
-

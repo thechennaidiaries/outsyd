@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { MapPin, Clock, Calendar, Navigation, ArrowLeft, Home, FileText, Tag, DollarSign, Ticket } from 'lucide-react'
 import EventCard from '@/components/EventCard'
 import ShareButton from '@/components/ShareButton'
+import SaveItemButton from '@/components/SaveItemButton'
 
 interface Props {
     params: { city: string; slug: string }
@@ -155,6 +156,7 @@ export default function EventDetailPage({ params }: Props) {
 
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', gap: 12, marginTop: 8, marginBottom: 56 }} className="flex-col md:flex-row">
+                    <SaveItemButton type="event" slug={event.slug} citySlug={city.id} />
                     <ShareButton title={event.title} text={`Check out ${event.title} at ${event.venue} on TBOC ${city.name}`} />
                     {event.status === 'expired' ? (
                         <div

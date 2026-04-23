@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Bookmark } from 'lucide-react'
 import ActivityCard from '@/components/ActivityCard'
 import { getActivitiesByCity } from '@/data/activities'
 import { getCityBySlug } from '@/data/cities'
@@ -45,6 +45,27 @@ export default function ActivitiesPage() {
         <p style={{ fontSize: 16, color: 'var(--text-3)', fontWeight: 400, letterSpacing: '-0.01em' }}>
           Explore the best activities {city.name} has to offer
         </p>
+
+        <div style={{ marginTop: 18 }}>
+          <Link
+            href="/saved"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '10px 14px',
+              borderRadius: 999,
+              border: '1px solid var(--border)',
+              background: 'var(--bg-card)',
+              color: 'var(--text)',
+              textDecoration: 'none',
+              fontSize: 13,
+              fontWeight: 700,
+            }}
+          >
+            <Bookmark size={14} /> View saved items
+          </Link>
+        </div>
       </div>
 
       {/* Activities Grid */}

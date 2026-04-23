@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { MapPin, Navigation, ArrowLeft, Home, Footprints } from 'lucide-react'
 import ShareButton from '@/components/ShareButton'
+import SaveItemButton from '@/components/SaveItemButton'
 
 interface Props {
     params: { city: string; slug: string }
@@ -200,6 +201,7 @@ export default function WalkDetailPage({ params }: Props) {
 
                 {/* Share + Maps buttons */}
                 <div style={{ display: 'flex', gap: 12, marginTop: 8, marginBottom: 56 }} className="flex-col md:flex-row">
+                    <SaveItemButton type="walk" slug={walk.slug} citySlug={city.id} />
                     <ShareButton title={walk.title} text={`Check out ${walk.title} on TBOC ${city.name}`} />
                     <a
                         href={walk.mapsLink}

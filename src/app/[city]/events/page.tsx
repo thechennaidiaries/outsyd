@@ -33,7 +33,7 @@ export default function EventsPage() {
 
     useEffect(() => {
         setShuffledAllEvents(shuffleArray(allEvents))
-    }, [allEvents])
+    }, [city.id])
 
     // Filter state
     const [selectedDate, setSelectedDate] = useState<string>('all')

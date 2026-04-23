@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
@@ -7,6 +7,15 @@ import { ArrowLeft, Calendar, Filter, X } from 'lucide-react'
 import EventCard from '@/components/EventCard'
 import { getEventsByCity, getCategoriesByCity, getDatesByCity } from '@/data/events'
 import { getCityBySlug } from '@/data/cities'
+
+function shuffleArray<T>(arr: T[]): T[] {
+    const copy = [...arr]
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]]
+    }
+    return copy
+}
 
 export default function EventsPage() {
     const params = useParams()
@@ -19,19 +28,26 @@ export default function EventsPage() {
     const allCategories = getCategoriesByCity(city.id)
     const allDates = getDatesByCity(city.id)
 
+    // Shuffled version for initial display
+    const [shuffledAllEvents, setShuffledAllEvents] = useState<typeof allEvents>([])
+
+    useEffect(() => {
+        setShuffledAllEvents(shuffleArray(allEvents))
+    }, [allEvents])
+
     // Filter state
     const [selectedDate, setSelectedDate] = useState<string>('all')
     const [selectedPricing, setSelectedPricing] = useState<string>('all')
     const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
     const filteredEvents = useMemo(() => {
-        return allEvents.filter(e => {
+        return shuffledAllEvents.filter(e => {
             if (selectedDate !== 'all' && e.date !== selectedDate) return false
             if (selectedPricing !== 'all' && e.pricingType !== selectedPricing) return false
             if (selectedCategory !== 'all' && !e.categories?.includes(selectedCategory)) return false
             return true
         })
-    }, [allEvents, selectedDate, selectedPricing, selectedCategory])
+    }, [shuffledAllEvents, selectedDate, selectedPricing, selectedCategory])
 
     const hasActiveFilters = selectedDate !== 'all' || selectedPricing !== 'all' || selectedCategory !== 'all'
 

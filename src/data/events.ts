@@ -1,4 +1,5 @@
 export type PricingType = 'free' | 'paid'
+export type EventStatus = 'active' | 'expired'
 
 export interface Event {
     id: string
@@ -16,6 +17,7 @@ export interface Event {
     categories?: string[]       // Event categories for filtering
     pricingType?: PricingType    // 'free' or 'paid'
     pricing?: string            // Pricing details text, e.g. "₹499 per person"
+    status?: EventStatus        // 'active' or 'expired' — defaults to 'active'
 }
 
 // ── Events Database ──────────────────────────────────────────────
@@ -33,6 +35,7 @@ export const EVENTS: Event[] = [
         categories: ['Stranger Trips'],
         pricingType: 'paid',
         pricing: '₹6500',
+        status: 'active',
     },
     {
         id: 'evt-2',
@@ -44,6 +47,7 @@ export const EVENTS: Event[] = [
         image: 'https://ik.imagekit.io/zxnq8x4yz/Youth_playing_cards_202604222233.jpeg',
         date: '2026-04-25',
         categories: ['Stranger Meetup'],
+        status: 'active',
     },
     {
         id: 'evt-3',
@@ -55,6 +59,7 @@ export const EVENTS: Event[] = [
         image: 'https://ik.imagekit.io/zxnq8x4yz/Resize_this_image_202604222320.jpeg',
         date: '2026-04-26',
         categories: ['Stranger Meetup'],
+        status: 'active',
     },
     {
         id: 'evt-4',
@@ -66,6 +71,7 @@ export const EVENTS: Event[] = [
         image: 'https://ik.imagekit.io/zxnq8x4yz/Resize_image_into_202604222247.jpeg',
         date: '2026-04-26',
         categories: ['Stranger Meetup'],
+        status: 'active',
     },
     {
         id: 'evt-5',
@@ -77,6 +83,7 @@ export const EVENTS: Event[] = [
         image: 'https://ik.imagekit.io/zxnq8x4yz/Men_and_women_202604222242.jpeg',
         date: '2026-04-25',
         categories: ['Stranger Trips'],
+        status: 'active',
     },
     {
         id: 'evt-6',
@@ -89,6 +96,7 @@ export const EVENTS: Event[] = [
         date: '2026-04-25',
         time: '5:00 PM',
         categories: ['Stranger Meetup'],
+        status: 'active',
     },
     {
         id: 'evt-7',
@@ -102,6 +110,7 @@ export const EVENTS: Event[] = [
         date: '2026-04-25',
         time: '6:00 AM',
         categories: ['Runs'],
+        status: 'active',
     },
     {
         id: 'evt-8',
@@ -116,6 +125,7 @@ export const EVENTS: Event[] = [
         categories: ['Stranger Meetup'],
         pricingType: 'paid',
         pricing: '₹799',
+        status: 'active',
     },
     {
         id: 'evt-9',
@@ -130,6 +140,7 @@ export const EVENTS: Event[] = [
         time: '6:00 AM',
         categories: ['Runs'],
         pricingType: 'free',
+        status: 'active',
     },
     {
         id: 'evt-10',
@@ -142,6 +153,7 @@ export const EVENTS: Event[] = [
         image: 'https://ik.imagekit.io/zxnq8x4yz/Resize_image_replace_202604222310.jpeg',
         date: '2026-04-25',
         categories: ['Runs'],
+        status: 'active',
     },
     {
         id: 'evt-11',
@@ -159,6 +171,7 @@ export const EVENTS: Event[] = [
         categories: ['Singles Mixer'],
         pricingType: 'paid',
         pricing: '₹799',
+        status: 'active',
     },
     {
         id: 'evt-12',
@@ -176,6 +189,7 @@ export const EVENTS: Event[] = [
         categories: ['Singles Mixer'],
         pricingType: 'paid',
         pricing: '₹199',
+        status: 'active',
     },
     {
         id: 'evt-13',
@@ -193,6 +207,7 @@ export const EVENTS: Event[] = [
         categories: ['Stranger Meetup'],
         pricingType: 'paid',
         pricing: '₹199',
+        status: 'active',
     },
     {
         id: 'evt-14',
@@ -210,6 +225,7 @@ export const EVENTS: Event[] = [
         categories: ['Singles Mixer'],
         pricingType: 'paid',
         pricing: '₹199',
+        status: 'active',
     },
     {
         id: 'evt-15',
@@ -227,6 +243,7 @@ export const EVENTS: Event[] = [
         categories: ['Workshop'],
         pricingType: 'paid',
         pricing: '₹199',
+        status: 'active',
     },
     {
         id: 'evt-16',
@@ -244,6 +261,7 @@ export const EVENTS: Event[] = [
         categories: ['Stranger Meetup'],
         pricingType: 'paid',
         pricing: '₹399',
+        status: 'active',
     },
 ]
 

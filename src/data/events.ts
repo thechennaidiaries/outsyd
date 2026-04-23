@@ -267,9 +267,9 @@ export const EVENTS: Event[] = [
 
 // ── Helper Functions ──────────────────────────────────────────────
 
-/** Get all events for a specific city */
+/** Get all events for a specific city (active only) */
 export function getEventsByCity(cityId: string): Event[] {
-    return EVENTS.filter(e => e.cityId === cityId)
+    return EVENTS.filter(e => e.cityId === cityId && e.status !== 'expired')
 }
 
 /** Look up an event by its slug within a city */
@@ -277,9 +277,9 @@ export function getEventBySlug(cityId: string, slug: string): Event | undefined 
     return EVENTS.find(e => e.cityId === cityId && e.slug === slug)
 }
 
-/** Get events filtered by category within a city */
+/** Get events filtered by category within a city (active only) */
 export function getEventsByCityAndCategory(cityId: string, category: string): Event[] {
-    return EVENTS.filter(e => e.cityId === cityId && e.categories?.includes(category))
+    return EVENTS.filter(e => e.cityId === cityId && e.categories?.includes(category) && e.status !== 'expired')
 }
 
 /** Get unique categories for a city's events */
@@ -290,16 +290,16 @@ export function getCategoriesByCity(cityId: string): string[] {
     return Array.from(catSet)
 }
 
-/** Get events for a specific date within a city */
+/** Get events for a specific date within a city (active only) */
 export function getEventsByDate(cityId: string, date: string): Event[] {
-    return EVENTS.filter(e => e.cityId === cityId && e.date === date)
+    return EVENTS.filter(e => e.cityId === cityId && e.date === date && e.status !== 'expired')
 }
 
-/** Get upcoming events (today or later) for a city, sorted by date */
+/** Get upcoming events (today or later) for a city, sorted by date (active only) */
 export function getUpcomingEvents(cityId: string): Event[] {
     const today = new Date().toISOString().split('T')[0]
     return EVENTS
-        .filter(e => e.cityId === cityId && e.date >= today)
+        .filter(e => e.cityId === cityId && e.date >= today && e.status !== 'expired')
         .sort((a, b) => a.date.localeCompare(b.date))
 }
 

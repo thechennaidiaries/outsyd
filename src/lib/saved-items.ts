@@ -11,6 +11,7 @@ export interface SavedItem {
 const SAVED_ITEMS_KEY = 'saved-items'
 const LEGACY_SAVED_ACTIVITY_SLUGS_KEY = 'saved-place-slugs'
 const SAVED_ITEMS_EVENT = 'saved-items-changed'
+const SAVED_ITEM_ADDED_EVENT = 'saved-item-added'
 
 function canUseLocalStorage() {
   return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
@@ -98,6 +99,16 @@ function notifySavedItemsChange(savedItems: SavedItem[]) {
   )
 }
 
+function notifySavedItemAdded(item: SavedItem) {
+  if (typeof window === 'undefined') return
+
+  window.dispatchEvent(
+    new CustomEvent<SavedItem>(SAVED_ITEM_ADDED_EVENT, {
+      detail: item,
+    })
+  )
+}
+
 function writeSavedItems(savedItems: SavedItem[]) {
   if (!canUseLocalStorage()) return
 
@@ -131,6 +142,7 @@ export function saveItem(item: SavedItem): SavedItem[] {
 
   const nextSavedItems = [...savedItems, item]
   writeSavedItems(nextSavedItems)
+  notifySavedItemAdded(item)
   return nextSavedItems
 }
 
@@ -148,4 +160,4 @@ export function matchesSavedItem(a: SavedItem, b: SavedItem) {
   return a.type === b.type && a.slug === b.slug && a.citySlug === b.citySlug
 }
 
-export { SAVED_ITEMS_EVENT, SAVED_ITEMS_KEY }
+export { SAVED_ITEMS_EVENT, SAVED_ITEM_ADDED_EVENT, SAVED_ITEMS_KEY }

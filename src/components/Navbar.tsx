@@ -4,11 +4,13 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
 import { Zap, Rocket, CalendarDays, Calendar, Bookmark } from 'lucide-react'
 import { getCityBySlug } from '@/data/cities'
+import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
 
 export default function Navbar() {
     const pathname = usePathname()
     const [scrolled, setScrolled] = useState(false)
     const [scrolledPast30, setScrolledPast30] = useState(false)
+    const [savedBannerLabel, setSavedBannerLabel] = useState<string | null>(null)
 
     // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai").
     // Non-city routes like /saved should fall back to the default city instead of becoming /saved/events.
@@ -30,6 +32,35 @@ export default function Navbar() {
         // Call fn once to sync initial state
         fn()
         return () => window.removeEventListener('scroll', fn)
+    }, [])
+
+    useEffect(() => {
+        let timeoutId: ReturnType<typeof window.setTimeout> | null = null
+
+        function handleSavedItemAdded(event: Event) {
+            const savedItem = (event as CustomEvent<SavedItem>).detail
+            const typeLabel = savedItem.type.charAt(0).toUpperCase() + savedItem.type.slice(1)
+
+            setSavedBannerLabel(typeLabel)
+
+            if (timeoutId) {
+                window.clearTimeout(timeoutId)
+            }
+
+            timeoutId = window.setTimeout(() => {
+                setSavedBannerLabel(null)
+                timeoutId = null
+            }, 3500)
+        }
+
+        window.addEventListener(SAVED_ITEM_ADDED_EVENT, handleSavedItemAdded)
+
+        return () => {
+            window.removeEventListener(SAVED_ITEM_ADDED_EVENT, handleSavedItemAdded)
+            if (timeoutId) {
+                window.clearTimeout(timeoutId)
+            }
+        }
     }, [])
 
     const homeHref = '/'
@@ -81,6 +112,46 @@ export default function Navbar() {
                 borderTop: '1px solid rgba(255,255,255,0.075)',
                 paddingBottom: 'env(safe-area-inset-bottom)',
             }}>
+                {savedBannerLabel && (
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        padding: '0 16px 10px',
+                        pointerEvents: 'none',
+                    }}>
+                        <Link
+                            href={savedHref}
+                            style={{
+                                pointerEvents: 'auto',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: 8,
+                                maxWidth: 'min(100%, 420px)',
+                                padding: '12px 16px',
+                                borderRadius: 16,
+                                background: 'rgba(22, 22, 28, 0.98)',
+                                border: '1px solid rgba(255,255,255,0.08)',
+                                boxShadow: '0 -8px 28px rgba(0,0,0,0.28)',
+                                color: 'var(--text)',
+                                textDecoration: 'none',
+                                fontSize: 13,
+                                fontWeight: 700,
+                                letterSpacing: '-0.01em',
+                                transform: 'translateY(0)',
+                                animation: 'fade-up 0.24s ease-out both',
+                            }}
+                        >
+                            <Bookmark size={15} color="var(--accent)" />
+                            <span style={{ color: 'var(--text-2)' }}>
+                                {savedBannerLabel} saved
+                            </span>
+                            <span style={{ color: 'var(--accent)', whiteSpace: 'nowrap' }}>
+                                View saved &rarr;
+                            </span>
+                        </Link>
+                    </div>
+                )}
+
                 {/* ── Events Page CTA Banner ── Sits flush on top of nav ── */}
                 {isEventsPage && scrolledPast30 && (
                     <Link

@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { Zap, Rocket, CalendarDays } from 'lucide-react'
+import { Zap, Rocket, CalendarDays, Calendar, Bookmark } from 'lucide-react'
 
 export default function Navbar() {
     const pathname = usePathname()
@@ -30,11 +30,15 @@ export default function Navbar() {
     }, [])
 
     const homeHref = '/'
+    const eventsHref = `/${citySlug}/events`
     const surpriseHref = `/${citySlug}/surprise`
+    const savedHref = '/saved'
     const planHref = `/${citySlug}/plan`
 
     const isHomeActive = pathname === homeHref || pathname.startsWith(homeHref + '/')
+    const isEventsActive = pathname === eventsHref || pathname.startsWith(eventsHref + '/')
     const isSurpriseActive = pathname === surpriseHref || pathname.startsWith(surpriseHref + '/')
+    const isSavedActive = pathname === savedHref || pathname.startsWith(savedHref + '/')
     const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
 
     const isEventsPage = pathname.includes('/events-this-weekend') || pathname.includes('/best-shawarma') || pathname.includes('/best-icecreams')
@@ -141,6 +145,40 @@ export default function Navbar() {
                         </span>
                     </Link>
 
+                    <Link
+                        href={eventsHref}
+                        style={{
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                            textDecoration: 'none', flex: 1,
+                            padding: '6px 12px',
+                            borderRadius: 14,
+                            color: isEventsActive ? 'var(--accent)' : 'var(--text-3)',
+                            transition: 'color 0.2s ease',
+                        }}
+                    >
+                        <div style={{
+                            width: 44, height: 30,
+                            borderRadius: isEventsActive ? 20 : 10,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            background: isEventsActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                            transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+                        }}>
+                            <Calendar
+                                size={20}
+                                strokeWidth={isEventsActive ? 2.5 : 1.75}
+                                color={isEventsActive ? 'var(--accent)' : 'var(--text-3)'}
+                            />
+                        </div>
+                        <span style={{
+                            fontSize: 10, fontWeight: isEventsActive ? 700 : 500,
+                            letterSpacing: '0.01em',
+                            transition: 'font-weight 0.2s',
+                            whiteSpace: 'nowrap',
+                        }}>
+                            Events
+                        </span>
+                    </Link>
+
                     {/* ── outsyd ── */}
                     {showOutsydFab ? (
                         /* Floating FAB — shown after 30% scroll on non-surprise pages */
@@ -224,6 +262,40 @@ export default function Navbar() {
                             </span>
                         </Link>
                     )}
+
+                    <Link
+                        href={savedHref}
+                        style={{
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                            textDecoration: 'none', flex: 1,
+                            padding: '6px 12px',
+                            borderRadius: 14,
+                            color: isSavedActive ? 'var(--accent)' : 'var(--text-3)',
+                            transition: 'color 0.2s ease',
+                        }}
+                    >
+                        <div style={{
+                            width: 44, height: 30,
+                            borderRadius: isSavedActive ? 20 : 10,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            background: isSavedActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                            transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+                        }}>
+                            <Bookmark
+                                size={20}
+                                strokeWidth={isSavedActive ? 2.5 : 1.75}
+                                color={isSavedActive ? 'var(--accent)' : 'var(--text-3)'}
+                            />
+                        </div>
+                        <span style={{
+                            fontSize: 10, fontWeight: isSavedActive ? 700 : 500,
+                            letterSpacing: '0.01em',
+                            transition: 'font-weight 0.2s',
+                            whiteSpace: 'nowrap',
+                        }}>
+                            Saved
+                        </span>
+                    </Link>
 
                     {/* ── Plan My Day ── */}
                     <Link

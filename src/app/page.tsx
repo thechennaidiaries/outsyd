@@ -6,9 +6,11 @@ import { ArrowRight, ChevronLeft, ChevronRight, Search, MapPin, X } from 'lucide
 import Hero from '@/components/Hero'
 import ActivityCard from '@/components/ActivityCard'
 import WalkCard from '@/components/WalkCard'
+import EventCard from '@/components/EventCard'
 import CategoryStrip from '@/components/CategoryStrip'
 import { getActivitiesByCity, getNewlyAddedActivities, TAG_META } from '@/data/activities'
 import { getWalksByCity } from '@/data/walks'
+import { getEventsByCity } from '@/data/events'
 import { getCityBySlug } from '@/data/cities'
 
 /* ── Reusable horizontal-scroll section ─────────────────────────── */
@@ -178,6 +180,7 @@ export default function RootPage() {
 
   const cityActivities = getActivitiesByCity(city.id)
   const cityWalks = getWalksByCity(city.id)
+  const cityEvents = getEventsByCity(city.id)
 
   // ── Search state ──────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState('')
@@ -253,6 +256,11 @@ export default function RootPage() {
     setShuffledGroup(shuffleArray(group))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city.id])
+
+  const [shuffledEvents, setShuffledEvents] = useState(cityEvents)
+  useEffect(() => {
+    setShuffledEvents(shuffleArray(cityEvents))
+  }, [cityEvents])
 
   function handleTagChange(tagName: string | null) {
     if (!tagName || !city) return
@@ -469,6 +477,24 @@ export default function RootPage() {
             {newlyAdded.map(a => (
               <div key={a.id} style={cardStyle}>
                 <ActivityCard activity={a} citySlug={citySlug} />
+              </div>
+            ))}
+          </HScrollSection>
+        </div>
+      )}
+
+      {/* ═══ 1.7. Events ═══════════════════════════════════════════ */}
+      {cityEvents.length > 0 && (
+        <div id="upcoming-events">
+          <HScrollSection
+            emoji="🎪"
+            heading="Events this Weekend"
+            subheading="Workshops, Mixers, Runs and much more"
+            viewMoreHref={`/${citySlug}/events`}
+          >
+            {shuffledEvents.slice(0, 7).map(e => (
+              <div key={e.id} style={cardStyle}>
+                <EventCard event={e} citySlug={citySlug} />
               </div>
             ))}
           </HScrollSection>

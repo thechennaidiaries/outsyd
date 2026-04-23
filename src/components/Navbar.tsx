@@ -187,36 +187,36 @@ export default function Navbar() {
                                 href={surpriseHref}
                                 style={{
                                     position: 'absolute',
-                                    bottom: -2,
+                                    bottom: 4,
                                     display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0,
                                     textDecoration: 'none',
                                 }}
                             >
                                 {/* Outer ring */}
                                 <div style={{
-                                    width: 102, height: 102, borderRadius: '50%',
+                                    width: 84, height: 84, borderRadius: '50%',
                                     background: 'rgba(10,10,14,0.96)',
-                                    border: '3.5px solid rgba(255,107,0,0.25)',
+                                    border: '3px solid rgba(255,107,0,0.22)',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    boxShadow: '0 -6px 32px rgba(255,107,0,0.25), 0 0 0 1px rgba(255,255,255,0.05)',
+                                    boxShadow: '0 -4px 22px rgba(255,107,0,0.2), 0 0 0 1px rgba(255,255,255,0.05)',
                                     transition: 'all 0.3s ease',
                                 }}>
                                     {/* Inner orange button */}
                                     <div style={{
-                                        width: 81, height: 81, borderRadius: '50%',
+                                        width: 66, height: 66, borderRadius: '50%',
                                         background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 50%, #FF9A3C 100%)',
                                         display: 'flex', flexDirection: 'column',
                                         alignItems: 'center', justifyContent: 'center', gap: 0,
-                                        boxShadow: '0 6px 28px rgba(255,107,0,0.55), inset 0 1px 0 rgba(255,255,255,0.2)',
+                                        boxShadow: '0 5px 18px rgba(255,107,0,0.45), inset 0 1px 0 rgba(255,255,255,0.2)',
                                         transition: 'all 0.3s ease',
                                     }}>
-                                        <Zap size={28} color="white" strokeWidth={2.2} fill="white" />
+                                        <Zap size={22} color="white" strokeWidth={2.2} fill="white" />
                                         <span style={{
-                                            fontSize: 22, fontWeight: 800, color: 'white',
+                                            fontSize: 18, fontWeight: 800, color: 'white',
                                             letterSpacing: '0.01em',
                                             fontFamily: "'Caveat', cursive",
                                             lineHeight: 1,
-                                            marginTop: -2,
+                                            marginTop: -1,
                                         }}>
                                             flash
                                         </span>

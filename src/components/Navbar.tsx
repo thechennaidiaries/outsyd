@@ -113,43 +113,37 @@ export default function Navbar() {
                 paddingBottom: 'env(safe-area-inset-bottom)',
             }}>
                 {savedBannerLabel && (
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        padding: '0 16px 10px',
-                        pointerEvents: 'none',
-                    }}>
-                        <Link
-                            href={savedHref}
-                            style={{
-                                pointerEvents: 'auto',
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: 8,
-                                maxWidth: 'min(100%, 420px)',
-                                padding: '12px 16px',
-                                borderRadius: 16,
-                                background: 'rgba(22, 22, 28, 0.98)',
-                                border: '1px solid rgba(255,255,255,0.08)',
-                                boxShadow: '0 -8px 28px rgba(0,0,0,0.28)',
-                                color: 'var(--text)',
-                                textDecoration: 'none',
-                                fontSize: 13,
-                                fontWeight: 700,
-                                letterSpacing: '-0.01em',
-                                transform: 'translateY(0)',
-                                animation: 'fade-up 0.24s ease-out both',
-                            }}
-                        >
-                            <Bookmark size={15} color="var(--accent)" />
-                            <span style={{ color: 'var(--text-2)' }}>
-                                {savedBannerLabel} saved
-                            </span>
-                            <span style={{ color: 'var(--accent)', whiteSpace: 'nowrap' }}>
-                                View saved &rarr;
-                            </span>
-                        </Link>
-                    </div>
+                    <Link
+                        href={savedHref}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 10,
+                            width: '100%',
+                            padding: '14px 20px',
+                            background: 'linear-gradient(90deg, #FF6B00 0%, #FF8533 52%, #FF9A3C 100%)',
+                            color: '#fff',
+                            textDecoration: 'none',
+                            fontSize: 14,
+                            fontWeight: 800,
+                            letterSpacing: '-0.01em',
+                            boxShadow: '0 -4px 16px rgba(0,0,0,0.2)',
+                            animation: 'fade-up 0.24s ease-out both',
+                        }}
+                    >
+                        <Bookmark size={16} color="#fff" />
+                        <span style={{ whiteSpace: 'nowrap' }}>
+                            {savedBannerLabel} saved
+                        </span>
+                        <span style={{
+                            whiteSpace: 'nowrap',
+                            textDecoration: 'underline',
+                            textUnderlineOffset: 3,
+                        }}>
+                            View saved &rarr;
+                        </span>
+                    </Link>
                 )}
 
                 {/* ── Events Page CTA Banner ── Sits flush on top of nav ── */}

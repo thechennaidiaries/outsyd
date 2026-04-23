@@ -3,16 +3,19 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
 import { Zap, Rocket, CalendarDays, Calendar, Bookmark } from 'lucide-react'
+import { getCityBySlug } from '@/data/cities'
 
 export default function Navbar() {
     const pathname = usePathname()
     const [scrolled, setScrolled] = useState(false)
     const [scrolledPast30, setScrolledPast30] = useState(false)
 
-    // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai")
+    // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai").
+    // Non-city routes like /saved should fall back to the default city instead of becoming /saved/events.
     const citySlug = useMemo(() => {
         const segments = pathname.split('/').filter(Boolean)
-        return segments[0] || 'chennai' // fallback to chennai
+        const firstSegment = segments[0]
+        return firstSegment && getCityBySlug(firstSegment) ? firstSegment : 'chennai'
     }, [pathname])
 
     useEffect(() => {

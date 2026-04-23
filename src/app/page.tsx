@@ -239,6 +239,7 @@ export default function RootPage() {
   const [shuffledCultural, setShuffledCultural] = useState(cultural)
   const [shuffledLeisure, setShuffledLeisure] = useState(leisure)
   const [shuffledGroup, setShuffledGroup] = useState(group)
+  const [shuffledEvents, setShuffledEvents] = useState(cityEvents)
 
   // Shuffle once on client mount to avoid SSR hydration mismatch
   useEffect(() => {
@@ -254,13 +255,11 @@ export default function RootPage() {
     setShuffledCultural(shuffleArray(cultural))
     setShuffledLeisure(shuffleArray(leisure))
     setShuffledGroup(shuffleArray(group))
+    setShuffledEvents(shuffleArray(cityEvents))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city.id])
 
-  const [shuffledEvents, setShuffledEvents] = useState(cityEvents)
-  useEffect(() => {
-    setShuffledEvents(shuffleArray(cityEvents))
-  }, [cityEvents])
+
 
   function handleTagChange(tagName: string | null) {
     if (!tagName || !city) return

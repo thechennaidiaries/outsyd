@@ -4,20 +4,23 @@ import { useState, useRef, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { getActivitiesByCity } from '@/data/activities'
 import { getWalksByCity } from '@/data/walks'
+import { getEventsByCity } from '@/data/events'
 import { getCityBySlug } from '@/data/cities'
 import { notFound } from 'next/navigation'
-import { MapPin, X, ArrowRight, RefreshCw, Bookmark, BookmarkCheck, Footprints } from 'lucide-react'
+import { MapPin, Calendar, X, ArrowRight, RefreshCw, Bookmark, BookmarkCheck, Footprints } from 'lucide-react'
 
 // Unified type for both activities and walks in the surprise deck
 interface SurpriseItem {
     id: string
-    type: 'activity' | 'walk'
+    type: 'activity' | 'walk' | 'event'
     title: string
     image: string
     location: string    // venue name
     area: string        // neighbourhood / area
     tags: string[]
     slug: string
+    date?: string       // for events: display date
+    time?: string       // for events: display time
 }
 
 /* ── helpers ─────────────────────────────────────────────────────── */
@@ -43,8 +46,9 @@ export default function SurprisePage() {
 
     const cityActivities = getActivitiesByCity(city.id)
     const cityWalks = getWalksByCity(city.id)
+    const cityEvents = getEventsByCity(city.id)
 
-    // Build a unified pool of activities + walks
+    // Build a unified pool of activities + walks + events
     function buildPool(): SurpriseItem[] {
         const activityItems: SurpriseItem[] = cityActivities
             .filter(a => a.image && a.slug) // only include activities with image and slug
@@ -68,7 +72,27 @@ export default function SurprisePage() {
             tags: ['Crawl'],
             slug: w.slug,
         }))
-        return shuffle([...activityItems, ...walkItems])
+        const eventItems: SurpriseItem[] = cityEvents
+            .filter(e => e.image) // only include events with images
+            .map(e => {
+                const dateObj = new Date(e.date + 'T00:00:00')
+                const formattedDate = dateObj.toLocaleDateString('en-IN', {
+                    month: 'short', day: 'numeric', weekday: 'short',
+                })
+                return {
+                    id: `event-${e.id}`,
+                    type: 'event' as const,
+                    title: e.title,
+                    image: e.image!,
+                    location: e.venue ?? e.address ?? '',
+                    area: e.address ?? '',
+                    tags: e.categories ?? [],
+                    slug: e.slug,
+                    date: formattedDate,
+                    time: e.time,
+                }
+            })
+        return shuffle([...activityItems, ...walkItems, ...eventItems])
     }
 
     const [deck, setDeck] = useState<SurpriseItem[]>([])
@@ -123,6 +147,8 @@ export default function SurprisePage() {
                 if (dir === 'right') {
                     const route = item.type === 'walk'
                         ? `/${citySlug}/walks/${item.slug}`
+                        : item.type === 'event'
+                        ? `/${citySlug}/events/${item.slug}`
                         : `/${citySlug}/activities/${item.slug}`
                     router.push(route)
                 } else {
@@ -305,7 +331,7 @@ export default function SurprisePage() {
                                 />
                             ) : (
                                 <div style={{ width: '100%', height: '100%', background: 'var(--bg-elevated)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 64 }}>
-                                    {item.type === 'walk' ? '🚶' : '📍'}
+                                    {item.type === 'walk' ? '🚶' : item.type === 'event' ? '🎪' : '📍'}
                                 </div>
                             )}
 
@@ -403,7 +429,20 @@ export default function SurprisePage() {
 
                             {/* Title + Location */}
                             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 18px 22px' }}>
-                                {item.area && (
+                                {/* Badge: area for activities/walks, date for events */}
+                                {item.type === 'event' ? (
+                                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                                        <span style={{
+                                            padding: '3px 10px', borderRadius: 100,
+                                            background: 'rgba(139,92,246,0.2)', border: '1px solid rgba(139,92,246,0.4)',
+                                            color: '#c4b5fd', fontSize: 10, fontWeight: 700, letterSpacing: '0.04em',
+                                            display: 'inline-flex', alignItems: 'center', gap: 4,
+                                        }}>
+                                            <Calendar size={9} />
+                                            {item.date}{item.time ? ` · ${item.time}` : ''}
+                                        </span>
+                                    </div>
+                                ) : item.area ? (
                                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
                                         <span style={{
                                             padding: '3px 10px', borderRadius: 100,
@@ -415,7 +454,7 @@ export default function SurprisePage() {
                                             {item.area}
                                         </span>
                                     </div>
-                                )}
+                                ) : null}
                                 <p style={{
                                     fontSize: 17, fontWeight: 800, color: '#fff',
                                     lineHeight: 1.3, marginBottom: 6, letterSpacing: '-0.02em',
@@ -424,7 +463,7 @@ export default function SurprisePage() {
                                     {item.title}
                                 </p>
                                 <span style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 13, color: 'rgba(255,255,255,0.65)', fontWeight: 500 }}>
-                                    <MapPin size={11} /> {item.location}
+                                    {item.type === 'event' ? <Calendar size={11} /> : <MapPin size={11} />} {item.location}
                                 </span>
                             </div>
                         </div>
@@ -464,6 +503,8 @@ export default function SurprisePage() {
                             setOffset(700)
                             const route = item.type === 'walk'
                                 ? `/${citySlug}/walks/${item.slug}`
+                                : item.type === 'event'
+                                ? `/${citySlug}/events/${item.slug}`
                                 : `/${citySlug}/activities/${item.slug}`
                             setTimeout(() => router.push(route), 380)
                         }}

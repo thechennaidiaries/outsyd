@@ -156,24 +156,42 @@ export default function EventDetailPage({ params }: Props) {
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', gap: 12, marginTop: 8, marginBottom: 56 }} className="flex-col md:flex-row">
                     <ShareButton title={event.title} text={`Check out ${event.title} at ${event.venue} on TBOC ${city.name}`} />
-                    <a
-                        href={event.bookingLink || event.mapsLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                            width: '100%', padding: '18px 24px',
-                            borderRadius: 'var(--radius)',
-                            background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
-                            color: 'white', fontSize: 16, fontWeight: 700,
-                            textDecoration: 'none',
-                            boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
-                            transition: 'all 0.2s ease', letterSpacing: '-0.01em',
-                        }}
-                    >
-                        <Navigation size={18} fill="white" />
-                        {event.bookingLink ? 'Book Tickets' : 'Take me to Maps'}
-                    </a>
+                    {event.status === 'expired' ? (
+                        <div
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                width: '100%', padding: '18px 24px',
+                                borderRadius: 'var(--radius)',
+                                background: 'rgba(255,255,255,0.08)',
+                                color: 'rgba(255,255,255,0.35)', fontSize: 16, fontWeight: 700,
+                                letterSpacing: '-0.01em',
+                                cursor: 'not-allowed',
+                                border: '1px solid rgba(255,255,255,0.08)',
+                            }}
+                        >
+                            <Clock size={18} />
+                            Event is Over
+                        </div>
+                    ) : (
+                        <a
+                            href={event.bookingLink || event.mapsLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                width: '100%', padding: '18px 24px',
+                                borderRadius: 'var(--radius)',
+                                background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
+                                color: 'white', fontSize: 16, fontWeight: 700,
+                                textDecoration: 'none',
+                                boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
+                                transition: 'all 0.2s ease', letterSpacing: '-0.01em',
+                            }}
+                        >
+                            <Navigation size={18} fill="white" />
+                            {event.bookingLink ? 'Book Tickets' : 'Take me to Maps'}
+                        </a>
+                    )}
                 </div>
             </div>
 

@@ -5,12 +5,14 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import {
     ArrowLeft, Share2, Plus, ChevronUp, ChevronDown, X,
-    Check, Calendar, MapPin, Loader2, Wifi, WifiOff,
+    Check, Calendar, MapPin, Loader2, Wifi, Footprints, Search, Bookmark,
 } from 'lucide-react'
-import { getActivitiesByCity, ACTIVITIES } from '@/data/activities'
+import { getActivitiesByCity } from '@/data/activities'
+import { getEventsByCity } from '@/data/events'
 import { getCityBySlug } from '@/data/cities'
+import { getWalksByCity } from '@/data/walks'
+import { useSavedItems } from '@/hooks/useSavedItems'
 import { notFound } from 'next/navigation'
-import ActivityPickerModal from '@/components/ActivityPickerModal'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -60,16 +62,47 @@ function SyncIndicator({ status }: { status: SyncStatus }) {
 
 // ── Plan activity card ────────────────────────────────────────────────────────
 
-function PlanActivityCard({
-    activity, index, total, onMoveUp, onMoveDown, onRemove, citySlug,
+type PlanEntry =
+    | {
+        id: string
+        type: 'activity'
+        title: string
+        image: string
+        href: string
+        meta: string
+        badge?: string
+        removeId: string
+    }
+    | {
+        id: string
+        type: 'walk'
+        title: string
+        image: string
+        href: string
+        meta: string
+        badge?: string
+        removeId: string
+    }
+    | {
+        id: string
+        type: 'event'
+        title: string
+        image: string
+        href: string
+        meta: string
+        badge?: string
+        removeId: string
+    }
+
+function PlanItemCard({
+    item, index, total, onMoveUp, onMoveDown, onRemove,
 }: {
-    activity: typeof ACTIVITIES[0]
+    item: PlanEntry
     index: number
     total: number
     onMoveUp: () => void
     onMoveDown: () => void
     onRemove: () => void
-    citySlug: string
 }) {
     return (
         <div style={{
@@ -91,24 +124,43 @@ function PlanActivityCard({
             </div>
 
             {/* Thumbnail */}
-            <Link href={`/${citySlug}/activities/${activity.slug}`} style={{ flexShrink: 0, borderRadius: 10, overflow: 'hidden', display: 'block' }}>
+            <Link href={item.href} style={{ flexShrink: 0, borderRadius: 10, overflow: 'hidden', display: 'block', position: 'relative' }}>
                 <img
-                    src={activity.image}
-                    alt={activity.title}
+                    src={item.image}
+                    alt={item.title}
                     style={{ width: 64, height: 64, objectFit: 'cover', display: 'block' }}
                 />
+                {item.badge && (
+                    <div style={{
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 3,
+                        padding: '2px 6px',
+                        borderRadius: 999,
+                        background: item.type === 'event' ? 'rgba(255,107,0,0.92)' : 'rgba(0,0,0,0.7)',
+                        color: '#fff',
+                        fontSize: 9,
+                        fontWeight: 800,
+                    }}>
+                        {item.type === 'walk' ? <Footprints size={8} /> : item.type === 'event' ? <Calendar size={8} /> : null}
+                        {item.badge}
+                    </div>
+                )}
             </Link>
 
             {/* Text */}
             <div style={{ flex: 1, minWidth: 0 }}>
-                <Link href={`/${citySlug}/activities/${activity.slug}`} style={{ textDecoration: 'none' }}>
+                <Link href={item.href} style={{ textDecoration: 'none' }}>
                     <p style={{
                         fontSize: 14, fontWeight: 700, color: 'var(--text)',
                         lineHeight: 1.3, marginBottom: 5,
                         overflow: 'hidden', display: '-webkit-box',
                         WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
                     }}>
-                        {activity.title}
+                        {item.title}
                     </p>
                 </Link>
                 <span style={{
@@ -116,7 +168,7 @@ function PlanActivityCard({
                     fontSize: 12, color: 'var(--text-3)', fontWeight: 500,
                 }}>
                     <MapPin size={10} style={{ flexShrink: 0 }} />
-                    {activity.location} · {activity.area}
+                    {item.meta}
                 </span>
             </div>
 
@@ -219,12 +271,31 @@ export default function LivePlanClient({ planId }: { planId: string }) {
     if (!city) notFound()
 
     const cityActivities = getActivitiesByCity(city.id)
+    const cityWalks = getWalksByCity(city.id)
+    const cityEvents = getEventsByCity(city.id)
+    const { savedItems } = useSavedItems()
+
+    // ── Picker data ───────────────────────────────────────────────────────
+    type PickerItem = { id: string; type: 'activity' | 'walk' | 'event'; title: string; image: string; area: string; slug: string; category: string }
+    const pickerPool: PickerItem[] = [
+        ...cityEvents.map(e => ({ id: `event-${e.id}`, type: 'event' as const, title: e.title, image: e.image ?? '', area: e.address ?? e.venue ?? '', slug: e.slug, category: 'Events' })),
+        ...cityWalks.map(w => ({ id: `walk-${w.id}`, type: 'walk' as const, title: w.title, image: w.image, area: w.area, slug: w.slug, category: 'Walks' })),
+        ...cityActivities.map(a => ({ id: a.id ?? '', type: 'activity' as const, title: a.title, image: a.image ?? '', area: a.area ?? '', slug: a.slug, category: 'Activities' })),
+    ]
+    const savedPoolIds = savedItems
+        .filter(si => si.citySlug === citySlug)
+        .map(si => pickerPool.find(p => p.type === si.type && p.slug === si.slug)?.id)
+        .filter(Boolean) as string[]
+    const savedPool = pickerPool.filter(p => savedPoolIds.includes(p.id))
+    const pickerCategories = ['Saved', 'Events', 'Walks', 'Activities']
 
     // ── State ─────────────────────────────────────────────────────────────
     const [plan, setPlan] = useState<Plan | null>(null)
     const [syncStatus, setSyncStatus] = useState<SyncStatus>('loading')
     const [showModal, setShowModal] = useState(false)
     const [notFound404, setNotFound404] = useState(false)
+    const [pickerSearch, setPickerSearch] = useState('')
+    const [pickerCategory, setPickerCategory] = useState<string>(savedPool.length > 0 ? 'Saved' : 'Events')
 
     // Track whether we're currently pushing an update (to skip poll conflicts)
     const isMutatingRef = useRef(false)
@@ -373,9 +444,54 @@ export default function LivePlanClient({ planId }: { planId: string }) {
     }
 
     // ── Board view ────────────────────────────────────────────────────────
-    const planActivities = plan.activities
-        .map(id => cityActivities.find(a => a.id === id))
-        .filter(Boolean) as typeof ACTIVITIES
+    const planItems: PlanEntry[] = plan.activities
+        .map(itemId => {
+            if (itemId.startsWith('walk-')) {
+                const walk = cityWalks.find(entry => `walk-${entry.id}` === itemId)
+                if (!walk) return null
+
+                return {
+                    id: itemId,
+                    type: 'walk' as const,
+                    title: walk.title,
+                    image: walk.image,
+                    href: `/${citySlug}/walks/${walk.slug}`,
+                    meta: walk.area,
+                    badge: 'Crawl',
+                    removeId: itemId,
+                }
+            }
+
+            if (itemId.startsWith('event-')) {
+                const event = cityEvents.find(entry => `event-${entry.id}` === itemId)
+                if (!event) return null
+
+                return {
+                    id: itemId,
+                    type: 'event' as const,
+                    title: event.title,
+                    image: event.image ?? '',
+                    href: `/${citySlug}/events/${event.slug}`,
+                    meta: [event.venue, event.address].filter(Boolean).join(' · ') || event.address || event.venue || 'Event',
+                    badge: 'Event',
+                    removeId: itemId,
+                }
+            }
+
+            const activity = cityActivities.find(entry => entry.id === itemId)
+            if (!activity) return null
+
+            return {
+                id: itemId,
+                type: 'activity' as const,
+                title: activity.title,
+                image: activity.image ?? '',
+                href: `/${citySlug}/activities/${activity.slug}`,
+                meta: [activity.location, activity.area].filter(Boolean).join(' · ') || activity.area || activity.location || 'Activity',
+                removeId: itemId,
+            }
+        })
+        .filter(Boolean) as PlanEntry[]
 
     return (
         <>
@@ -483,7 +599,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                     </div>
 
                     {/* Activity list */}
-                    {planActivities.length === 0 ? (
+                    {planItems.length === 0 ? (
                         <div style={{
                             textAlign: 'center', padding: '64px 24px',
                             background: 'var(--bg-card)',
@@ -492,24 +608,23 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                         }}>
                             <div style={{ fontSize: 44, marginBottom: 16 }}>🗺️</div>
                             <p style={{ fontSize: 17, fontWeight: 800, color: 'var(--text)', marginBottom: 8, letterSpacing: '-0.025em' }}>
-                                No activities yet
+                                Nothing added yet
                             </p>
                             <p style={{ fontSize: 14, color: 'var(--text-3)', lineHeight: 1.6 }}>
-                                Hit <strong style={{ color: 'var(--accent)' }}>Add Activity</strong> below to start building this plan together
+                                Hit <strong style={{ color: 'var(--accent)' }}>Add to Plan</strong> below to start building this plan together
                             </p>
                         </div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            {planActivities.map((activity, i) => (
-                                <PlanActivityCard
-                                    key={activity.id}
-                                    activity={activity}
+                            {planItems.map((item, i) => (
+                                <PlanItemCard
+                                    key={item.id}
+                                    item={item}
                                     index={i}
-                                    total={planActivities.length}
+                                    total={planItems.length}
                                     onMoveUp={() => moveActivity(i, 'up')}
                                     onMoveDown={() => moveActivity(i, 'down')}
-                                    onRemove={() => removeActivity(activity.id ?? '')}
-                                    citySlug={citySlug}
+                                    onRemove={() => removeActivity(item.removeId)}
                                 />
                             ))}
                         </div>
@@ -522,7 +637,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                             style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                                 width: '100%', padding: '18px',
-                                marginTop: planActivities.length > 0 ? 10 : 20,
+                                marginTop: planItems.length > 0 ? 10 : 20,
                                 borderRadius: 'var(--radius)',
                                 background: 'transparent',
                                 border: '2px dashed rgba(255,107,0,0.4)',
@@ -532,7 +647,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                             }}
                         >
                             <Plus size={18} />
-                            Add Activity
+                            Add to Plan
                             <span style={{ fontSize: 12, fontWeight: 500, color: 'rgba(255,107,0,0.6)', marginLeft: 4 }}>
                                 ({plan.activities.length}/10)
                             </span>
@@ -549,7 +664,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                     )}
 
                     {/* Bottom share nudge */}
-                    {planActivities.length > 0 && (
+                    {planItems.length > 0 && (
                         <div style={{
                             marginTop: 40, paddingTop: 32,
                             borderTop: '1px solid var(--border)',
@@ -565,14 +680,84 @@ export default function LivePlanClient({ planId }: { planId: string }) {
             </main>
 
             {/* Activity picker modal */}
-            {showModal && (
-                <ActivityPickerModal
-                    addedIds={plan.activities}
-                    onAdd={addActivity}
-                    onClose={() => setShowModal(false)}
-                    cityId={city.id}
-                />
-            )}
+            {showModal && (() => {
+                const addedIds = plan.activities
+                const isFull = addedIds.length >= 10
+                const catItems = pickerCategory === 'Saved' ? savedPool : pickerPool.filter(p => p.category === pickerCategory)
+                const pickerFiltered = catItems.filter(item => {
+                    const q = pickerSearch.toLowerCase()
+                    return !q || item.title.toLowerCase().includes(q) || item.area.toLowerCase().includes(q)
+                })
+                return (
+                    <>
+                        <div onClick={() => setShowModal(false)} style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }} />
+                        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 201, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
+                            <div style={{ width: '100%', maxWidth: 720, maxHeight: '88vh', background: 'var(--bg-card)', borderRadius: '24px 24px 0 0', border: '1px solid var(--border)', borderBottom: 'none', display: 'flex', flexDirection: 'column', pointerEvents: 'auto', boxShadow: '0 -24px 80px rgba(0,0,0,0.7)', animation: 'slideUpSheet 0.28s cubic-bezier(0.32,0.72,0,1) both' }}>
+                                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 12, flexShrink: 0 }}><div style={{ width: 36, height: 4, borderRadius: 2, background: 'var(--border)' }} /></div>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '14px 20px 0', flexShrink: 0 }}>
+                                    <div>
+                                        <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.035em', lineHeight: 1.2 }}>Pick your activities, events and walks</h2>
+                                        <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 3 }}>{addedIds.length} / 10 added to plan</p>
+                                    </div>
+                                    <button onClick={() => setShowModal(false)} style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)', flexShrink: 0, marginTop: 2 }}><X size={16} /></button>
+                                </div>
+                                <div style={{ padding: '14px 20px 0', flexShrink: 0 }}>
+                                    <div style={{ position: 'relative' }}>
+                                        <Search size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', pointerEvents: 'none' }} />
+                                        <input type="text" placeholder="Search by name, area…" value={pickerSearch} onChange={e => setPickerSearch(e.target.value)} autoFocus
+                                            style={{ width: '100%', padding: '12px 14px 12px 40px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 12, color: 'var(--text)', fontSize: 14, outline: 'none' }} />
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: 8, padding: '12px 20px 0', overflowX: 'auto', flexShrink: 0 }} className="no-scrollbar">
+                                    {pickerCategories.map(cat => {
+                                        if (cat === 'Saved' && savedPool.length === 0) return null
+                                        const isActive = pickerCategory === cat
+                                        return (
+                                            <button key={cat} onClick={() => setPickerCategory(cat)}
+                                                style={{ padding: '7px 16px', borderRadius: 100, whiteSpace: 'nowrap', flexShrink: 0, background: isActive ? 'var(--accent)' : 'var(--bg-elevated)', border: `1px solid ${isActive ? 'transparent' : 'var(--border)'}`, color: isActive ? 'white' : 'var(--text-2)', fontSize: 12.5, fontWeight: 600, cursor: 'pointer', transition: 'all 0.18s ease', display: 'flex', alignItems: 'center', gap: 5 }}>
+                                                {cat === 'Saved' && <Bookmark size={11} />}
+                                                {cat === 'Saved' ? 'Your Saved Things' : cat}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                                <div style={{ padding: '10px 20px 2px', flexShrink: 0 }}>
+                                    <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>{pickerFiltered.length} {pickerFiltered.length === 1 ? 'result' : 'results'}</p>
+                                </div>
+                                <div style={{ overflowY: 'auto', padding: '10px 20px 40px', flex: 1 }}>
+                                    {pickerFiltered.length === 0 ? (
+                                        <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-3)', fontSize: 14 }}>
+                                            {pickerCategory === 'Saved' ? 'No saved items yet — save activities from the explore page!' : 'No items match your search'}
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 12 }}>
+                                            {pickerFiltered.map(item => {
+                                                const isAdded = addedIds.includes(item.id)
+                                                const disabled = isAdded || isFull
+                                                return (
+                                                    <div key={item.id} onClick={() => !disabled && addActivity(item.id)}
+                                                        style={{ display: 'flex', flexDirection: 'column', background: 'var(--bg-elevated)', borderRadius: 14, border: `1.5px solid ${isAdded ? 'rgba(255,107,0,0.45)' : 'var(--border)'}`, overflow: 'hidden', transition: 'border-color 0.2s, opacity 0.2s', opacity: isFull && !isAdded ? 0.45 : 1, cursor: disabled ? 'default' : 'pointer' }}>
+                                                        <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', flexShrink: 0 }}>
+                                                            <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                            {item.type === 'walk' && <div style={{ position: 'absolute', top: 6, left: 6, display: 'inline-flex', alignItems: 'center', gap: 3, padding: '3px 8px', borderRadius: 100, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.12)', fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}><Footprints size={8} /> Crawl</div>}
+                                                            {item.type === 'event' && <div style={{ position: 'absolute', top: 6, left: 6, display: 'inline-flex', alignItems: 'center', gap: 3, padding: '3px 8px', borderRadius: 100, background: 'rgba(255,107,0,0.88)', border: '1px solid rgba(255,255,255,0.16)', fontSize: 9, fontWeight: 700, color: '#fff' }}><Calendar size={8} /> Event</div>}
+                                                            {isAdded && <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,107,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 16px rgba(255,107,0,0.6)' }}><Check size={17} color="white" strokeWidth={2.5} /></div></div>}
+                                                        </div>
+                                                        <div style={{ padding: '10px 10px 11px', flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                                            <p style={{ fontSize: 13, fontWeight: 700, color: isAdded ? 'var(--text-2)' : 'var(--text)', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</p>
+                                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, color: 'var(--text-3)', fontWeight: 500 }}><MapPin size={9} style={{ flexShrink: 0 }} />{item.area}</span>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )
+            })()}
 
             {/* Animations */}
             <style>{`
@@ -583,6 +768,10 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                 @keyframes spin {
                     from { transform: rotate(0deg); }
                     to { transform: rotate(360deg); }
+                }
+                @keyframes slideUpSheet {
+                    from { transform: translateY(100%); opacity: 0.6; }
+                    to   { transform: translateY(0);    opacity: 1; }
                 }
             `}</style>
         </>

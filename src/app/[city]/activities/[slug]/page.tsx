@@ -9,6 +9,7 @@ import { MapPin, Clock, Navigation, ArrowLeft, Home, FileText, Tag, DollarSign }
 import TimingsDisplay from '@/components/TimingsDisplay'
 import ActivityCard from '@/components/ActivityCard'
 import ShareButton from '@/components/ShareButton'
+import SaveItemButton from '@/components/SaveItemButton'
 
 interface Props {
     params: { city: string; slug: string }
@@ -184,6 +185,7 @@ export default function SlugPage({ params }: Props) {
                 )}
 
                 <div style={{ display: 'flex', gap: 12, marginTop: 8, marginBottom: 56 }} className="flex-col md:flex-row">
+                    {activity.slug && <SaveItemButton type="activity" slug={activity.slug} citySlug={city.id} />}
                     <ShareButton title={activity.title} text={`Check out ${activity.location} on TBOC ${city.name}`} />
                     <a
                         href={activity.bookingLink || activity.locationLink}

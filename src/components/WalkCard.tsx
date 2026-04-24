@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { MapPin, Footprints } from 'lucide-react'
 import type { Walk } from '@/data/walks'
+import SaveItemButton from '@/components/SaveItemButton'
 import { optimizeImageUrl } from '@/utils/image'
 
 interface Props {
@@ -18,21 +19,31 @@ export default function WalkCard({ walk, citySlug, eager = false }: Props) {
     const coverImage = walk.image
 
     return (
-        <Link
-            href={`/${citySlug}/walks/${walk.slug}`}
+        <div
             style={{
+                position: 'relative',
                 display: 'flex', flexDirection: 'column',
                 background: 'var(--bg-card)',
                 borderRadius: 'var(--radius)',
                 border: '1px solid var(--border)',
                 overflow: 'hidden',
-                textDecoration: 'none',
-                cursor: 'pointer',
                 transition: 'transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease',
                 boxShadow: 'var(--shadow-card)',
             }}
             className="group hover:border-[var(--accent-border)] hover:-translate-y-[4px] hover:shadow-[0_16px_48px_rgba(0,0,0,0.6)]"
         >
+            <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+                <SaveItemButton type="walk" slug={walk.slug} citySlug={citySlug} compact iconOnly />
+            </div>
+
+            <Link
+                href={`/${citySlug}/walks/${walk.slug}`}
+                style={{
+                    display: 'flex', flexDirection: 'column',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                }}
+            >
             {/* Image — 4:3 landscape */}
             <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: 'var(--bg-elevated)', flexShrink: 0 }}>
                 {!imgErr && coverImage ? (
@@ -98,6 +109,7 @@ export default function WalkCard({ walk, citySlug, eager = false }: Props) {
                     </span>
                 </div>
             </div>
-        </Link>
+            </Link>
+        </div>
     )
 }

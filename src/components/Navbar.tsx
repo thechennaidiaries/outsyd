@@ -2,17 +2,22 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { Zap, Rocket, CalendarDays } from 'lucide-react'
+import { Rocket, CalendarDays, Calendar, Bookmark } from 'lucide-react'
+import { getCityBySlug } from '@/data/cities'
+import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
 
 export default function Navbar() {
     const pathname = usePathname()
     const [scrolled, setScrolled] = useState(false)
     const [scrolledPast30, setScrolledPast30] = useState(false)
+    const [savedBannerLabel, setSavedBannerLabel] = useState<string | null>(null)
 
-    // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai")
+    // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai").
+    // Non-city routes like /saved should fall back to the default city instead of becoming /saved/events.
     const citySlug = useMemo(() => {
         const segments = pathname.split('/').filter(Boolean)
-        return segments[0] || 'chennai' // fallback to chennai
+        const firstSegment = segments[0]
+        return firstSegment && getCityBySlug(firstSegment) ? firstSegment : 'chennai'
     }, [pathname])
 
     useEffect(() => {
@@ -29,18 +34,48 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', fn)
     }, [])
 
+    useEffect(() => {
+        let timeoutId: ReturnType<typeof window.setTimeout> | null = null
+
+        function handleSavedItemAdded(event: Event) {
+            const savedItem = (event as CustomEvent<SavedItem>).detail
+            const typeLabel = savedItem.type.charAt(0).toUpperCase() + savedItem.type.slice(1)
+
+            setSavedBannerLabel(typeLabel)
+
+            if (timeoutId) {
+                window.clearTimeout(timeoutId)
+            }
+
+            timeoutId = window.setTimeout(() => {
+                setSavedBannerLabel(null)
+                timeoutId = null
+            }, 3500)
+        }
+
+        window.addEventListener(SAVED_ITEM_ADDED_EVENT, handleSavedItemAdded)
+
+        return () => {
+            window.removeEventListener(SAVED_ITEM_ADDED_EVENT, handleSavedItemAdded)
+            if (timeoutId) {
+                window.clearTimeout(timeoutId)
+            }
+        }
+    }, [])
+
     const homeHref = '/'
+    const eventsHref = `/${citySlug}/events`
     const surpriseHref = `/${citySlug}/surprise`
+    const savedHref = '/saved'
     const planHref = `/${citySlug}/plan`
 
     const isHomeActive = pathname === homeHref || pathname.startsWith(homeHref + '/')
+    const isEventsActive = pathname === eventsHref || pathname.startsWith(eventsHref + '/')
     const isSurpriseActive = pathname === surpriseHref || pathname.startsWith(surpriseHref + '/')
+    const isSavedActive = pathname === savedHref || pathname.startsWith(savedHref + '/')
     const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
 
     const isEventsPage = pathname.includes('/events-this-weekend') || pathname.includes('/best-shawarma') || pathname.includes('/best-icecreams')
-
-    // Show outsyd as FAB only when scrolled past 30% AND not on surprise page AND not on events page
-    const showOutsydFab = scrolledPast30 && !isSurpriseActive && !isEventsPage
 
     return (
         <>
@@ -77,6 +112,40 @@ export default function Navbar() {
                 borderTop: '1px solid rgba(255,255,255,0.075)',
                 paddingBottom: 'env(safe-area-inset-bottom)',
             }}>
+                {savedBannerLabel && (
+                    <Link
+                        href={savedHref}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 10,
+                            width: '100%',
+                            padding: '14px 20px',
+                            background: 'linear-gradient(90deg, #FF6B00 0%, #FF8533 52%, #FF9A3C 100%)',
+                            color: '#fff',
+                            textDecoration: 'none',
+                            fontSize: 14,
+                            fontWeight: 800,
+                            letterSpacing: '-0.01em',
+                            boxShadow: '0 -4px 16px rgba(0,0,0,0.2)',
+                            animation: 'fade-up 0.24s ease-out both',
+                        }}
+                    >
+                        <Bookmark size={16} color="#fff" />
+                        <span style={{ whiteSpace: 'nowrap' }}>
+                            {savedBannerLabel} saved
+                        </span>
+                        <span style={{
+                            whiteSpace: 'nowrap',
+                            textDecoration: 'underline',
+                            textUnderlineOffset: 3,
+                        }}>
+                            View saved &rarr;
+                        </span>
+                    </Link>
+                )}
+
                 {/* ── Events Page CTA Banner ── Sits flush on top of nav ── */}
                 {isEventsPage && scrolledPast30 && (
                     <Link
@@ -106,7 +175,7 @@ export default function Navbar() {
                     padding: '8px 16px 10px',
                     position: 'relative',
                 }}>
-                    {/* ── All Activities (Home) ── */}
+                    {/* ── Explore (Home) ── */}
                     <Link
                         href={homeHref}
                         style={{
@@ -137,95 +206,111 @@ export default function Navbar() {
                             transition: 'font-weight 0.2s',
                             whiteSpace: 'nowrap',
                         }}>
-                            All Activities
+                            Explore
                         </span>
                     </Link>
 
-                    {/* ── outsyd ── */}
-                    {showOutsydFab ? (
-                        /* Floating FAB — shown after 30% scroll on non-surprise pages */
-                        <div style={{ flex: 1, display: 'flex', justifyContent: 'center', position: 'relative' }}>
-                            <Link
-                                href={surpriseHref}
-                                style={{
-                                    position: 'absolute',
-                                    bottom: -2,
-                                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0,
-                                    textDecoration: 'none',
-                                }}
-                            >
-                                {/* Outer ring */}
-                                <div style={{
-                                    width: 102, height: 102, borderRadius: '50%',
-                                    background: 'rgba(10,10,14,0.96)',
-                                    border: '3.5px solid rgba(255,107,0,0.25)',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    boxShadow: '0 -6px 32px rgba(255,107,0,0.25), 0 0 0 1px rgba(255,255,255,0.05)',
-                                    transition: 'all 0.3s ease',
-                                }}>
-                                    {/* Inner orange button */}
-                                    <div style={{
-                                        width: 81, height: 81, borderRadius: '50%',
-                                        background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 50%, #FF9A3C 100%)',
-                                        display: 'flex', flexDirection: 'column',
-                                        alignItems: 'center', justifyContent: 'center', gap: 0,
-                                        boxShadow: '0 6px 28px rgba(255,107,0,0.55), inset 0 1px 0 rgba(255,255,255,0.2)',
-                                        transition: 'all 0.3s ease',
-                                    }}>
-                                        <Zap size={28} color="white" strokeWidth={2.2} fill="white" />
-                                        <span style={{
-                                            fontSize: 22, fontWeight: 800, color: 'white',
-                                            letterSpacing: '0.01em',
-                                            fontFamily: "'Caveat', cursive",
-                                            lineHeight: 1,
-                                            marginTop: -2,
-                                        }}>
-                                            flash
-                                        </span>
-                                    </div>
-                                </div>
-                            </Link>
+                    <Link
+                        href={eventsHref}
+                        style={{
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                            textDecoration: 'none', flex: 1,
+                            padding: '6px 12px',
+                            borderRadius: 14,
+                            color: isEventsActive ? 'var(--accent)' : 'var(--text-3)',
+                            transition: 'color 0.2s ease',
+                        }}
+                    >
+                        <div style={{
+                            width: 44, height: 30,
+                            borderRadius: isEventsActive ? 20 : 10,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            background: isEventsActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                            transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+                        }}>
+                            <Calendar
+                                size={20}
+                                strokeWidth={isEventsActive ? 2.5 : 1.75}
+                                color={isEventsActive ? 'var(--accent)' : 'var(--text-3)'}
+                            />
                         </div>
-                    ) : (
-                        /* Normal nav item — default state & always on surprise page */
-                        <Link
-                            href={surpriseHref}
-                            style={{
-                                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-                                textDecoration: 'none', flex: 1,
-                                padding: '6px 12px',
-                                borderRadius: 14,
-                                color: isSurpriseActive ? 'var(--accent)' : 'var(--text-3)',
-                                transition: 'color 0.2s ease',
-                            }}
-                        >
-                            <div style={{
-                                width: 44, height: 30,
-                                borderRadius: isSurpriseActive ? 20 : 10,
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                background: isSurpriseActive ? 'rgba(255,107,0,0.16)' : 'transparent',
-                                transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
-                            }}>
-                                <Zap
-                                    size={20}
-                                    strokeWidth={isSurpriseActive ? 2.5 : 1.75}
-                                    color={isSurpriseActive ? 'var(--accent)' : 'var(--text-3)'}
-                                    fill={isSurpriseActive ? 'var(--accent)' : 'transparent'}
-                                />
-                            </div>
-                            <span style={{
-                                fontSize: 16, fontWeight: isSurpriseActive ? 700 : 500,
-                                letterSpacing: '0.01em',
-                                transition: 'font-weight 0.2s',
-                                fontFamily: "'Caveat', cursive",
-                                lineHeight: 1,
-                            }}>
-                                flash
-                            </span>
-                        </Link>
-                    )}
+                        <span style={{
+                            fontSize: 10, fontWeight: isEventsActive ? 700 : 500,
+                            letterSpacing: '0.01em',
+                            transition: 'font-weight 0.2s',
+                            whiteSpace: 'nowrap',
+                        }}>
+                            Events
+                        </span>
+                    </Link>
 
-                    {/* ── Plan My Day ── */}
+                    <Link
+                        href={surpriseHref}
+                        style={{
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                            textDecoration: 'none', flex: 1,
+                            padding: '6px 12px',
+                            borderRadius: 14,
+                            color: isSurpriseActive ? 'var(--accent)' : 'var(--text-3)',
+                            transition: 'color 0.2s ease',
+                        }}
+                    >
+                        <div style={{
+                            width: 44, height: 30,
+                            borderRadius: isSurpriseActive ? 20 : 10,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            background: isSurpriseActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                            transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+                        }}>
+                            <span style={{ fontSize: 20 }}>
+                                🫠
+                            </span>
+                        </div>
+                        <span style={{
+                            fontSize: 10, fontWeight: isSurpriseActive ? 700 : 500,
+                            letterSpacing: '0.01em',
+                            transition: 'font-weight 0.2s',
+                            whiteSpace: 'nowrap',
+                        }}>
+                            I&apos;m bored!
+                        </span>
+                    </Link>
+
+                    <Link
+                        href={savedHref}
+                        style={{
+                            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                            textDecoration: 'none', flex: 1,
+                            padding: '6px 12px',
+                            borderRadius: 14,
+                            color: isSavedActive ? 'var(--accent)' : 'var(--text-3)',
+                            transition: 'color 0.2s ease',
+                        }}
+                    >
+                        <div style={{
+                            width: 44, height: 30,
+                            borderRadius: isSavedActive ? 20 : 10,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            background: isSavedActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                            transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+                        }}>
+                            <Bookmark
+                                size={20}
+                                strokeWidth={isSavedActive ? 2.5 : 1.75}
+                                color={isSavedActive ? 'var(--accent)' : 'var(--text-3)'}
+                            />
+                        </div>
+                        <span style={{
+                            fontSize: 10, fontWeight: isSavedActive ? 700 : 500,
+                            letterSpacing: '0.01em',
+                            transition: 'font-weight 0.2s',
+                            whiteSpace: 'nowrap',
+                        }}>
+                            Saved
+                        </span>
+                    </Link>
+
+                    {/* ── My Plan ── */}
                     <Link
                         href={planHref}
                         style={{
@@ -254,8 +339,9 @@ export default function Navbar() {
                             fontSize: 10, fontWeight: isPlanActive ? 700 : 500,
                             letterSpacing: '0.01em',
                             transition: 'font-weight 0.2s',
+                            whiteSpace: 'nowrap',
                         }}>
-                            Plan
+                            My Plan
                         </span>
                     </Link>
                 </div>

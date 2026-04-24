@@ -125,7 +125,7 @@ export default function Section({ title, emoji, badge, badgeColor = 'orange', su
                     }}
                 >
                     {activities.map(a => (
-                        <ActivityCard key={a.id} activity={a} size={size} />
+                        <ActivityCard key={a.id} activity={a} citySlug="chennai" />
                     ))}
                 </div>
             </div>

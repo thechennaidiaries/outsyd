@@ -4,13 +4,15 @@ import Link from 'next/link'
 import { MapPin } from 'lucide-react'
 import type { Activity } from '@/data/activities'
 import SaveItemButton from '@/components/SaveItemButton'
+import { optimizeImageUrl } from '@/utils/image'
 
 interface Props {
     activity: Activity
     citySlug: string
+    eager?: boolean
 }
 
-export default function ActivityCard({ activity, citySlug }: Props) {
+export default function ActivityCard({ activity, citySlug, eager = false }: Props) {
     const [imgErr, setImgErr] = useState(false)
     const activitySlug = activity.slug ?? ''
 
@@ -47,8 +49,9 @@ export default function ActivityCard({ activity, citySlug }: Props) {
                 <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: 'var(--bg-elevated)', flexShrink: 0 }}>
                     {!imgErr ? (
                         <img
-                            src={activity.image ?? ''}
+                            src={optimizeImageUrl(activity.image)}
                             alt={activity.title}
+                            loading={eager ? 'eager' : 'lazy'}
                             style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
                             className="group-hover:scale-[1.05]"
                             onError={() => setImgErr(true)}

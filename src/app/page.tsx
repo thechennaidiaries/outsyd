@@ -473,9 +473,9 @@ export default function RootPage() {
             viewMoreHref={`/${citySlug}/activities`}
             hideViewMore={true}
           >
-            {newlyAdded.map(a => (
+            {newlyAdded.map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 3} />
               </div>
             ))}
           </HScrollSection>
@@ -509,9 +509,9 @@ export default function RootPage() {
             subheading="Find activities starting from ₹0"
             viewMoreHref={`/${citySlug}/activities/low-budget-fun-activities-in-${city.id}`}
           >
-            {shuffledLowBudget.slice(0, 8).map(a => (
+            {shuffledLowBudget.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
-                <ActivityCard activity={a} citySlug={citySlug} />
+                <ActivityCard activity={a} citySlug={citySlug} eager={index < 3} />
               </div>
             ))}
           </HScrollSection>
@@ -526,9 +526,9 @@ export default function RootPage() {
             heading="City Crawls"
             viewMoreHref={`/${citySlug}/walks`}
           >
-            {shuffledWalks.slice(0, 5).map(walk => (
+            {shuffledWalks.slice(0, 5).map((walk, index) => (
               <div key={walk.id} style={walkCardStyle}>
-                <WalkCard walk={walk} citySlug={citySlug} />
+                <WalkCard walk={walk} citySlug={citySlug} eager={index < 2} />
               </div>
             ))}
           </HScrollSection>

@@ -3,7 +3,7 @@ import { useParams } from 'next/navigation'
 import { getCityBySlug } from '@/data/cities'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { Navigation, ArrowLeft, MessageSquareQuote } from 'lucide-react'
+import { Navigation, ArrowLeft } from 'lucide-react'
 
 const ICE_CREAM_SPOTS = [
     {
@@ -152,28 +152,20 @@ export default function BestIceCreamPage() {
                             <div style={{ padding: 32, flex: 1, display: 'flex', flexDirection: 'column' }}>
                                 <h3 style={{
                                     fontSize: 22, fontWeight: 800, color: 'var(--text)',
-                                    lineHeight: 1.3, marginBottom: 16,
+                                    lineHeight: 1.3, marginBottom: 12,
                                     letterSpacing: '-0.01em',
                                     paddingRight: 40
                                 }}>
                                     {spot.title}
                                 </h3>
 
-                                {/* Review */}
-                                <div style={{
-                                    display: 'flex', gap: 10, marginBottom: 24,
-                                    padding: '16px', borderRadius: 12,
-                                    background: 'var(--bg-elevated)',
-                                    border: '1px solid var(--border)',
+                                <p style={{
+                                    fontSize: 14, color: 'var(--text-2)',
+                                    lineHeight: 1.6, marginBottom: 28,
+                                    fontWeight: 450
                                 }}>
-                                    <MessageSquareQuote size={16} style={{ flexShrink: 0, marginTop: 2, color: '#EC4899' }} />
-                                    <p style={{
-                                        fontSize: 14, color: 'var(--text-2)',
-                                        lineHeight: 1.6, margin: 0, fontStyle: 'italic',
-                                    }}>
-                                        "{spot.review}"
-                                    </p>
-                                </div>
+                                    {spot.review}
+                                </p>
 
                                 <a
                                     href={spot.mapsLink}

@@ -1,13 +1,14 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { ACTIVITIES, ALL_TAGS, getActivitiesByCity, getTagsByCity } from '@/data/activities'
+import { getEventsByCity } from '@/data/events'
 import { getWalksByCity } from '@/data/walks'
-import { X, Search, Check, MapPin, Footprints } from 'lucide-react'
+import { X, Search, Check, MapPin, Footprints, Calendar } from 'lucide-react'
 
 // Unified item for picker
 interface PickerItem {
     id: string
-    type: 'activity' | 'walk'
+    type: 'activity' | 'walk' | 'event'
     title: string
     image: string
     area: string
@@ -24,8 +25,9 @@ interface Props {
 export default function ActivityPickerModal({ addedIds, onAdd, onClose, cityId }: Props) {
     const activities = cityId ? getActivitiesByCity(cityId) : ACTIVITIES
     const walks = cityId ? getWalksByCity(cityId) : []
+    const events = cityId ? getEventsByCity(cityId) : []
     const tags = cityId ? getTagsByCity(cityId) : ALL_TAGS
-    const allTags = [...tags, 'Crawl']  // add Crawl as a filter option
+    const allTags = [...tags, 'Crawl', 'Event']  // add Crawl and Event as filter options
 
     // Build unified pool
     const pool: PickerItem[] = [
@@ -44,6 +46,14 @@ export default function ActivityPickerModal({ addedIds, onAdd, onClose, cityId }
             image: w.image,
             area: w.area,
             tags: ['Crawl'],
+        })),
+        ...events.map(e => ({
+            id: `event-${e.id}`,
+            type: 'event' as const,
+            title: e.title,
+            image: e.image ?? '',
+            area: e.address ?? e.venue ?? '',
+            tags: [...(e.categories ?? []), 'Event'],
         })),
     ]
 
@@ -118,7 +128,7 @@ export default function ActivityPickerModal({ addedIds, onAdd, onClose, cityId }
                     }}>
                         <div>
                             <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.035em', lineHeight: 1.2 }}>
-                                Add Activity
+                                Add to Plan
                             </h2>
                             <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 3 }}>
                                 {addedIds.length} / 10 added to plan
@@ -200,7 +210,7 @@ export default function ActivityPickerModal({ addedIds, onAdd, onClose, cityId }
                     <div style={{ overflowY: 'auto', padding: '10px 20px 40px', flex: 1 }}>
                         {filtered.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-3)', fontSize: 14 }}>
-                                No activities match your search
+                                No items match your search
                             </div>
                         ) : (
                             <div style={{
@@ -243,6 +253,18 @@ export default function ActivityPickerModal({ addedIds, onAdd, onClose, cityId }
                                                         fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.9)',
                                                     }}>
                                                         <Footprints size={8} /> Crawl
+                                                    </div>
+                                                )}
+                                                {item.type === 'event' && (
+                                                    <div style={{
+                                                        position: 'absolute', top: 6, left: 6,
+                                                        display: 'inline-flex', alignItems: 'center', gap: 3,
+                                                        padding: '3px 8px', borderRadius: 100,
+                                                        background: 'rgba(255,107,0,0.88)',
+                                                        border: '1px solid rgba(255,255,255,0.16)',
+                                                        fontSize: 9, fontWeight: 700, color: '#fff',
+                                                    }}>
+                                                        <Calendar size={8} /> Event
                                                     </div>
                                                 )}
                                                 {/* Already added overlay */}

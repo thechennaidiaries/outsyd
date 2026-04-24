@@ -5,10 +5,12 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import {
     ArrowLeft, Share2, Plus, ChevronUp, ChevronDown, X,
-    Check, Calendar, MapPin, Loader2, Wifi, WifiOff,
+    Check, Calendar, MapPin, Loader2, Wifi, Footprints,
 } from 'lucide-react'
-import { getActivitiesByCity, ACTIVITIES } from '@/data/activities'
+import { getActivitiesByCity } from '@/data/activities'
+import { getEventsByCity } from '@/data/events'
 import { getCityBySlug } from '@/data/cities'
+import { getWalksByCity } from '@/data/walks'
 import { notFound } from 'next/navigation'
 import ActivityPickerModal from '@/components/ActivityPickerModal'
 
@@ -60,16 +62,47 @@ function SyncIndicator({ status }: { status: SyncStatus }) {
 
 // ── Plan activity card ────────────────────────────────────────────────────────
 
-function PlanActivityCard({
-    activity, index, total, onMoveUp, onMoveDown, onRemove, citySlug,
+type PlanEntry =
+    | {
+        id: string
+        type: 'activity'
+        title: string
+        image: string
+        href: string
+        meta: string
+        badge?: string
+        removeId: string
+    }
+    | {
+        id: string
+        type: 'walk'
+        title: string
+        image: string
+        href: string
+        meta: string
+        badge?: string
+        removeId: string
+    }
+    | {
+        id: string
+        type: 'event'
+        title: string
+        image: string
+        href: string
+        meta: string
+        badge?: string
+        removeId: string
+    }
+
+function PlanItemCard({
+    item, index, total, onMoveUp, onMoveDown, onRemove,
 }: {
-    activity: typeof ACTIVITIES[0]
+    item: PlanEntry
     index: number
     total: number
     onMoveUp: () => void
     onMoveDown: () => void
     onRemove: () => void
-    citySlug: string
 }) {
     return (
         <div style={{
@@ -91,24 +124,43 @@ function PlanActivityCard({
             </div>
 
             {/* Thumbnail */}
-            <Link href={`/${citySlug}/activities/${activity.slug}`} style={{ flexShrink: 0, borderRadius: 10, overflow: 'hidden', display: 'block' }}>
+            <Link href={item.href} style={{ flexShrink: 0, borderRadius: 10, overflow: 'hidden', display: 'block', position: 'relative' }}>
                 <img
-                    src={activity.image}
-                    alt={activity.title}
+                    src={item.image}
+                    alt={item.title}
                     style={{ width: 64, height: 64, objectFit: 'cover', display: 'block' }}
                 />
+                {item.badge && (
+                    <div style={{
+                        position: 'absolute',
+                        top: 6,
+                        left: 6,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 3,
+                        padding: '2px 6px',
+                        borderRadius: 999,
+                        background: item.type === 'event' ? 'rgba(255,107,0,0.92)' : 'rgba(0,0,0,0.7)',
+                        color: '#fff',
+                        fontSize: 9,
+                        fontWeight: 800,
+                    }}>
+                        {item.type === 'walk' ? <Footprints size={8} /> : item.type === 'event' ? <Calendar size={8} /> : null}
+                        {item.badge}
+                    </div>
+                )}
             </Link>
 
             {/* Text */}
             <div style={{ flex: 1, minWidth: 0 }}>
-                <Link href={`/${citySlug}/activities/${activity.slug}`} style={{ textDecoration: 'none' }}>
+                <Link href={item.href} style={{ textDecoration: 'none' }}>
                     <p style={{
                         fontSize: 14, fontWeight: 700, color: 'var(--text)',
                         lineHeight: 1.3, marginBottom: 5,
                         overflow: 'hidden', display: '-webkit-box',
                         WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
                     }}>
-                        {activity.title}
+                        {item.title}
                     </p>
                 </Link>
                 <span style={{
@@ -116,7 +168,7 @@ function PlanActivityCard({
                     fontSize: 12, color: 'var(--text-3)', fontWeight: 500,
                 }}>
                     <MapPin size={10} style={{ flexShrink: 0 }} />
-                    {activity.location} · {activity.area}
+                    {item.meta}
                 </span>
             </div>
 
@@ -219,6 +271,8 @@ export default function LivePlanClient({ planId }: { planId: string }) {
     if (!city) notFound()
 
     const cityActivities = getActivitiesByCity(city.id)
+    const cityWalks = getWalksByCity(city.id)
+    const cityEvents = getEventsByCity(city.id)
 
     // ── State ─────────────────────────────────────────────────────────────
     const [plan, setPlan] = useState<Plan | null>(null)
@@ -373,9 +427,54 @@ export default function LivePlanClient({ planId }: { planId: string }) {
     }
 
     // ── Board view ────────────────────────────────────────────────────────
-    const planActivities = plan.activities
-        .map(id => cityActivities.find(a => a.id === id))
-        .filter(Boolean) as typeof ACTIVITIES
+    const planItems: PlanEntry[] = plan.activities
+        .map(itemId => {
+            if (itemId.startsWith('walk-')) {
+                const walk = cityWalks.find(entry => `walk-${entry.id}` === itemId)
+                if (!walk) return null
+
+                return {
+                    id: itemId,
+                    type: 'walk' as const,
+                    title: walk.title,
+                    image: walk.image,
+                    href: `/${citySlug}/walks/${walk.slug}`,
+                    meta: walk.area,
+                    badge: 'Crawl',
+                    removeId: itemId,
+                }
+            }
+
+            if (itemId.startsWith('event-')) {
+                const event = cityEvents.find(entry => `event-${entry.id}` === itemId)
+                if (!event) return null
+
+                return {
+                    id: itemId,
+                    type: 'event' as const,
+                    title: event.title,
+                    image: event.image ?? '',
+                    href: `/${citySlug}/events/${event.slug}`,
+                    meta: [event.venue, event.address].filter(Boolean).join(' · ') || event.address || event.venue || 'Event',
+                    badge: 'Event',
+                    removeId: itemId,
+                }
+            }
+
+            const activity = cityActivities.find(entry => entry.id === itemId)
+            if (!activity) return null
+
+            return {
+                id: itemId,
+                type: 'activity' as const,
+                title: activity.title,
+                image: activity.image ?? '',
+                href: `/${citySlug}/activities/${activity.slug}`,
+                meta: [activity.location, activity.area].filter(Boolean).join(' · ') || activity.area || activity.location || 'Activity',
+                removeId: itemId,
+            }
+        })
+        .filter(Boolean) as PlanEntry[]
 
     return (
         <>
@@ -483,7 +582,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                     </div>
 
                     {/* Activity list */}
-                    {planActivities.length === 0 ? (
+                    {planItems.length === 0 ? (
                         <div style={{
                             textAlign: 'center', padding: '64px 24px',
                             background: 'var(--bg-card)',
@@ -492,24 +591,23 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                         }}>
                             <div style={{ fontSize: 44, marginBottom: 16 }}>🗺️</div>
                             <p style={{ fontSize: 17, fontWeight: 800, color: 'var(--text)', marginBottom: 8, letterSpacing: '-0.025em' }}>
-                                No activities yet
+                                Nothing added yet
                             </p>
                             <p style={{ fontSize: 14, color: 'var(--text-3)', lineHeight: 1.6 }}>
-                                Hit <strong style={{ color: 'var(--accent)' }}>Add Activity</strong> below to start building this plan together
+                                Hit <strong style={{ color: 'var(--accent)' }}>Add to Plan</strong> below to start building this plan together
                             </p>
                         </div>
                     ) : (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                            {planActivities.map((activity, i) => (
-                                <PlanActivityCard
-                                    key={activity.id}
-                                    activity={activity}
+                            {planItems.map((item, i) => (
+                                <PlanItemCard
+                                    key={item.id}
+                                    item={item}
                                     index={i}
-                                    total={planActivities.length}
+                                    total={planItems.length}
                                     onMoveUp={() => moveActivity(i, 'up')}
                                     onMoveDown={() => moveActivity(i, 'down')}
-                                    onRemove={() => removeActivity(activity.id ?? '')}
-                                    citySlug={citySlug}
+                                    onRemove={() => removeActivity(item.removeId)}
                                 />
                             ))}
                         </div>
@@ -522,7 +620,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                             style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                                 width: '100%', padding: '18px',
-                                marginTop: planActivities.length > 0 ? 10 : 20,
+                                marginTop: planItems.length > 0 ? 10 : 20,
                                 borderRadius: 'var(--radius)',
                                 background: 'transparent',
                                 border: '2px dashed rgba(255,107,0,0.4)',
@@ -532,7 +630,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                             }}
                         >
                             <Plus size={18} />
-                            Add Activity
+                            Add to Plan
                             <span style={{ fontSize: 12, fontWeight: 500, color: 'rgba(255,107,0,0.6)', marginLeft: 4 }}>
                                 ({plan.activities.length}/10)
                             </span>
@@ -549,7 +647,7 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                     )}
 
                     {/* Bottom share nudge */}
-                    {planActivities.length > 0 && (
+                    {planItems.length > 0 && (
                         <div style={{
                             marginTop: 40, paddingTop: 32,
                             borderTop: '1px solid var(--border)',

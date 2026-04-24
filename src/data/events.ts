@@ -267,9 +267,29 @@ export const EVENTS: Event[] = [
 
 // ── Helper Functions ──────────────────────────────────────────────
 
+function getTodayIsoInChennai() {
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Kolkata',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    })
+
+    const parts = formatter.formatToParts(new Date())
+    const year = parts.find(part => part.type === 'year')?.value
+    const month = parts.find(part => part.type === 'month')?.value
+    const day = parts.find(part => part.type === 'day')?.value
+
+    return `${year}-${month}-${day}`
+}
+
+function isCurrentOrUpcomingEvent(event: Event) {
+    return event.status !== 'expired' && event.date >= getTodayIsoInChennai()
+}
+
 /** Get all events for a specific city (active only) */
 export function getEventsByCity(cityId: string): Event[] {
-    return EVENTS.filter(e => e.cityId === cityId && e.status !== 'expired')
+    return EVENTS.filter(e => e.cityId === cityId && isCurrentOrUpcomingEvent(e))
 }
 
 /** Look up an event by its slug within a city */
@@ -279,7 +299,7 @@ export function getEventBySlug(cityId: string, slug: string): Event | undefined 
 
 /** Get events filtered by category within a city (active only) */
 export function getEventsByCityAndCategory(cityId: string, category: string): Event[] {
-    return EVENTS.filter(e => e.cityId === cityId && e.categories?.includes(category) && e.status !== 'expired')
+    return EVENTS.filter(e => e.cityId === cityId && e.categories?.includes(category) && isCurrentOrUpcomingEvent(e))
 }
 
 /** Get unique categories for a city's events */
@@ -292,14 +312,13 @@ export function getCategoriesByCity(cityId: string): string[] {
 
 /** Get events for a specific date within a city (active only) */
 export function getEventsByDate(cityId: string, date: string): Event[] {
-    return EVENTS.filter(e => e.cityId === cityId && e.date === date && e.status !== 'expired')
+    return EVENTS.filter(e => e.cityId === cityId && e.date === date && isCurrentOrUpcomingEvent(e))
 }
 
 /** Get upcoming events (today or later) for a city, sorted by date (active only) */
 export function getUpcomingEvents(cityId: string): Event[] {
-    const today = new Date().toISOString().split('T')[0]
     return EVENTS
-        .filter(e => e.cityId === cityId && e.date >= today && e.status !== 'expired')
+        .filter(e => e.cityId === cityId && isCurrentOrUpcomingEvent(e))
         .sort((a, b) => a.date.localeCompare(b.date))
 }
 

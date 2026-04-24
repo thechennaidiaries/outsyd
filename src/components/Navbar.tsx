@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { Zap, Rocket, CalendarDays, Calendar, Bookmark } from 'lucide-react'
+import { Rocket, CalendarDays, Calendar, Bookmark } from 'lucide-react'
 import { getCityBySlug } from '@/data/cities'
 import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
 
@@ -262,12 +262,9 @@ export default function Navbar() {
                             background: isSurpriseActive ? 'rgba(255,107,0,0.16)' : 'transparent',
                             transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
                         }}>
-                            <Zap
-                                size={20}
-                                strokeWidth={isSurpriseActive ? 2.5 : 1.75}
-                                color={isSurpriseActive ? 'var(--accent)' : 'var(--text-3)'}
-                                fill={isSurpriseActive ? 'var(--accent)' : 'transparent'}
-                            />
+                            <span style={{ fontSize: 20 }}>
+                                🫠
+                            </span>
                         </div>
                         <span style={{
                             fontSize: 10, fontWeight: isSurpriseActive ? 700 : 500,

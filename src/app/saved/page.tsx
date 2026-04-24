@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft, Bookmark } from 'lucide-react'
+import { ArrowLeft, Bookmark, CalendarPlus } from 'lucide-react'
 import ActivityCard from '@/components/ActivityCard'
 import EventCard from '@/components/EventCard'
 import WalkCard from '@/components/WalkCard'
@@ -89,13 +89,37 @@ export default function SavedPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
               {resolvedSavedItems.map(item => (
-                item.type === 'activity' ? (
-                  <ActivityCard key={`${item.type}-${item.data.slug}`} activity={item.data} citySlug={item.savedItem.citySlug} />
-                ) : item.type === 'walk' ? (
-                  <WalkCard key={`${item.type}-${item.data.slug}`} walk={item.data} citySlug={item.savedItem.citySlug} />
-                ) : (
-                  <EventCard key={`${item.type}-${item.data.slug}`} event={item.data} citySlug={item.savedItem.citySlug} />
-                )
+                <div key={`${item.type}-${item.data.slug}`} style={{ display: 'flex', flexDirection: 'column' }}>
+                  {item.type === 'activity' ? (
+                    <ActivityCard activity={item.data} citySlug={item.savedItem.citySlug} />
+                  ) : item.type === 'walk' ? (
+                    <WalkCard walk={item.data} citySlug={item.savedItem.citySlug} />
+                  ) : (
+                    <EventCard event={item.data} citySlug={item.savedItem.citySlug} />
+                  )}
+                  <button
+                    onClick={() => {
+                      const slug = item.data.slug
+                      const type = item.type
+                      window.location.href = `/${item.savedItem.citySlug}/plan?add=${type}:${slug}`
+                    }}
+                    style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                      width: '100%', padding: '11px 16px', marginTop: 8,
+                      background: 'transparent',
+                      border: '1.5px solid rgba(255,107,0,0.35)',
+                      borderRadius: 12,
+                      color: 'var(--accent)', fontSize: 13, fontWeight: 700,
+                      cursor: 'pointer', transition: 'all 0.2s ease',
+                      letterSpacing: '-0.01em',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,107,0,0.08)'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,107,0,0.55)' }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,107,0,0.35)' }}
+                  >
+                    <CalendarPlus size={14} />
+                    Add to Plan
+                  </button>
+                </div>
               ))}
             </div>
 

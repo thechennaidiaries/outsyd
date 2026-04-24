@@ -5,14 +5,14 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import Link from 'next/link'
 import {
     ArrowLeft, Share2, Plus, ChevronUp, ChevronDown, X,
-    Check, Calendar, MapPin, Loader2, Wifi, Footprints,
+    Check, Calendar, MapPin, Loader2, Wifi, Footprints, Search, Bookmark,
 } from 'lucide-react'
 import { getActivitiesByCity } from '@/data/activities'
 import { getEventsByCity } from '@/data/events'
 import { getCityBySlug } from '@/data/cities'
 import { getWalksByCity } from '@/data/walks'
+import { useSavedItems } from '@/hooks/useSavedItems'
 import { notFound } from 'next/navigation'
-import ActivityPickerModal from '@/components/ActivityPickerModal'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -273,12 +273,29 @@ export default function LivePlanClient({ planId }: { planId: string }) {
     const cityActivities = getActivitiesByCity(city.id)
     const cityWalks = getWalksByCity(city.id)
     const cityEvents = getEventsByCity(city.id)
+    const { savedItems } = useSavedItems()
+
+    // ── Picker data ───────────────────────────────────────────────────────
+    type PickerItem = { id: string; type: 'activity' | 'walk' | 'event'; title: string; image: string; area: string; slug: string; category: string }
+    const pickerPool: PickerItem[] = [
+        ...cityEvents.map(e => ({ id: `event-${e.id}`, type: 'event' as const, title: e.title, image: e.image ?? '', area: e.address ?? e.venue ?? '', slug: e.slug, category: 'Events' })),
+        ...cityWalks.map(w => ({ id: `walk-${w.id}`, type: 'walk' as const, title: w.title, image: w.image, area: w.area, slug: w.slug, category: 'Walks' })),
+        ...cityActivities.map(a => ({ id: a.id ?? '', type: 'activity' as const, title: a.title, image: a.image ?? '', area: a.area ?? '', slug: a.slug, category: 'Activities' })),
+    ]
+    const savedPoolIds = savedItems
+        .filter(si => si.citySlug === citySlug)
+        .map(si => pickerPool.find(p => p.type === si.type && p.slug === si.slug)?.id)
+        .filter(Boolean) as string[]
+    const savedPool = pickerPool.filter(p => savedPoolIds.includes(p.id))
+    const pickerCategories = ['Saved', 'Events', 'Walks', 'Activities']
 
     // ── State ─────────────────────────────────────────────────────────────
     const [plan, setPlan] = useState<Plan | null>(null)
     const [syncStatus, setSyncStatus] = useState<SyncStatus>('loading')
     const [showModal, setShowModal] = useState(false)
     const [notFound404, setNotFound404] = useState(false)
+    const [pickerSearch, setPickerSearch] = useState('')
+    const [pickerCategory, setPickerCategory] = useState<string>(savedPool.length > 0 ? 'Saved' : 'Events')
 
     // Track whether we're currently pushing an update (to skip poll conflicts)
     const isMutatingRef = useRef(false)
@@ -663,14 +680,84 @@ export default function LivePlanClient({ planId }: { planId: string }) {
             </main>
 
             {/* Activity picker modal */}
-            {showModal && (
-                <ActivityPickerModal
-                    addedIds={plan.activities}
-                    onAdd={addActivity}
-                    onClose={() => setShowModal(false)}
-                    cityId={city.id}
-                />
-            )}
+            {showModal && (() => {
+                const addedIds = plan.activities
+                const isFull = addedIds.length >= 10
+                const catItems = pickerCategory === 'Saved' ? savedPool : pickerPool.filter(p => p.category === pickerCategory)
+                const pickerFiltered = catItems.filter(item => {
+                    const q = pickerSearch.toLowerCase()
+                    return !q || item.title.toLowerCase().includes(q) || item.area.toLowerCase().includes(q)
+                })
+                return (
+                    <>
+                        <div onClick={() => setShowModal(false)} style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(0,0,0,0.72)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }} />
+                        <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 201, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
+                            <div style={{ width: '100%', maxWidth: 720, maxHeight: '88vh', background: 'var(--bg-card)', borderRadius: '24px 24px 0 0', border: '1px solid var(--border)', borderBottom: 'none', display: 'flex', flexDirection: 'column', pointerEvents: 'auto', boxShadow: '0 -24px 80px rgba(0,0,0,0.7)', animation: 'slideUpSheet 0.28s cubic-bezier(0.32,0.72,0,1) both' }}>
+                                <div style={{ display: 'flex', justifyContent: 'center', paddingTop: 12, flexShrink: 0 }}><div style={{ width: 36, height: 4, borderRadius: 2, background: 'var(--border)' }} /></div>
+                                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '14px 20px 0', flexShrink: 0 }}>
+                                    <div>
+                                        <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.035em', lineHeight: 1.2 }}>Pick your activities, events and walks</h2>
+                                        <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 3 }}>{addedIds.length} / 10 added to plan</p>
+                                    </div>
+                                    <button onClick={() => setShowModal(false)} style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--bg-elevated)', border: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-2)', flexShrink: 0, marginTop: 2 }}><X size={16} /></button>
+                                </div>
+                                <div style={{ padding: '14px 20px 0', flexShrink: 0 }}>
+                                    <div style={{ position: 'relative' }}>
+                                        <Search size={15} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-3)', pointerEvents: 'none' }} />
+                                        <input type="text" placeholder="Search by name, area…" value={pickerSearch} onChange={e => setPickerSearch(e.target.value)} autoFocus
+                                            style={{ width: '100%', padding: '12px 14px 12px 40px', background: 'var(--bg-elevated)', border: '1px solid var(--border)', borderRadius: 12, color: 'var(--text)', fontSize: 14, outline: 'none' }} />
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', gap: 8, padding: '12px 20px 0', overflowX: 'auto', flexShrink: 0 }} className="no-scrollbar">
+                                    {pickerCategories.map(cat => {
+                                        if (cat === 'Saved' && savedPool.length === 0) return null
+                                        const isActive = pickerCategory === cat
+                                        return (
+                                            <button key={cat} onClick={() => setPickerCategory(cat)}
+                                                style={{ padding: '7px 16px', borderRadius: 100, whiteSpace: 'nowrap', flexShrink: 0, background: isActive ? 'var(--accent)' : 'var(--bg-elevated)', border: `1px solid ${isActive ? 'transparent' : 'var(--border)'}`, color: isActive ? 'white' : 'var(--text-2)', fontSize: 12.5, fontWeight: 600, cursor: 'pointer', transition: 'all 0.18s ease', display: 'flex', alignItems: 'center', gap: 5 }}>
+                                                {cat === 'Saved' && <Bookmark size={11} />}
+                                                {cat === 'Saved' ? 'Your Saved Things' : cat}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                                <div style={{ padding: '10px 20px 2px', flexShrink: 0 }}>
+                                    <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>{pickerFiltered.length} {pickerFiltered.length === 1 ? 'result' : 'results'}</p>
+                                </div>
+                                <div style={{ overflowY: 'auto', padding: '10px 20px 40px', flex: 1 }}>
+                                    {pickerFiltered.length === 0 ? (
+                                        <div style={{ textAlign: 'center', padding: '48px 0', color: 'var(--text-3)', fontSize: 14 }}>
+                                            {pickerCategory === 'Saved' ? 'No saved items yet — save activities from the explore page!' : 'No items match your search'}
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(148px, 1fr))', gap: 12 }}>
+                                            {pickerFiltered.map(item => {
+                                                const isAdded = addedIds.includes(item.id)
+                                                const disabled = isAdded || isFull
+                                                return (
+                                                    <div key={item.id} onClick={() => !disabled && addActivity(item.id)}
+                                                        style={{ display: 'flex', flexDirection: 'column', background: 'var(--bg-elevated)', borderRadius: 14, border: `1.5px solid ${isAdded ? 'rgba(255,107,0,0.45)' : 'var(--border)'}`, overflow: 'hidden', transition: 'border-color 0.2s, opacity 0.2s', opacity: isFull && !isAdded ? 0.45 : 1, cursor: disabled ? 'default' : 'pointer' }}>
+                                                        <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', flexShrink: 0 }}>
+                                                            <img src={item.image} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                            {item.type === 'walk' && <div style={{ position: 'absolute', top: 6, left: 6, display: 'inline-flex', alignItems: 'center', gap: 3, padding: '3px 8px', borderRadius: 100, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.12)', fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.9)' }}><Footprints size={8} /> Crawl</div>}
+                                                            {item.type === 'event' && <div style={{ position: 'absolute', top: 6, left: 6, display: 'inline-flex', alignItems: 'center', gap: 3, padding: '3px 8px', borderRadius: 100, background: 'rgba(255,107,0,0.88)', border: '1px solid rgba(255,255,255,0.16)', fontSize: 9, fontWeight: 700, color: '#fff' }}><Calendar size={8} /> Event</div>}
+                                                            {isAdded && <div style={{ position: 'absolute', inset: 0, background: 'rgba(255,107,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 16px rgba(255,107,0,0.6)' }}><Check size={17} color="white" strokeWidth={2.5} /></div></div>}
+                                                        </div>
+                                                        <div style={{ padding: '10px 10px 11px', flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                                            <p style={{ fontSize: 13, fontWeight: 700, color: isAdded ? 'var(--text-2)' : 'var(--text)', lineHeight: 1.3, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</p>
+                                                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 3, fontSize: 11, color: 'var(--text-3)', fontWeight: 500 }}><MapPin size={9} style={{ flexShrink: 0 }} />{item.area}</span>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )
+            })()}
 
             {/* Animations */}
             <style>{`
@@ -681,6 +768,10 @@ export default function LivePlanClient({ planId }: { planId: string }) {
                 @keyframes spin {
                     from { transform: rotate(0deg); }
                     to { transform: rotate(360deg); }
+                }
+                @keyframes slideUpSheet {
+                    from { transform: translateY(100%); opacity: 0.6; }
+                    to   { transform: translateY(0);    opacity: 1; }
                 }
             `}</style>
         </>

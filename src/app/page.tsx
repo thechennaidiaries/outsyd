@@ -67,7 +67,7 @@ export default function RootPage() {
   }
 
   return (
-    <main>
+    <main style={{ paddingBottom: '100px' }}>
       <Hero city={city} />
 
       {/* ═══ 1.4. Spotlight Carousel ═══════════════════════════════ */}

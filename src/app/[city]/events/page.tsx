@@ -17,7 +17,9 @@ function getTodayIST(): string {
 function addDaysIST(iso: string, days: number): string {
     const d = new Date(iso + 'T00:00:00+05:30')
     d.setDate(d.getDate() + days)
-    return d.toISOString().slice(0, 10)
+    // Format back in IST to avoid UTC date shift
+    const f = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' })
+    return f.format(d) // returns YYYY-MM-DD in IST
 }
 
 function getDayOfWeekIST(): number {
@@ -35,27 +37,27 @@ function getDateRangeForFilter(filter: string): string[] | null {
     if (filter === 'tomorrow') return [addDaysIST(today, 1)]
 
     if (filter === 'this-weekend') {
-        // Friday, Saturday, Sunday of this week
+        // This weekend = this week's Friday, Saturday, Sunday
+        // If today is Sun (0), the weekend has started — show today only
+        // If today is Fri (5), show Fri, Sat, Sun
+        // If today is Sat (6), show Sat, Sun
+        // Otherwise (Mon-Thu), show the upcoming Fri, Sat, Sun
         const daysToFri = (5 - dow + 7) % 7
         const fri = addDaysIST(today, daysToFri)
         const sat = addDaysIST(fri, 1)
         const sun = addDaysIST(fri, 2)
-        // If today is already Sat or Sun, include today
-        const dates: string[] = []
-        if (dow === 5) dates.push(today, addDaysIST(today, 1), addDaysIST(today, 2))
-        else if (dow === 6) dates.push(today, addDaysIST(today, 1))
-        else if (dow === 0) dates.push(today)
-        else dates.push(fri, sat, sun)
-        return dates
+        return [fri, sat, sun]
     }
 
     if (filter === 'next-weekend') {
-        // Friday, Saturday, Sunday of next week
-        const daysToFri = (5 - dow + 7) % 7 || 7 // force next week if already Fri
-        const nextFriOffset = dow <= 4 ? daysToFri + 7 : daysToFri + 7
-        // Simpler: just compute next week's Fri
-        const daysUntilNextFri = ((5 - dow + 7) % 7) + 7
-        const fri = addDaysIST(today, daysUntilNextFri)
+        // Next weekend = next week's Friday, Saturday, Sunday
+        // Always jump to the Friday that is at least 7 days from the most recent Friday
+        let daysToThisFri = (5 - dow + 7) % 7
+        // If today is Fri/Sat/Sun, "this Friday" is today or already passed this week
+        // so next Friday = daysToThisFri + 7
+        // If today is Mon-Thu, "this Friday" is upcoming, so next Friday = daysToThisFri + 7
+        const daysToNextFri = daysToThisFri + 7
+        const fri = addDaysIST(today, daysToNextFri)
         const sat = addDaysIST(fri, 1)
         const sun = addDaysIST(fri, 2)
         return [fri, sat, sun]

@@ -5,8 +5,66 @@ import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Calendar, Filter, X } from 'lucide-react'
 import EventCard from '@/components/EventCard'
-import { getEventsByCity, getCategoriesByCity, getDatesByCity } from '@/data/events'
+import { getEventsByCity, getCategoriesByCity } from '@/data/events'
 import { getCityBySlug } from '@/data/cities'
+
+/* ── IST date helpers ─────────────────────────────────────────────── */
+function getTodayIST(): string {
+    const f = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' })
+    return f.format(new Date()) // returns YYYY-MM-DD
+}
+
+function addDaysIST(iso: string, days: number): string {
+    const d = new Date(iso + 'T00:00:00+05:30')
+    d.setDate(d.getDate() + days)
+    // Format back in IST to avoid UTC date shift
+    const f = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit' })
+    return f.format(d) // returns YYYY-MM-DD in IST
+}
+
+function getDayOfWeekIST(): number {
+    const f = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', weekday: 'short' })
+    const day = f.format(new Date())
+    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(day)
+}
+
+function getDateRangeForFilter(filter: string): string[] | null {
+    if (filter === 'all') return null
+    const today = getTodayIST()
+    const dow = getDayOfWeekIST() // 0=Sun … 6=Sat
+
+    if (filter === 'today') return [today]
+    if (filter === 'tomorrow') return [addDaysIST(today, 1)]
+
+    if (filter === 'this-weekend') {
+        // This weekend = this week's Friday, Saturday, Sunday
+        // If today is Sun (0), the weekend has started — show today only
+        // If today is Fri (5), show Fri, Sat, Sun
+        // If today is Sat (6), show Sat, Sun
+        // Otherwise (Mon-Thu), show the upcoming Fri, Sat, Sun
+        const daysToFri = (5 - dow + 7) % 7
+        const fri = addDaysIST(today, daysToFri)
+        const sat = addDaysIST(fri, 1)
+        const sun = addDaysIST(fri, 2)
+        return [fri, sat, sun]
+    }
+
+    if (filter === 'next-weekend') {
+        // Next weekend = next week's Friday, Saturday, Sunday
+        // Always jump to the Friday that is at least 7 days from the most recent Friday
+        let daysToThisFri = (5 - dow + 7) % 7
+        // If today is Fri/Sat/Sun, "this Friday" is today or already passed this week
+        // so next Friday = daysToThisFri + 7
+        // If today is Mon-Thu, "this Friday" is upcoming, so next Friday = daysToThisFri + 7
+        const daysToNextFri = daysToThisFri + 7
+        const fri = addDaysIST(today, daysToNextFri)
+        const sat = addDaysIST(fri, 1)
+        const sun = addDaysIST(fri, 2)
+        return [fri, sat, sun]
+    }
+
+    return null
+}
 
 function shuffleArray<T>(arr: T[]): T[] {
     const copy = [...arr]
@@ -26,7 +84,6 @@ export default function EventsPage() {
 
     const allEvents = getEventsByCity(city.id)
     const allCategories = getCategoriesByCity(city.id)
-    const allDates = getDatesByCity(city.id)
 
     // Shuffled version for initial display
     const [shuffledAllEvents, setShuffledAllEvents] = useState<typeof allEvents>([])
@@ -41,8 +98,9 @@ export default function EventsPage() {
     const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
     const filteredEvents = useMemo(() => {
+        const dateRange = getDateRangeForFilter(selectedDate)
         return shuffledAllEvents.filter(e => {
-            if (selectedDate !== 'all' && e.date !== selectedDate) return false
+            if (dateRange && !dateRange.includes(e.date)) return false
             if (selectedPricing !== 'all' && e.pricingType !== selectedPricing) return false
             if (selectedCategory !== 'all' && !e.categories?.includes(selectedCategory)) return false
             return true
@@ -97,22 +155,29 @@ export default function EventsPage() {
                     background: 'var(--bg-card)', border: '1px solid var(--border)',
                     borderRadius: 'var(--radius)', padding: '24px',
                 }}>
-                    {/* Date Picker */}
+                    {/* Date Filter Dropdown */}
                     <div style={{ flex: '1 1 200px', minWidth: 200 }}>
                         <label style={{ display: 'flex', alignItems: 'center', fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>
-                            <Calendar size={11} style={{ marginRight: 6 }} /> Pick a Date
+                            <Calendar size={11} style={{ marginRight: 6 }} /> When
                         </label>
-                        <input 
-                            type="date"
-                            value={selectedDate === 'all' ? '' : selectedDate}
-                            onChange={(e) => setSelectedDate(e.target.value || 'all')}
+                        <select 
+                            value={selectedDate}
+                            onChange={(e) => setSelectedDate(e.target.value)}
                             style={{
                                 width: '100%', padding: '12px 14px', borderRadius: 12,
                                 background: 'var(--bg-elevated)', border: '1px solid var(--border)',
                                 color: 'var(--text)', fontSize: 13, fontWeight: 500,
-                                colorScheme: 'dark', cursor: 'pointer'
+                                cursor: 'pointer', appearance: 'none',
+                                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")`,
+                                backgroundRepeat: 'no-repeat', backgroundPosition: 'right 14px center',
                             }}
-                        />
+                        >
+                            <option value="all">All Dates</option>
+                            <option value="today">Today</option>
+                            <option value="tomorrow">Tomorrow</option>
+                            <option value="this-weekend">This Weekend</option>
+                            <option value="next-weekend">Next Weekend</option>
+                        </select>
                     </div>
 
                     {/* Pricing Dropdown */}

@@ -140,7 +140,16 @@ export const PLACES: Place[] = [
     { name: 'RH ARENA Chennai', area: 'Thousand Lights', cityId: 'chennai' },
     { name: 'thegaietycorner', area: 'Shared by Organizer', cityId: 'chennai' },
     { name: 'Clay Beach Studio', area: 'Kilpauk', cityId: 'chennai' },
-    { name: 'No Name Club', area: 'Nandanam', cityId: 'chennai' }
+    { name: 'No Name Club', area: 'Nandanam', cityId: 'chennai' },
+    { name: 'TTDC Drive In', area: 'Island Grounds', cityId: 'chennai' },
+    { name: 'Vibe Restobar', area: 'T Nagar', cityId: 'chennai' },
+    { name: 'Madras War Cemetery', area: 'Nandambakkam', cityId: 'chennai' },
+    { name: 'Hamleys', area: 'Express Avenue Mall', cityId: 'chennai' },
+    { name: 'Soap Football Chennai', area: 'Nungambakkam', cityId: 'chennai' },
+    { name: 'Moore Market', area: 'KNK Road', cityId: 'chennai' },
+    { name: 'Kart Attack', area: 'ECR', cityId: 'chennai' },
+    { name: 'Third Shot SQUAD', area: 'Mogappair', cityId: 'chennai' },
+    { name: 'XGT Chennai', area: 'Royapettah', cityId: 'chennai' }
 ]
 
 /** Get all places for a city */

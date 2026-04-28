@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { Rocket, CalendarDays, Calendar, Bookmark } from 'lucide-react'
+import { Rocket, CalendarDays, Calendar, Compass, Bookmark } from 'lucide-react'
 import { getCityBySlug } from '@/data/cities'
 import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
 
@@ -11,6 +11,16 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false)
     const [scrolledPast30, setScrolledPast30] = useState(false)
     const [savedBannerLabel, setSavedBannerLabel] = useState<string | null>(null)
+    const [isWeekend, setIsWeekend] = useState(false)
+
+    // Determine if it's a weekend day (Fri/Sat/Sun) in IST
+    useEffect(() => {
+        const now = new Date()
+        // Get current day in IST (UTC+5:30)
+        const istTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000 - now.getTimezoneOffset() * 60 * 1000))
+        const dayOfWeek = istTime.getUTCDay() // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
+        setIsWeekend(dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6)
+    }, [])
 
     // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai").
     // Non-city routes like /saved should fall back to the default city instead of becoming /saved/events.
@@ -65,12 +75,16 @@ export default function Navbar() {
 
     const homeHref = '/'
     const eventsHref = `/${citySlug}/events`
+    const activitiesHref = `/${citySlug}/activities`
+    const dynamicHref = isWeekend ? eventsHref : activitiesHref
     const surpriseHref = `/${citySlug}/surprise`
     const savedHref = '/saved'
     const planHref = `/${citySlug}/plan`
 
     const isHomeActive = pathname === homeHref || pathname.startsWith(homeHref + '/')
     const isEventsActive = pathname === eventsHref || pathname.startsWith(eventsHref + '/')
+    const isActivitiesActive = pathname === activitiesHref || pathname.startsWith(activitiesHref + '/')
+    const isDynamicActive = isWeekend ? isEventsActive : isActivitiesActive
     const isSurpriseActive = pathname === surpriseHref || pathname.startsWith(surpriseHref + '/')
     const isSavedActive = pathname === savedHref || pathname.startsWith(savedHref + '/')
     const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
@@ -211,36 +225,44 @@ export default function Navbar() {
                     </Link>
 
                     <Link
-                        href={eventsHref}
+                        href={dynamicHref}
                         style={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                             textDecoration: 'none', flex: 1,
                             padding: '6px 12px',
                             borderRadius: 14,
-                            color: isEventsActive ? 'var(--accent)' : 'var(--text-3)',
+                            color: isDynamicActive ? 'var(--accent)' : 'var(--text-3)',
                             transition: 'color 0.2s ease',
                         }}
                     >
                         <div style={{
                             width: 44, height: 30,
-                            borderRadius: isEventsActive ? 20 : 10,
+                            borderRadius: isDynamicActive ? 20 : 10,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: isEventsActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                            background: isDynamicActive ? 'rgba(255,107,0,0.16)' : 'transparent',
                             transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
                         }}>
-                            <Calendar
-                                size={20}
-                                strokeWidth={isEventsActive ? 2.5 : 1.75}
-                                color={isEventsActive ? 'var(--accent)' : 'var(--text-3)'}
-                            />
+                            {isWeekend ? (
+                                <Calendar
+                                    size={20}
+                                    strokeWidth={isDynamicActive ? 2.5 : 1.75}
+                                    color={isDynamicActive ? 'var(--accent)' : 'var(--text-3)'}
+                                />
+                            ) : (
+                                <Compass
+                                    size={20}
+                                    strokeWidth={isDynamicActive ? 2.5 : 1.75}
+                                    color={isDynamicActive ? 'var(--accent)' : 'var(--text-3)'}
+                                />
+                            )}
                         </div>
                         <span style={{
-                            fontSize: 10, fontWeight: isEventsActive ? 700 : 500,
+                            fontSize: 10, fontWeight: isDynamicActive ? 700 : 500,
                             letterSpacing: '0.01em',
                             transition: 'font-weight 0.2s',
                             whiteSpace: 'nowrap',
                         }}>
-                            Events
+                            {isWeekend ? 'Events' : 'Activities'}
                         </span>
                     </Link>
 

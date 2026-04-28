@@ -102,7 +102,7 @@ export default function RootPage() {
 
       {/* ═══ 1.44. Custom Banner Carousel ════════════════════════ */}
       <BannerCarousel
-        heading="🎉 Go out and Have Fun"
+        heading="Looking for something fun?"
         subheading="Adventure, Gaming, water & night activities in Chennai"
         items={[
           {
@@ -182,7 +182,7 @@ export default function RootPage() {
                 color: 'rgba(255, 255, 255, 0.9)',
                 fontFamily: '"PP Neue Montreal", sans-serif',
               }}>
-                If you can&apos;t decide where to go, hit me
+                Can&apos;t decide where to go? Hit me
               </span>
             </div>
           </div>
@@ -202,7 +202,7 @@ export default function RootPage() {
         <div id="pocket-friendly">
           <HScrollSection
             emoji="💰"
-            heading="Pocket Friendly Activities"
+            heading="If you're tight on budget"
             subheading="Find activities starting from ₹0"
             viewMoreHref={`/${citySlug}/activities/low-budget-fun-activities-in-${city.id}`}
           >
@@ -220,7 +220,7 @@ export default function RootPage() {
         <div id="city-walks">
           <HScrollSection
             emoji="🚶"
-            heading="City Crawls"
+            heading="City crawls to explore Chennai"
             viewMoreHref={`/${citySlug}/walks`}
           >
             {shuffledWalks.slice(0, 5).map((walk, index) => (

@@ -263,6 +263,121 @@ export const EVENTS: Event[] = [
         pricing: '₹399',
         status: 'active',
     },
+    {
+        "id": "evt-17",
+        "slug": "open-mic-art-fest-may-3-2026",
+        "title": "Open Mic Art Fest",
+        "cityId": "chennai",
+        "date": "2026-05-03",
+        "status": "active",
+        "address": "Sir Mutha Venkatasubba Rao Concert Hall\n\n7, Shenstone Park, # 13, 1, Harrington Rd, Chetpet, Chennai, Tamil Nadu 600031, India",
+        "venue": "Chetpet",
+        "mapsLink": "https://maps.app.goo.gl/D3pZqdV6cHqzy4o98",
+        "bookingLink": "https://allevents.in/chennai/uncalled-knacks-open-mic-art-festival-audience-pass-tickets/80001725919777",
+        "image": "https://ik.imagekit.io/zxnq8x4yz/Resize_this_imahe_202604280951.jpeg",
+        "time": "9 AM – 9 PM",
+        "categories": [
+            "Standup"
+        ],
+        "pricingType": "paid",
+        "pricing": "₹200"
+    },
+    {
+        "id": "evt-18",
+        "slug": "strangers-trip-to-mankulam-may-2-2026",
+        "title": "STRANGERS TRIP TO MANKULAM",
+        "cityId": "chennai",
+        "date": "2026-05-02",
+        "status": "active",
+        "description": "Mankulam Escape with The Strangers Escape 🍃\nYour weekends deserve better than malls 😌\n\nThink waterfalls, off-road rides & jungle chills 🌿\nThis is Mankulam — raw, untouched, unreal",
+        "bookingLink": "https://www.instagram.com/p/DXZaZCwkzv-/",
+        "image": "https://ik.imagekit.io/zxnq8x4yz/Resize_this_image_202604280955.jpeg",
+        "categories": [
+            "Stranger Trips"
+        ],
+        "pricingType": "paid"
+    },
+    {
+        "id": "evt-19",
+        "slug": "strangers-trip-wayanad-may-1-2026",
+        "title": "STRANGERS TRIP TO WAYANAD",
+        "cityId": "chennai",
+        "date": "2026-05-01",
+        "status": "active",
+        "description": "✨ Wayanad — where misty forests, hidden waterfalls, and cool hill air bring strangers together.\nJeep rides, trekking trails, scenic viewpoints, and conversations that feel raw, real, and unfiltered 🌫️🌲💛\n\nWith Rafiky, it’s never just about the destination — it’s about the people.\nStrangers turning into travel buddies, laughter echoing through the hills, and memories you didn’t know you needed ✨\n\nA perfect weekend escape filled with nature, connection, and adventure 🌿\n\n🎶 Nature Vibes • 😀 Laughter • 🥾 Trekking Trails • 💦 Waterfalls • 📸 Memories\n\nThis isn’t just a trip — it’s the Rafiky strangers experience 🌍\nCome solo, return with a whole new fam 👥💫",
+        "bookingLink": "https://www.instagram.com/p/DXJzmMvAeG6/",
+        "image": "https://ik.imagekit.io/zxnq8x4yz/Resize_this_imahe_202604280953.jpeg",
+        "categories": [
+            "Stranger Trips"
+        ],
+        "pricingType": "paid"
+    },
+    {
+        "id": "evt-20",
+        "slug": "strangers-mafia-night-may-2-2026",
+        "title": "Strangers Mafia Night",
+        "cityId": "chennai",
+        "date": "2026-05-02",
+        "status": "active",
+        "address": "Eatalica, Alwarpet",
+        "venue": "Alwarpet",
+        "mapsLink": "https://share.google/1zWC6XgsZbYz2GVfU",
+        "bookingLink": "https://www.instagram.com/p/DXb6x0FgJme/",
+        "image": "https://ik.imagekit.io/zxnq8x4yz/Indian_youth_playing_202604222340.jpeg?updatedAt=1776881446473",
+        "time": "7:00 PM",
+        "categories": [
+            "Stranger Meetup"
+        ]
+    },
+    {
+        "id": "evt-21",
+        "slug": "girls-stranger-trip-kolikkumalai-may-9-2026",
+        "title": "Girls Stranger Trip To Kolikkumalai",
+        "cityId": "chennai",
+        "date": "2026-05-09",
+        "status": "active",
+        "description": "📅 May 9 & 10\n📍 From Chennai\n⚠️ Limited slots only\n✨ Trip Highlights\n🌄 Sunrise at Jaguar Rock\n⛺ Tent stay under stars\n🍽️ Food included\n🚙 Jeep safari\n🌿 Tea plantation views\n🔥 Campfire & fun vibes\n💰 ₹5500 / person\n📲 DM or WhatsApp to book now\n📞 6383431283",
+        "bookingLink": "https://www.instagram.com/p/DXiYyrwEbRk/",
+        "image": "https://ik.imagekit.io/zxnq8x4yz/Add_girls_in_202604280958.jpeg",
+        "categories": [
+            "Stranger Trips"
+        ],
+        "pricingType": "paid",
+        "pricing": "₹5500"
+    },
+    {
+        "id": "evt-22",
+        "slug": "strangers-trip-to-rishikesh-may-13-2026",
+        "title": "STRANGERS TRIP TO RISHIKESH",
+        "cityId": "chennai",
+        "date": "2026-05-13",
+        "status": "active",
+        "description": "✨ From the calm flow of the Ganga to the misty mountain roads of Mussoorie — this journey is where nature, peace, and people come together.\nRiverfront mornings, hilltop sunsets, cozy cafés, soulful conversations, and moments that slow you down 🌊🌄☕\n\nWith Rafiky, it’s never just about the places — it’s about the people you meet.\nStrangers turn into friends, friends into family, and every shared experience becomes a story worth remembering 💛\n\n🎶 Vibes • 😀 Laughter • 🧘 Calm Moments • 🌌 Night Talks • 📸 Memories\n\nThis isn’t just a trip — it’s the Rafiky vibe experience ✨\nCome solo, return with a whole new fam 👥💫",
+        "bookingLink": "https://www.instagram.com/p/DW_dC46gSdI/",
+        "image": "https://ik.imagekit.io/zxnq8x4yz/Resize_this_image_202604281000.jpeg",
+        "categories": [
+            "Stranger Trips"
+        ],
+        "pricingType": "paid"
+    },
+    {
+        "id": "evt-23",
+        "slug": "fake-sangeet-may-17-2026",
+        "title": "FAKE SANGEET",
+        "cityId": "chennai",
+        "date": "2026-05-17",
+        "status": "active",
+        "address": "no 128, New no 22, Old, Chamiers Rd, Nandanam Extension, Nandanam, Chennai, Tamil Nadu 600035",
+        "venue": "Nandanam",
+        "mapsLink": "https://share.google/fBoFbix4k3Gj9Axlg",
+        "bookingLink": "https://www.instagram.com/p/DWoZICYlETQ/?img_index=1",
+        "image": "https://ik.imagekit.io/zxnq8x4yz/Indian_youth_sangeeth_202604281003.jpeg",
+        "time": "6:00 PM",
+        "categories": [
+            "Stranger Meetup"
+        ],
+        "pricingType": "paid"
+    },
 ]
 
 // ── Helper Functions ──────────────────────────────────────────────

@@ -55,6 +55,7 @@ export default function ActivitiesPage() {
 
   // Newly added activities (last 7 days)
   const newlyAdded = getNewlyAddedActivities(city.id, 7).slice(0, 15)
+  const [shuffledNewlyAdded, setShuffledNewlyAdded] = useState(newlyAdded)
 
   // Curated sections (base lists)
   const sports = cityActivities.filter(a => a.tags?.includes('sports activities'))
@@ -79,6 +80,7 @@ export default function ActivitiesPage() {
   const [shuffledNight, setShuffledNight] = useState(night)
 
   useEffect(() => {
+    setShuffledNewlyAdded(shuffleArray(newlyAdded))
     setShuffledSports(shuffleArray(sports))
     setShuffledGaming(shuffleArray(gaming))
     setShuffledAdventure(shuffleArray(adventure))
@@ -204,7 +206,7 @@ export default function ActivitiesPage() {
       {/* ═══ 2. Newly Added ═════════════════════════════════════════ */}
       {newlyAdded.length > 0 && (
         <HScrollSection emoji="🆕" heading="Newly Added" viewMoreHref={`/${citySlug}/activities`} hideViewMore={true}>
-          {newlyAdded.map(a => (
+          {shuffledNewlyAdded.map(a => (
             <div key={a.id} style={cardStyle}>
               <ActivityCard activity={a} citySlug={citySlug} />
             </div>

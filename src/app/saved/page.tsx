@@ -58,7 +58,7 @@ export default function SavedPage() {
               marginBottom: 12,
             }}
           >
-            Saved items
+            My bucketlist
           </h1>
           <p style={{ fontSize: 16, color: 'var(--text-3)' }}>
             Your saved activities, walks, and events stay on this device only.

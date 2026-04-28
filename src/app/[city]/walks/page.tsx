@@ -34,7 +34,7 @@ export default function WalksPage() {
           letterSpacing: '-0.04em', color: 'var(--text)',
           lineHeight: 1.1, marginBottom: 12, maxWidth: 800,
         }}>
-          City walks to discover food, culture and vibe in{' '}
+          City crawls to discover food culture and vibe in{' '}
           <span style={{
             background: 'linear-gradient(135deg, #FF6B00, #FF9A3C)',
             WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',

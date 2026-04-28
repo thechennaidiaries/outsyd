@@ -174,7 +174,7 @@ export default function RootPage() {
                 fontFamily: '"PP Neue Montreal", sans-serif',
                 letterSpacing: '-0.01em',
               }}>
-                Don&apos;t know what to do?
+                I&apos;m bored Button
               </span>
               <span style={{
                 fontSize: 13,
@@ -182,7 +182,7 @@ export default function RootPage() {
                 color: 'rgba(255, 255, 255, 0.9)',
                 fontFamily: '"PP Neue Montreal", sans-serif',
               }}>
-                Let our I&apos;m bored page suggest you
+                If you can&apos;t decide where to go, hit me
               </span>
             </div>
           </div>

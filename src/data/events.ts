@@ -288,7 +288,7 @@ export const EVENTS: Event[] = [
         "title": "STRANGERS TRIP TO MANKULAM",
         "cityId": "chennai",
         "date": "2026-05-02",
-        "status": "active",
+        "status": "expired",
         "description": "Mankulam Escape with The Strangers Escape 🍃\nYour weekends deserve better than malls 😌\n\nThink waterfalls, off-road rides & jungle chills 🌿\nThis is Mankulam — raw, untouched, unreal",
         "bookingLink": "https://www.instagram.com/p/DXZaZCwkzv-/",
         "image": "https://ik.imagekit.io/zxnq8x4yz/Resize_this_image_202604280955.jpeg",

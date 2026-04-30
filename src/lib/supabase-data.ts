@@ -116,6 +116,7 @@ function mapClub(row: any): Club {
 
 /** Get all cities */
 export async function fetchCities(): Promise<City[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('cities')
         .select('*')
@@ -125,6 +126,7 @@ export async function fetchCities(): Promise<City[]> {
 
 /** Look up a city by its URL slug */
 export async function fetchCityBySlug(slug: string): Promise<City | undefined> {
+    if (!supabaseClient) return undefined
     const { data, error } = await supabaseClient
         .from('cities')
         .select('*')
@@ -141,6 +143,7 @@ export async function fetchCityBySlug(slug: string): Promise<City | undefined> {
 
 /** Get all places for a city */
 export async function fetchPlacesByCity(cityId: string): Promise<Place[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('places')
         .select('*')
@@ -151,6 +154,7 @@ export async function fetchPlacesByCity(cityId: string): Promise<Place[]> {
 
 /** Look up a single place by its name */
 export async function fetchPlaceByName(name: string): Promise<Place | undefined> {
+    if (!supabaseClient) return undefined
     const { data, error } = await supabaseClient
         .from('places')
         .select('*')
@@ -167,6 +171,7 @@ export async function fetchPlaceByName(name: string): Promise<Place | undefined>
 
 /** Get all activities for a specific city */
 export async function fetchActivitiesByCity(cityId: string): Promise<Activity[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('activities')
         .select('*')
@@ -177,6 +182,7 @@ export async function fetchActivitiesByCity(cityId: string): Promise<Activity[]>
 
 /** Get all activities (for sitemap, saved page, etc.) */
 export async function fetchAllActivities(): Promise<Activity[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('activities')
         .select('*')
@@ -186,6 +192,7 @@ export async function fetchAllActivities(): Promise<Activity[]> {
 
 /** Look up an activity by its slug within a city */
 export async function fetchActivityBySlug(cityId: string, slug: string): Promise<Activity | undefined> {
+    if (!supabaseClient) return undefined
     const { data, error } = await supabaseClient
         .from('activities')
         .select('*')
@@ -198,6 +205,7 @@ export async function fetchActivityBySlug(cityId: string, slug: string): Promise
 
 /** Get activities for a specific tag within a city */
 export async function fetchActivitiesByCityAndTag(cityId: string, tagName: string): Promise<Activity[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('activities')
         .select('*')
@@ -209,6 +217,7 @@ export async function fetchActivitiesByCityAndTag(cityId: string, tagName: strin
 
 /** Get activities added within the last N days for a city, sorted newest-first */
 export async function fetchNewlyAddedActivities(cityId: string, days: number = 7): Promise<Activity[]> {
+    if (!supabaseClient) return []
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
     const cutoffStr = cutoff.toISOString().split('T')[0] // YYYY-MM-DD
     const { data, error } = await supabaseClient
@@ -223,6 +232,7 @@ export async function fetchNewlyAddedActivities(cityId: string, days: number = 7
 
 /** Get all activities at a specific place */
 export async function fetchActivitiesByPlace(placeId: string): Promise<Activity[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('activities')
         .select('*')
@@ -261,6 +271,7 @@ function getTodayIsoInChennai(): string {
 
 /** Get all active events for a specific city (not expired, date >= today) */
 export async function fetchEventsByCity(cityId: string): Promise<Event[]> {
+    if (!supabaseClient) return []
     const today = getTodayIsoInChennai()
     const { data, error } = await supabaseClient
         .from('events')
@@ -274,6 +285,7 @@ export async function fetchEventsByCity(cityId: string): Promise<Event[]> {
 
 /** Get all events (including expired — for sitemap, saved page, etc.) */
 export async function fetchAllEvents(): Promise<Event[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('events')
         .select('*')
@@ -283,6 +295,7 @@ export async function fetchAllEvents(): Promise<Event[]> {
 
 /** Look up an event by its slug within a city */
 export async function fetchEventBySlug(cityId: string, slug: string): Promise<Event | undefined> {
+    if (!supabaseClient) return undefined
     const { data, error } = await supabaseClient
         .from('events')
         .select('*')
@@ -295,6 +308,7 @@ export async function fetchEventBySlug(cityId: string, slug: string): Promise<Ev
 
 /** Get events filtered by category within a city (active only) */
 export async function fetchEventsByCityAndCategory(cityId: string, category: string): Promise<Event[]> {
+    if (!supabaseClient) return []
     const today = getTodayIsoInChennai()
     const { data, error } = await supabaseClient
         .from('events')
@@ -317,6 +331,7 @@ export async function fetchCategoriesByCity(cityId: string): Promise<string[]> {
 
 /** Get events for a specific date within a city (active only) */
 export async function fetchEventsByDate(cityId: string, date: string): Promise<Event[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('events')
         .select('*')
@@ -329,6 +344,7 @@ export async function fetchEventsByDate(cityId: string, date: string): Promise<E
 
 /** Get upcoming events (today or later) for a city, sorted by date (active only) */
 export async function fetchUpcomingEvents(cityId: string): Promise<Event[]> {
+    if (!supabaseClient) return []
     const today = getTodayIsoInChennai()
     const { data, error } = await supabaseClient
         .from('events')
@@ -356,6 +372,7 @@ export async function fetchDatesByCity(cityId: string): Promise<string[]> {
 
 /** Get all walks for a specific city */
 export async function fetchWalksByCity(cityId: string): Promise<Walk[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('walks')
         .select('*')
@@ -366,6 +383,7 @@ export async function fetchWalksByCity(cityId: string): Promise<Walk[]> {
 
 /** Get all walks (for sitemap, saved page, etc.) */
 export async function fetchAllWalks(): Promise<Walk[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('walks')
         .select('*')
@@ -375,6 +393,7 @@ export async function fetchAllWalks(): Promise<Walk[]> {
 
 /** Look up a walk by its slug within a city */
 export async function fetchWalkBySlug(cityId: string, slug: string): Promise<Walk | undefined> {
+    if (!supabaseClient) return undefined
     const { data, error } = await supabaseClient
         .from('walks')
         .select('*')
@@ -387,6 +406,7 @@ export async function fetchWalkBySlug(cityId: string, slug: string): Promise<Wal
 
 /** Get all walks for a specific area within a city */
 export async function fetchWalksByCityAndArea(cityId: string, area: string): Promise<Walk[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('walks')
         .select('*')
@@ -411,6 +431,7 @@ export async function fetchWalkAreasByCity(cityId: string): Promise<string[]> {
 
 /** Get all clubs for a specific city */
 export async function fetchClubsByCity(cityId: string): Promise<Club[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('clubs')
         .select('*')
@@ -421,6 +442,7 @@ export async function fetchClubsByCity(cityId: string): Promise<Club[]> {
 
 /** Look up a club by its slug within a city */
 export async function fetchClubBySlug(cityId: string, slug: string): Promise<Club | undefined> {
+    if (!supabaseClient) return undefined
     const { data, error } = await supabaseClient
         .from('clubs')
         .select('*')
@@ -433,6 +455,7 @@ export async function fetchClubBySlug(cityId: string, slug: string): Promise<Clu
 
 /** Get clubs matching a specific tag within a city */
 export async function fetchClubsByCityAndTag(cityId: string, tag: string): Promise<Club[]> {
+    if (!supabaseClient) return []
     const { data, error } = await supabaseClient
         .from('clubs')
         .select('*')

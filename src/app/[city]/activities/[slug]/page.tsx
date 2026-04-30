@@ -189,9 +189,21 @@ export default async function SlugPage({ params }: Props) {
                     </DetailCard>
                 )}
 
-                <div style={{ display: 'flex', gap: 12, marginTop: 8, marginBottom: 56 }} className="flex-col md:flex-row">
-                    {activity.slug && <SaveItemButton type="activity" slug={activity.slug} citySlug={city.id} />}
-                    <ShareButton title={activity.title} text={`Check out ${activity.location} on TBOC ${city.name}`} />
+                <div style={{ display: 'flex', gap: 12, marginTop: 12, marginBottom: 56 }} className="flex-col md:flex-row">
+                    {activity.slug && (
+                        <SaveItemButton 
+                            type="activity" 
+                            slug={activity.slug} 
+                            citySlug={city.id} 
+                            label="Save for Later" 
+                            savedLabel="Saved to Plan"
+                        />
+                    )}
+                    <ShareButton 
+                        title={activity.title} 
+                        text={`Check out ${activity.location} on TBOC ${city.name}`} 
+                        label="Share with Friends"
+                    />
                     <a
                         href={activity.bookingLink || activity.locationLink}
                         target="_blank"
@@ -204,8 +216,10 @@ export default async function SlugPage({ params }: Props) {
                             color: 'white', fontSize: 16, fontWeight: 700,
                             textDecoration: 'none',
                             boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
-                            transition: 'all 0.2s ease', letterSpacing: '-0.01em',
+                            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)', 
+                            letterSpacing: '-0.01em',
                         }}
+                        className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
                     >
                         <Navigation size={18} fill="white" />
                         {activity.bookingLink ? 'Book a Slot' : 'Take me to Maps'}

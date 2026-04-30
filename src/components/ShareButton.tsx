@@ -5,9 +5,10 @@ import { Share2, Check, Copy } from 'lucide-react'
 interface Props {
     title: string
     text?: string
+    label?: string
 }
 
-export default function ShareButton({ title, text }: Props) {
+export default function ShareButton({ title, text, label = 'Share' }: Props) {
     const [state, setState] = useState<'idle' | 'copied'>('idle')
 
     async function handleShare() {
@@ -70,7 +71,7 @@ export default function ShareButton({ title, text }: Props) {
                 ? <Check size={17} strokeWidth={2.5} />
                 : <Share2 size={17} strokeWidth={2} />
             }
-            {isCopied ? 'Link Copied!' : 'Share'}
+            {isCopied ? 'Link Copied!' : label}
         </button>
     )
 }

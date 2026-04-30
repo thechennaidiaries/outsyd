@@ -1,8 +1,9 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { ACTIVITIES, ALL_TAGS, getActivitiesByCity, getTagsByCity } from '@/data/activities'
-import { getEventsByCity } from '@/data/events'
-import { getWalksByCity } from '@/data/walks'
+import { fetchAllActivities, fetchActivitiesByCity, fetchWalksByCity, fetchEventsByCity } from '@/lib/supabase-data'
+import type { Activity } from '@/data/activities'
+import type { Walk } from '@/data/walks'
+import type { Event } from '@/data/events'
 import { X, Search, Check, MapPin, Footprints, Calendar } from 'lucide-react'
 
 // Unified item for picker
@@ -23,11 +24,27 @@ interface Props {
 }
 
 export default function ActivityPickerModal({ addedIds, onAdd, onClose, cityId }: Props) {
-    const activities = cityId ? getActivitiesByCity(cityId) : ACTIVITIES
-    const walks = cityId ? getWalksByCity(cityId) : []
-    const events = cityId ? getEventsByCity(cityId) : []
-    const tags = cityId ? getTagsByCity(cityId) : ALL_TAGS
-    const allTags = [...tags, 'Crawl', 'Event']  // add Crawl and Event as filter options
+    const [activities, setActivities] = useState<Activity[]>([])
+    const [walks, setWalks] = useState<Walk[]>([])
+    const [events, setEvents] = useState<Event[]>([])
+    const [allTags, setAllTags] = useState<(string | null)[]>([null])
+
+    useEffect(() => {
+        async function loadData() {
+            const [acts, wks, evts] = await Promise.all([
+                cityId ? fetchActivitiesByCity(cityId) : fetchAllActivities(),
+                cityId ? fetchWalksByCity(cityId) : Promise.resolve([]),
+                cityId ? fetchEventsByCity(cityId) : Promise.resolve([]),
+            ])
+            setActivities(acts)
+            setWalks(wks)
+            setEvents(evts)
+            // Build tags from fetched activities
+            const tags = Array.from(new Set(acts.flatMap(a => a.tags ?? [])))
+            setAllTags([null, ...tags, 'Crawl', 'Event'])
+        }
+        loadData()
+    }, [cityId])
 
     // Build unified pool
     const pool: PickerItem[] = [

@@ -1,13 +1,13 @@
 import { Suspense } from 'react'
 import LivePlanClient from './LivePlanClient'
-import { getCityBySlug } from '@/data/cities'
+import { fetchCityBySlug } from '@/lib/supabase-data'
 
 interface Props {
     params: { city: string; id: string }
 }
 
 export async function generateMetadata({ params }: Props) {
-    const city = getCityBySlug(params.city)
+    const city = await fetchCityBySlug(params.city)
     const cityName = city?.name ?? 'City'
     return {
         title: `Shared Plan — TBOC ${cityName}`,

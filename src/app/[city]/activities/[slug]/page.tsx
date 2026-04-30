@@ -1,8 +1,9 @@
+import { TAG_META, getTagBySlug } from '@/data/activities'
+import type { TagMeta } from '@/data/activities'
 import {
-    ACTIVITIES, TAG_META,
-    getActivitiesByCity, getActivityBySlug, getTagBySlug, getActivitiesByCityAndTag,
-} from '@/data/activities'
-import { getCityBySlug, CITIES } from '@/data/cities'
+    fetchCityBySlug, fetchCities,
+    fetchActivitiesByCity, fetchActivityBySlug, fetchActivitiesByCityAndTag,
+} from '@/lib/supabase-data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { MapPin, Clock, Navigation, ArrowLeft, Home, FileText, Tag, DollarSign } from 'lucide-react'
@@ -43,9 +44,11 @@ function parseCategorySlug(slug: string, cityId: string): string | null {
 }
 
 // ── Static params: generate for both activities AND categories ────
-export function generateStaticParams() {
-    const activityParams = ACTIVITIES.map(a => ({ city: a.cityId, slug: a.slug }))
-    const categoryParams = CITIES.flatMap(c =>
+export async function generateStaticParams() {
+    const cities = await fetchCities()
+    const activities = await Promise.all(cities.map(c => fetchActivitiesByCity(c.id)))
+    const activityParams = activities.flat().map(a => ({ city: a.cityId, slug: a.slug }))
+    const categoryParams = cities.flatMap(c =>
         TAG_META.map(t => ({ city: c.id, slug: buildCategorySlug(t.slug, c.id) }))
     )
     return [...activityParams, ...categoryParams]
@@ -55,7 +58,7 @@ import { generateActivitySeo } from '@/lib/seo'
 
 // ── Metadata: different for category vs activity ─────────────────
 export async function generateMetadata({ params }: Props) {
-    const city = getCityBySlug(params.city)
+    const city = await fetchCityBySlug(params.city)
     if (!city) return {}
 
     // Category page?
@@ -69,7 +72,7 @@ export async function generateMetadata({ params }: Props) {
     }
 
     // Activity page
-    const activity = getActivityBySlug(city.id, params.slug)
+    const activity = await fetchActivityBySlug(city.id, params.slug)
     if (!activity) return {}
 
     const { metaTitle, metaDescription } = generateActivitySeo({
@@ -87,22 +90,24 @@ export async function generateMetadata({ params }: Props) {
 }
 
 // ── Page component ───────────────────────────────────────────────
-export default function SlugPage({ params }: Props) {
-    const city = getCityBySlug(params.city)
+export default async function SlugPage({ params }: Props) {
+    const city = await fetchCityBySlug(params.city)
     if (!city) notFound()
 
     // ─── Check: is this a category page? ─────────────────────────
     const tagSlugPart = parseCategorySlug(params.slug, city.id)
     const tag = tagSlugPart ? getTagBySlug(tagSlugPart) : undefined
     if (tag) {
-        return <CategoryPage cityId={city.id} cityName={city.name} tag={tag} />
+        const tagActivities = await fetchActivitiesByCityAndTag(city.id, tag.name)
+        return <CategoryPage cityId={city.id} cityName={city.name} tag={tag} activities={tagActivities} />
     }
 
     // ─── Otherwise: activity detail page ─────────────────────────
-    const activity = getActivityBySlug(city.id, params.slug)
+    const activity = await fetchActivityBySlug(city.id, params.slug)
     if (!activity) notFound()
 
-    const related = getActivitiesByCity(city.id)
+    const allCityActivities = await fetchActivitiesByCity(city.id)
+    const related = allCityActivities
         .filter(a => a.id !== activity.id && (a.tags?.some(t => activity.tags?.includes(t)) ?? false))
         .slice(0, 4)
 
@@ -235,10 +240,9 @@ export default function SlugPage({ params }: Props) {
 // CATEGORY PAGE
 // ═══════════════════════════════════════════════════════════════════
 
-import type { TagMeta } from '@/data/activities'
+import type { Activity } from '@/data/activities'
 
-function CategoryPage({ cityId, cityName, tag }: { cityId: string; cityName: string; tag: TagMeta }) {
-    const activities = getActivitiesByCityAndTag(cityId, tag.name)
+function CategoryPage({ cityId, cityName, tag, activities }: { cityId: string; cityName: string; tag: TagMeta; activities: Activity[] }) {
 
     return (
         <main style={{ minHeight: '100vh', background: 'var(--bg)' }}>

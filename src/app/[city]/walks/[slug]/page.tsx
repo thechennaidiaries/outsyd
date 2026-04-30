@@ -1,5 +1,4 @@
-import { WALKS, getWalkBySlug, getWalksByCity } from '@/data/walks'
-import { getCityBySlug, CITIES } from '@/data/cities'
+import { fetchAllWalks, fetchCityBySlug, fetchWalkBySlug, fetchWalksByCity } from '@/lib/supabase-data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { MapPin, Navigation, ArrowLeft, Home, Footprints } from 'lucide-react'
@@ -11,15 +10,16 @@ interface Props {
 }
 
 // ── Static params ────────────────────────────────────────────────
-export function generateStaticParams() {
-    return WALKS.map(w => ({ city: w.cityId, slug: w.slug }))
+export async function generateStaticParams() {
+    const allWalks = await fetchAllWalks()
+    return allWalks.map(w => ({ city: w.cityId, slug: w.slug }))
 }
 
 // ── Metadata ─────────────────────────────────────────────────────
 export async function generateMetadata({ params }: Props) {
-    const city = getCityBySlug(params.city)
+    const city = await fetchCityBySlug(params.city)
     if (!city) return {}
-    const walk = getWalkBySlug(city.id, params.slug)
+    const walk = await fetchWalkBySlug(city.id, params.slug)
     if (!walk) return {}
     return {
         title: `${walk.title} — TBOC ${city.name}`,
@@ -28,18 +28,19 @@ export async function generateMetadata({ params }: Props) {
 }
 
 // ── Page component ───────────────────────────────────────────────
-export default function WalkDetailPage({ params }: Props) {
-    const city = getCityBySlug(params.city)
+export default async function WalkDetailPage({ params }: Props) {
+    const city = await fetchCityBySlug(params.city)
     if (!city) notFound()
 
-    const walk = getWalkBySlug(city.id, params.slug)
+    const walk = await fetchWalkBySlug(city.id, params.slug)
     if (!walk) notFound()
 
     // Use the walk's dedicated cover image for the hero
     const heroImage = walk.image
 
     // Other walks in the same city for "You might also like"
-    const otherWalks = getWalksByCity(city.id)
+    const allCityWalks = await fetchWalksByCity(city.id)
+    const otherWalks = allCityWalks
         .filter(w => w.id !== walk.id)
         .slice(0, 4)
 

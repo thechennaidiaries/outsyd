@@ -5,10 +5,11 @@ import Link from 'next/link'
 import {
     ArrowLeft, Calendar, Check, Loader2, Search, MapPin, Footprints, X, Bookmark,
 } from 'lucide-react'
-import { getCityBySlug } from '@/data/cities'
-import { getActivitiesByCity } from '@/data/activities'
-import { getWalksByCity } from '@/data/walks'
-import { getEventsByCity } from '@/data/events'
+import type { City } from '@/data/cities'
+import type { Activity } from '@/data/activities'
+import type { Walk } from '@/data/walks'
+import type { Event } from '@/data/events'
+import { fetchCityBySlug, fetchActivitiesByCity, fetchWalksByCity, fetchEventsByCity } from '@/lib/supabase-data'
 import { useSavedItems } from '@/hooks/useSavedItems'
 import { notFound } from 'next/navigation'
 
@@ -174,15 +175,33 @@ export default function PlanClient() {
     const params = useParams()
     const router = useRouter()
     const citySlug = params.city as string
-    const city = getCityBySlug(citySlug)
 
-    if (!city) notFound()
-
-    // ── Data
-    const cityActivities = getActivitiesByCity(city.id)
-    const cityWalks = getWalksByCity(city.id)
-    const cityEvents = getEventsByCity(city.id)
+    const [city, setCity] = useState<City | null>(null)
+    const [cityActivities, setCityActivities] = useState<Activity[]>([])
+    const [cityWalks, setCityWalks] = useState<Walk[]>([])
+    const [cityEvents, setCityEvents] = useState<Event[]>([])
+    const [dataLoaded, setDataLoaded] = useState(false)
     const { savedItems } = useSavedItems()
+
+    useEffect(() => {
+        async function loadData() {
+            const [cityData, activities, walks, events] = await Promise.all([
+                fetchCityBySlug(citySlug),
+                fetchActivitiesByCity(citySlug),
+                fetchWalksByCity(citySlug),
+                fetchEventsByCity(citySlug),
+            ])
+            if (cityData) setCity(cityData)
+            setCityActivities(activities)
+            setCityWalks(walks)
+            setCityEvents(events)
+            setDataLoaded(true)
+        }
+        loadData()
+    }, [citySlug])
+
+    if (!dataLoaded) return <main style={{ minHeight: '100vh', paddingTop: 100 }} />
+    if (!city) return notFound()
 
     // ── State
     const [selectedActivities, setSelectedActivities] = useState<string[]>([])
@@ -202,7 +221,7 @@ export default function PlanClient() {
     const pool: PickerItem[] = [
         ...cityEvents.map(e => ({ id: `event-${e.id}`, type: 'event' as const, title: e.title, image: e.image ?? '', area: e.address ?? e.venue ?? '', slug: e.slug, category: 'Events' })),
         ...cityWalks.map(w => ({ id: `walk-${w.id}`, type: 'walk' as const, title: w.title, image: w.image, area: w.area, slug: w.slug, category: 'Walks' })),
-        ...cityActivities.map(a => ({ id: a.id ?? '', type: 'activity' as const, title: a.title, image: a.image ?? '', area: a.area ?? '', slug: a.slug, category: 'Activities' })),
+        ...cityActivities.map(a => ({ id: a.id ?? '', type: 'activity' as const, title: a.title, image: a.image ?? '', area: a.area ?? '', slug: a.slug ?? '', category: 'Activities' })),
     ]
 
     // ── Saved items mapped to pool IDs

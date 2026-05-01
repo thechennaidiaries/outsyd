@@ -77,6 +77,11 @@ export default function EventsPage() {
     const [shuffledAllEvents, setShuffledAllEvents] = useState<Event[]>([])
     const [loading, setLoading] = useState(true)
 
+    // Filter state — must be declared before any early returns (Rules of Hooks)
+    const [selectedDate, setSelectedDate] = useState<string>('all')
+    const [selectedPricing, setSelectedPricing] = useState<string>('all')
+    const [selectedCategory, setSelectedCategory] = useState<string>('all')
+
     useEffect(() => {
         async function loadData() {
             const [cityData, events, categories] = await Promise.all([
@@ -94,11 +99,6 @@ export default function EventsPage() {
 
     if (loading) return <main style={{ minHeight: '100vh', paddingTop: '100px' }} />
     if (!city) return notFound()
-
-    // Filter state
-    const [selectedDate, setSelectedDate] = useState<string>('all')
-    const [selectedPricing, setSelectedPricing] = useState<string>('all')
-    const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
     const filteredEvents = useMemo(() => {
         const dateRange = getDateRangeForFilter(selectedDate)

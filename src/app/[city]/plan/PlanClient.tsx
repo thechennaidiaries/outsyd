@@ -183,6 +183,19 @@ export default function PlanClient() {
     const [dataLoaded, setDataLoaded] = useState(false)
     const { savedItems } = useSavedItems()
 
+    // ── State — must be declared before any early returns (Rules of Hooks)
+    const [selectedActivities, setSelectedActivities] = useState<string[]>([])
+    const [showPicker, setShowPicker] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [activeCategory, setActiveCategory] = useState<string>('Saved')
+
+    const [planName, setPlanName] = useState('')
+    const [selectedDate, setSelectedDate] = useState('')
+    const [nameError, setNameError] = useState(false)
+    const [dateError, setDateError] = useState(false)
+    const [isCreating, setIsCreating] = useState(false)
+    const [isMigrating, setIsMigrating] = useState(false)
+
     useEffect(() => {
         async function loadData() {
             const [cityData, activities, walks, events] = await Promise.all([
@@ -202,19 +215,6 @@ export default function PlanClient() {
 
     if (!dataLoaded) return <main style={{ minHeight: '100vh', paddingTop: 100 }} />
     if (!city) return notFound()
-
-    // ── State
-    const [selectedActivities, setSelectedActivities] = useState<string[]>([])
-    const [showPicker, setShowPicker] = useState(false)
-    const [searchQuery, setSearchQuery] = useState('')
-    const [activeCategory, setActiveCategory] = useState<string>('Saved')
-
-    const [planName, setPlanName] = useState('')
-    const [selectedDate, setSelectedDate] = useState('')
-    const [nameError, setNameError] = useState(false)
-    const [dateError, setDateError] = useState(false)
-    const [isCreating, setIsCreating] = useState(false)
-    const [isMigrating, setIsMigrating] = useState(false)
 
     // ── Build unified pool
     type PickerItem = { id: string; type: 'activity' | 'walk' | 'event'; title: string; image: string; area: string; slug: string; category: string }

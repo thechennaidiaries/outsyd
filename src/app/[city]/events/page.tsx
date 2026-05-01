@@ -97,9 +97,6 @@ export default function EventsPage() {
         loadData()
     }, [citySlug])
 
-    if (loading) return <main style={{ minHeight: '100vh', paddingTop: '100px' }} />
-    if (!city) return notFound()
-
     const filteredEvents = useMemo(() => {
         const dateRange = getDateRangeForFilter(selectedDate)
         return shuffledAllEvents.filter(e => {
@@ -117,6 +114,9 @@ export default function EventsPage() {
         setSelectedPricing('all')
         setSelectedCategory('all')
     }
+
+    if (loading) return <main style={{ minHeight: '100vh', paddingTop: '100px' }} />
+    if (!city) return notFound()
 
     return (
         <main style={{ minHeight: '100vh', paddingTop: '100px', background: 'var(--bg)' }}>

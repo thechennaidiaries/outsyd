@@ -213,9 +213,6 @@ export default function PlanClient() {
         loadData()
     }, [citySlug])
 
-    if (!dataLoaded) return <main style={{ minHeight: '100vh', paddingTop: 100 }} />
-    if (!city) return notFound()
-
     // ── Build unified pool
     type PickerItem = { id: string; type: 'activity' | 'walk' | 'event'; title: string; image: string; area: string; slug: string; category: string }
     const pool: PickerItem[] = [
@@ -312,6 +309,10 @@ export default function PlanClient() {
                 setIsMigrating(false)
             })
     }, [searchParams, citySlug, router])
+
+    // ── Early returns AFTER all hooks ─────────────────────────────────────
+    if (!dataLoaded) return <main style={{ minHeight: '100vh', paddingTop: 100 }} />
+    if (!city) return notFound()
 
     // ── Create plan via API ───────────────────────────────────────────────
     async function handleStartPlanning() {

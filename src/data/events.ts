@@ -426,7 +426,7 @@ export const EVENTS: Event[] = [
         "date": "2026-05-03",
         "image": "https://ik.imagekit.io/zxnq8x4yz/Resize_this_image_into_3_4_202604301230.jpeg",
         "bookingLink": "https://www.instagram.com/p/DXrJKzuARRf/",
-        "area": "Thiruporur",
+        "address": "Thiruporur",
         "venue": "Wonderla",
         "categories": ["Stranger Meetup", "Stranger Trips"],
         "pricingType": "paid",

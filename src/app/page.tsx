@@ -10,10 +10,17 @@ import SpotlightCarousel from '@/components/SpotlightCarousel'
 import BannerCarousel from '@/components/BannerCarousel'
 import BentoGrid from '@/components/BentoGrid'
 import HScrollSection from '@/components/HScrollSection'
-import { getActivitiesByCity, getNewlyAddedActivities } from '@/data/activities'
-import { getWalksByCity } from '@/data/walks'
-import { getEventsByCity } from '@/data/events'
-import { getCityBySlug } from '@/data/cities'
+import type { Activity } from '@/data/activities'
+import type { Walk } from '@/data/walks'
+import type { Event } from '@/data/events'
+import type { City } from '@/data/cities'
+import {
+  fetchCityBySlug,
+  fetchActivitiesByCity,
+  fetchNewlyAddedActivities,
+  fetchWalksByCity,
+  fetchEventsByCity,
+} from '@/lib/supabase-data'
 
 /* ── Shuffle utility (Fisher-Yates) ──────────────────────────────── */
 function shuffleArray<T>(arr: T[]): T[] {
@@ -29,28 +36,37 @@ function shuffleArray<T>(arr: T[]): T[] {
 export default function RootPage() {
   const router = useRouter()
   const citySlug = 'chennai'
-  const city = getCityBySlug(citySlug)!
 
-  const cityActivities = getActivitiesByCity(city.id)
-  const cityWalks = getWalksByCity(city.id)
-  const cityEvents = getEventsByCity(city.id)
-
-  // Newly added activities (last 7 days)
-  const newlyAdded = getNewlyAddedActivities(city.id, 7).slice(0, 15)
-
-  // Curated sections (those remaining on home page)
-  const lowBudget = cityActivities.filter(a => a.tags?.includes('low budget fun activities'))
-
-  // Shuffled state
-  const [shuffledWalks, setShuffledWalks] = useState(cityWalks)
-  const [shuffledLowBudget, setShuffledLowBudget] = useState(lowBudget)
-  const [shuffledEvents, setShuffledEvents] = useState(cityEvents)
+  const [city, setCity] = useState<City | null>(null)
+  const [newlyAdded, setNewlyAdded] = useState<Activity[]>([])
+  const [shuffledEvents, setShuffledEvents] = useState<Event[]>([])
+  const [shuffledLowBudget, setShuffledLowBudget] = useState<Activity[]>([])
+  const [shuffledWalks, setShuffledWalks] = useState<Walk[]>([])
+  const [cityEvents, setCityEvents] = useState<Event[]>([])
+  const [cityWalks, setCityWalks] = useState<Walk[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setShuffledWalks(shuffleArray(cityWalks))
-    setShuffledLowBudget(shuffleArray(lowBudget))
-    setShuffledEvents(shuffleArray(cityEvents))
-  }, [city.id])
+    async function loadData() {
+      const [cityData, activities, newActivities, walks, events] = await Promise.all([
+        fetchCityBySlug(citySlug),
+        fetchActivitiesByCity(citySlug),
+        fetchNewlyAddedActivities(citySlug, 7),
+        fetchWalksByCity(citySlug),
+        fetchEventsByCity(citySlug),
+      ])
+      if (cityData) setCity(cityData)
+      setNewlyAdded(newActivities.slice(0, 15))
+      const lowBudget = activities.filter(a => a.tags?.includes('low budget fun activities'))
+      setShuffledLowBudget(shuffleArray(lowBudget))
+      setShuffledWalks(shuffleArray(walks))
+      setShuffledEvents(shuffleArray(events))
+      setCityEvents(events)
+      setCityWalks(walks)
+      setLoading(false)
+    }
+    loadData()
+  }, [citySlug])
 
   const cardStyle: React.CSSProperties = {
     minWidth: 220,
@@ -68,6 +84,10 @@ export default function RootPage() {
 
   return (
     <main style={{ paddingBottom: '100px' }}>
+      {loading || !city ? (
+        <div style={{ minHeight: '100vh' }} />
+      ) : (
+      <>
       <Hero city={city} />
 
       {/* ═══ 1.4. Spotlight Carousel ═══════════════════════════════ */}
@@ -198,13 +218,13 @@ export default function RootPage() {
       </div>
 
       {/* ═══ 2. Low Budget Fun ════════════════════════════════════ */}
-      {lowBudget.length > 0 && (
+      {shuffledLowBudget.length > 0 && (
         <div id="pocket-friendly">
           <HScrollSection
             emoji="💰"
             heading="If you're tight on budget"
             subheading="Find activities starting from ₹0"
-            viewMoreHref={`/${citySlug}/activities/low-budget-fun-activities-in-${city.id}`}
+            viewMoreHref={`/${citySlug}/activities/low-budget-fun-activities-in-${citySlug}`}
           >
             {shuffledLowBudget.slice(0, 8).map((a, index) => (
               <div key={a.id} style={cardStyle}>
@@ -239,7 +259,8 @@ export default function RootPage() {
         subheading="Explore Art, Culture and Chennai's Heritage"
       />
 
-
+      </>
+      )}
 
     </main>
   )

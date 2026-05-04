@@ -1,5 +1,4 @@
-import { EVENTS, getEventsByCity, getEventBySlug } from '@/data/events'
-import { getCityBySlug, CITIES } from '@/data/cities'
+import { fetchCities, fetchCityBySlug, fetchAllEvents, fetchEventsByCity, fetchEventBySlug } from '@/lib/supabase-data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { MapPin, Clock, Calendar, Navigation, ArrowLeft, Home, FileText, Tag, DollarSign, Ticket } from 'lucide-react'
@@ -12,16 +11,17 @@ interface Props {
 }
 
 // ── Static params ────────────────────────────────────────────────
-export function generateStaticParams() {
-    return EVENTS.map(e => ({ city: e.cityId, slug: e.slug }))
+export async function generateStaticParams() {
+    const allEvents = await fetchAllEvents()
+    return allEvents.map(e => ({ city: e.cityId, slug: e.slug }))
 }
 
 // ── Metadata ─────────────────────────────────────────────────────
 export async function generateMetadata({ params }: Props) {
-    const city = getCityBySlug(params.city)
+    const city = await fetchCityBySlug(params.city)
     if (!city) return {}
 
-    const event = getEventBySlug(city.id, params.slug)
+    const event = await fetchEventBySlug(city.id, params.slug)
     if (!event) return {}
 
     const dateObj = new Date(event.date + 'T00:00:00')
@@ -36,11 +36,11 @@ export async function generateMetadata({ params }: Props) {
 }
 
 // ── Page component ───────────────────────────────────────────────
-export default function EventDetailPage({ params }: Props) {
-    const city = getCityBySlug(params.city)
+export default async function EventDetailPage({ params }: Props) {
+    const city = await fetchCityBySlug(params.city)
     if (!city) notFound()
 
-    const event = getEventBySlug(city.id, params.slug)
+    const event = await fetchEventBySlug(city.id, params.slug)
     if (!event) notFound()
 
     // Format date
@@ -50,7 +50,8 @@ export default function EventDetailPage({ params }: Props) {
     })
 
     // Related events (same categories)
-    const related = getEventsByCity(city.id)
+    const allCityEvents = await fetchEventsByCity(city.id)
+    const related = allCityEvents
         .filter(e => e.id !== event.id && (e.categories?.some(c => event.categories?.includes(c)) ?? false))
         .slice(0, 4)
 

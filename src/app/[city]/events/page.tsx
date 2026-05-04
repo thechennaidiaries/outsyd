@@ -5,8 +5,9 @@ import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Calendar, Filter, X } from 'lucide-react'
 import EventCard from '@/components/EventCard'
-import { getEventsByCity, getCategoriesByCity } from '@/data/events'
-import { getCityBySlug } from '@/data/cities'
+import type { Event } from '@/data/events'
+import type { City } from '@/data/cities'
+import { fetchEventsByCity, fetchCategoriesByCity, fetchCityBySlug } from '@/lib/supabase-data'
 
 /* ── IST date helpers ─────────────────────────────────────────────── */
 function getTodayIST(): string {
@@ -38,10 +39,6 @@ function getDateRangeForFilter(filter: string): string[] | null {
 
     if (filter === 'this-weekend') {
         // This weekend = this week's Friday, Saturday, Sunday
-        // If today is Sun (0), the weekend has started — show today only
-        // If today is Fri (5), show Fri, Sat, Sun
-        // If today is Sat (6), show Sat, Sun
-        // Otherwise (Mon-Thu), show the upcoming Fri, Sat, Sun
         const daysToFri = (5 - dow + 7) % 7
         const fri = addDaysIST(today, daysToFri)
         const sat = addDaysIST(fri, 1)
@@ -51,11 +48,7 @@ function getDateRangeForFilter(filter: string): string[] | null {
 
     if (filter === 'next-weekend') {
         // Next weekend = next week's Friday, Saturday, Sunday
-        // Always jump to the Friday that is at least 7 days from the most recent Friday
         let daysToThisFri = (5 - dow + 7) % 7
-        // If today is Fri/Sat/Sun, "this Friday" is today or already passed this week
-        // so next Friday = daysToThisFri + 7
-        // If today is Mon-Thu, "this Friday" is upcoming, so next Friday = daysToThisFri + 7
         const daysToNextFri = daysToThisFri + 7
         const fri = addDaysIST(today, daysToNextFri)
         const sat = addDaysIST(fri, 1)
@@ -78,24 +71,31 @@ function shuffleArray<T>(arr: T[]): T[] {
 export default function EventsPage() {
     const params = useParams()
     const citySlug = params.city as string
-    const city = getCityBySlug(citySlug)
 
-    if (!city) notFound()
+    const [city, setCity] = useState<City | null>(null)
+    const [allCategories, setAllCategories] = useState<string[]>([])
+    const [shuffledAllEvents, setShuffledAllEvents] = useState<Event[]>([])
+    const [loading, setLoading] = useState(true)
 
-    const allEvents = getEventsByCity(city.id)
-    const allCategories = getCategoriesByCity(city.id)
-
-    // Shuffled version for initial display
-    const [shuffledAllEvents, setShuffledAllEvents] = useState<typeof allEvents>([])
-
-    useEffect(() => {
-        setShuffledAllEvents(shuffleArray(allEvents))
-    }, [city.id])
-
-    // Filter state
+    // Filter state — must be declared before any early returns (Rules of Hooks)
     const [selectedDate, setSelectedDate] = useState<string>('all')
     const [selectedPricing, setSelectedPricing] = useState<string>('all')
     const [selectedCategory, setSelectedCategory] = useState<string>('all')
+
+    useEffect(() => {
+        async function loadData() {
+            const [cityData, events, categories] = await Promise.all([
+                fetchCityBySlug(citySlug),
+                fetchEventsByCity(citySlug),
+                fetchCategoriesByCity(citySlug),
+            ])
+            if (cityData) setCity(cityData)
+            setShuffledAllEvents(shuffleArray(events))
+            setAllCategories(categories)
+            setLoading(false)
+        }
+        loadData()
+    }, [citySlug])
 
     const filteredEvents = useMemo(() => {
         const dateRange = getDateRangeForFilter(selectedDate)
@@ -114,6 +114,9 @@ export default function EventsPage() {
         setSelectedPricing('all')
         setSelectedCategory('all')
     }
+
+    if (loading) return <main style={{ minHeight: '100vh', paddingTop: '100px' }} />
+    if (!city) return notFound()
 
     return (
         <main style={{ minHeight: '100vh', paddingTop: '100px', background: 'var(--bg)' }}>

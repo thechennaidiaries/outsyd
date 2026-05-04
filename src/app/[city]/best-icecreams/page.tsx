@@ -1,6 +1,8 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
-import { getCityBySlug } from '@/data/cities'
+import type { City } from '@/data/cities'
+import { fetchCityBySlug } from '@/lib/supabase-data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Navigation, ArrowLeft } from 'lucide-react'
@@ -38,7 +40,7 @@ const ICE_CREAM_SPOTS = [
     },
     {
         id: '6',
-        title: 'Mercely’s, T Nagar',
+        title: 'Mercely\'s, T Nagar',
         review: 'Known for creative flavors, generous portions, and indulgent sundaes. Popular but often crowded. 👉 Must try: Signature sundaes & brownie with ice cream',
         mapsLink: 'https://share.google/5l2rjYqc2rrBGJGBU',
     },
@@ -71,9 +73,15 @@ const ICE_CREAM_SPOTS = [
 export default function BestIceCreamPage() {
     const params = useParams()
     const citySlug = params.city as string
-    const city = getCityBySlug(citySlug)
+    const [city, setCity] = useState<City | null>(null)
+    const [loading, setLoading] = useState(true)
 
-    if (!city) notFound()
+    useEffect(() => {
+        fetchCityBySlug(citySlug).then(c => { setCity(c || null); setLoading(false) })
+    }, [citySlug])
+
+    if (loading) return <main style={{ minHeight: '100vh' }} />
+    if (!city) return notFound()
 
     return (
         <main style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>

@@ -1,6 +1,8 @@
 'use client'
 import { useParams } from 'next/navigation'
-import { getCityBySlug } from '@/data/cities'
+import { useState, useEffect } from 'react'
+import type { City } from '@/data/cities'
+import { fetchCityBySlug } from '@/lib/supabase-data'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Calendar, MapPin, Clock, ExternalLink, ArrowLeft } from 'lucide-react'
@@ -75,9 +77,15 @@ const EVENT_DATA = [
 export default function EventsWeekendPage() {
     const params = useParams()
     const citySlug = params.city as string
-    const city = getCityBySlug(citySlug)
+    const [city, setCity] = useState<City | null>(null)
+    const [loading, setLoading] = useState(true)
 
-    if (!city) notFound()
+    useEffect(() => {
+        fetchCityBySlug(citySlug).then(c => { setCity(c || null); setLoading(false) })
+    }, [citySlug])
+
+    if (loading) return <main style={{ minHeight: '100vh' }} />
+    if (!city) return notFound()
 
     return (
         <main style={{ minHeight: '100vh', background: 'var(--bg)', paddingBottom: 100 }}>

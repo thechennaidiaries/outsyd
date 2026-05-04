@@ -1,10 +1,11 @@
 'use client'
-import { ALL_TAGS, getTagsByCity, TAG_META } from '@/data/activities'
+import { TAG_META } from '@/data/activities'
 import { Grid3x3 } from 'lucide-react'
 
 interface Props {
     activeTag: string | null
     onTagChange: (tag: string | null) => void
+    tags?: string[]
     cityId?: string
     featuredOnly?: boolean
 }
@@ -23,8 +24,8 @@ const FEATURED_TAGS = [
     'group activities'
 ]
 
-export default function CategoryStrip({ activeTag, onTagChange, cityId, featuredOnly }: Props) {
-    let tags = cityId ? getTagsByCity(cityId) : ALL_TAGS
+export default function CategoryStrip({ activeTag, onTagChange, tags: propTags, cityId, featuredOnly }: Props) {
+    let tags = propTags ?? []
 
     if (featuredOnly) {
         tags = FEATURED_TAGS.filter(t => tags.includes(t) || t === 'walks')

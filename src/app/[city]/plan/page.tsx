@@ -1,13 +1,13 @@
 import { Suspense } from 'react'
 import PlanClient from './PlanClient'
-import { getCityBySlug } from '@/data/cities'
+import { fetchCityBySlug } from '@/lib/supabase-data'
 
 interface Props {
     params: { city: string }
 }
 
 export async function generateMetadata({ params }: Props) {
-    const city = getCityBySlug(params.city)
+    const city = await fetchCityBySlug(params.city)
     const cityName = city?.name ?? 'City'
     return {
         title: `Plan My Day — TBOC ${cityName}`,

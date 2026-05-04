@@ -1,7 +1,6 @@
 import { MetadataRoute } from 'next'
-import { CITIES } from '@/data/cities'
-import { ACTIVITIES, TAG_META } from '@/data/activities'
-import { WALKS } from '@/data/walks'
+import { TAG_META } from '@/data/activities'
+import { fetchCities, fetchAllActivities, fetchAllWalks } from '@/lib/supabase-data'
 
 const BASE_URL = 'https://outsyd.in'
 
@@ -17,8 +16,14 @@ function buildCategorySlug(tagSlug: string, cityId: string): string {
     return `${tagSlug}-activities-in-${cityId}`
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+
+    const [cities, activities, walks] = await Promise.all([
+        fetchCities(),
+        fetchAllActivities(),
+        fetchAllWalks(),
+    ])
 
     const urls: MetadataRoute.Sitemap = []
 
@@ -31,7 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })
 
     // ── 2. City pages (activities hub) ──────────────────────────────
-    for (const city of CITIES) {
+    for (const city of cities) {
         urls.push({
             url: `${BASE_URL}/${city.id}/activities`,
             lastModified: today,
@@ -68,7 +73,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
 
     // ── 6. Individual activity pages ────────────────────────────────
-    for (const activity of ACTIVITIES) {
+    for (const activity of activities) {
         if (!activity.slug) continue // skip activities without slugs
         urls.push({
             url: `${BASE_URL}/${activity.cityId}/activities/${activity.slug}`,
@@ -79,7 +84,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
 
     // ── 7. Individual walk pages ────────────────────────────────────
-    for (const walk of WALKS) {
+    for (const walk of walks) {
         urls.push({
             url: `${BASE_URL}/${walk.cityId}/walks/${walk.slug}`,
             lastModified: today,

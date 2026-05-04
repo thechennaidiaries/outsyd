@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
 import { Rocket, CalendarDays, Calendar, Compass, Bookmark } from 'lucide-react'
-import { getCityBySlug } from '@/data/cities'
+import { fetchCities } from '@/lib/supabase-data'
+import type { City } from '@/data/cities'
 import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
 
 export default function Navbar() {
@@ -22,13 +23,19 @@ export default function Navbar() {
         setIsWeekend(dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6)
     }, [])
 
+    const [cities, setCities] = useState<City[]>([])
+
+    useEffect(() => {
+        fetchCities().then(setCities)
+    }, [])
+
     // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai").
     // Non-city routes like /saved should fall back to the default city instead of becoming /saved/events.
     const citySlug = useMemo(() => {
         const segments = pathname.split('/').filter(Boolean)
         const firstSegment = segments[0]
-        return firstSegment && getCityBySlug(firstSegment) ? firstSegment : 'chennai'
-    }, [pathname])
+        return firstSegment && cities.some(c => c.id === firstSegment) ? firstSegment : 'chennai'
+    }, [pathname, cities])
 
     useEffect(() => {
         const fn = () => {

@@ -1,15 +1,14 @@
 'use client'
 import { Grid3x3 } from 'lucide-react'
-import { getWalkAreasByCity } from '@/data/walks'
 
 interface Props {
     activeArea: string | null
     onAreaChange: (area: string | null) => void
     cityId: string
+    areas?: string[]
 }
 
-export default function WalkAreaStrip({ activeArea, onAreaChange, cityId }: Props) {
-    const areas = getWalkAreasByCity(cityId)
+export default function WalkAreaStrip({ activeArea, onAreaChange, cityId, areas = [] }: Props) {
 
     return (
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>

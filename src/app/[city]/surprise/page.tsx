@@ -2,10 +2,11 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
-import { getActivitiesByCity } from '@/data/activities'
-import { getWalksByCity } from '@/data/walks'
-import { getEventsByCity } from '@/data/events'
-import { getCityBySlug } from '@/data/cities'
+import type { Activity } from '@/data/activities'
+import type { Walk } from '@/data/walks'
+import type { Event } from '@/data/events'
+import type { City } from '@/data/cities'
+import { fetchCityBySlug, fetchActivitiesByCity, fetchWalksByCity, fetchEventsByCity } from '@/lib/supabase-data'
 import { notFound } from 'next/navigation'
 import { MapPin, Calendar, X, ArrowRight, RefreshCw, Footprints } from 'lucide-react'
 import SaveItemButton from '@/components/SaveItemButton'
@@ -41,17 +42,16 @@ export default function SurprisePage() {
     const router = useRouter()
     const params = useParams()
     const citySlug = params.city as string
-    const city = getCityBySlug(citySlug)
 
-    if (!city) notFound()
-
-    const cityActivities = getActivitiesByCity(city.id)
-    const cityWalks = getWalksByCity(city.id)
-    const cityEvents = getEventsByCity(city.id)
+    const [city, setCity] = useState<City | null>(null)
+    const [cityActivities, setCityActivities] = useState<Activity[]>([])
+    const [cityWalks, setCityWalks] = useState<Walk[]>([])
+    const [cityEvents, setCityEvents] = useState<Event[]>([])
+    const [dataLoaded, setDataLoaded] = useState(false)
 
     // Build a unified pool of activities + walks + events
-    function buildPool(): SurpriseItem[] {
-        const activityItems: SurpriseItem[] = cityActivities
+    function buildPool(activities: Activity[], walks: Walk[], events: Event[]): SurpriseItem[] {
+        const activityItems: SurpriseItem[] = activities
             .filter(a => a.image && a.slug) // only include activities with image and slug
             .map(a => ({
                 id: `activity-${a.id}`,
@@ -63,7 +63,7 @@ export default function SurprisePage() {
                 tags: a.tags ?? [],
                 slug: a.slug!,
             }))
-        const walkItems: SurpriseItem[] = cityWalks.map(w => ({
+        const walkItems: SurpriseItem[] = walks.map(w => ({
             id: `walk-${w.id}`,
             type: 'walk',
             title: w.title,
@@ -73,7 +73,7 @@ export default function SurprisePage() {
             tags: ['Crawl'],
             slug: w.slug,
         }))
-        const eventItems: SurpriseItem[] = cityEvents
+        const eventItems: SurpriseItem[] = events
             .filter(e => e.image) // only include events with images
             .map(e => {
                 const dateObj = new Date(e.date + 'T00:00:00')
@@ -163,16 +163,30 @@ export default function SurprisePage() {
         }
     }
 
-    // Shuffle on client only — avoids hydration mismatch from Math.random()
+    // Load data and shuffle on client only — avoids hydration mismatch from Math.random()
     useEffect(() => {
-        setDeck(buildPool())
+        async function loadData() {
+            const [cityData, activities, walks, events] = await Promise.all([
+                fetchCityBySlug(citySlug),
+                fetchActivitiesByCity(citySlug),
+                fetchWalksByCity(citySlug),
+                fetchEventsByCity(citySlug),
+            ])
+            if (cityData) setCity(cityData)
+            setCityActivities(activities)
+            setCityWalks(walks)
+            setCityEvents(events)
+            setDeck(buildPool(activities, walks, events))
+            setDataLoaded(true)
+        }
+        loadData()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [citySlug])
 
-    const onReset = () => { setDeck(buildPool()); setIdx(0); setOffset(0); setFlying(null); setImgErr(false) }
+    const onReset = () => { setDeck(buildPool(cityActivities, cityWalks, cityEvents)); setIdx(0); setOffset(0); setFlying(null); setImgErr(false) }
 
     // Return nothing until deck is ready (avoids hydration mismatch)
-    if (deck.length === 0) return null
+    if (!dataLoaded || deck.length === 0) return null
 
     // Derived visuals
     const rotate = offset * 0.06

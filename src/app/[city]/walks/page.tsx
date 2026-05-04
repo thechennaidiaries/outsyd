@@ -1,20 +1,37 @@
 'use client'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import WalkCard from '@/components/WalkCard'
-import { getWalksByCity } from '@/data/walks'
-import { getCityBySlug } from '@/data/cities'
+import type { Walk } from '@/data/walks'
+import type { City } from '@/data/cities'
+import { fetchWalksByCity, fetchCityBySlug } from '@/lib/supabase-data'
 
 export default function WalksPage() {
   const params = useParams()
   const citySlug = params.city as string
-  const city = getCityBySlug(citySlug)
 
-  if (!city) notFound()
+  const [city, setCity] = useState<City | null>(null)
+  const [cityWalks, setCityWalks] = useState<Walk[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const cityWalks = getWalksByCity(city.id)
+  useEffect(() => {
+    async function loadData() {
+      const [cityData, walks] = await Promise.all([
+        fetchCityBySlug(citySlug),
+        fetchWalksByCity(citySlug),
+      ])
+      if (cityData) setCity(cityData)
+      setCityWalks(walks)
+      setLoading(false)
+    }
+    loadData()
+  }, [citySlug])
+
+  if (loading) return <main style={{ minHeight: '100vh', paddingTop: '100px' }} />
+  if (!city) return notFound()
 
   return (
     <main style={{ minHeight: '100vh', paddingTop: '100px' }}>

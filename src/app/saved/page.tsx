@@ -1,21 +1,42 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Bookmark, CalendarPlus } from 'lucide-react'
 import ActivityCard from '@/components/ActivityCard'
 import EventCard from '@/components/EventCard'
 import WalkCard from '@/components/WalkCard'
-import { ACTIVITIES } from '@/data/activities'
-import { EVENTS } from '@/data/events'
-import { WALKS } from '@/data/walks'
+import type { Activity } from '@/data/activities'
+import type { Event } from '@/data/events'
+import type { Walk } from '@/data/walks'
+import { fetchAllActivities, fetchAllEvents, fetchAllWalks } from '@/lib/supabase-data'
 import { useSavedItems } from '@/hooks/useSavedItems'
 import type { SavedItem } from '@/lib/saved-items'
 
 export default function SavedPage() {
   const { savedItems } = useSavedItems()
+  const [allActivities, setAllActivities] = useState<Activity[]>([])
+  const [allEvents, setAllEvents] = useState<Event[]>([])
+  const [allWalks, setAllWalks] = useState<Walk[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadData() {
+      const [activities, events, walks] = await Promise.all([
+        fetchAllActivities(),
+        fetchAllEvents(),
+        fetchAllWalks(),
+      ])
+      setAllActivities(activities)
+      setAllEvents(events)
+      setAllWalks(walks)
+      setLoading(false)
+    }
+    loadData()
+  }, [])
 
   const resolvedSavedItems = savedItems
-    .map(item => resolveSavedItem(item))
+    .map(item => resolveSavedItem(item, allActivities, allEvents, allWalks))
     .filter((item): item is NonNullable<typeof item> => Boolean(item))
 
   const missingItems = savedItems.filter(
@@ -27,6 +48,8 @@ export default function SavedPage() {
           resolvedItem.savedItem.citySlug === item.citySlug
       )
   )
+
+  if (loading) return <main style={{ minHeight: '100vh', paddingTop: 100, background: 'var(--bg)' }} />
 
   return (
     <main style={{ minHeight: '100vh', paddingTop: 100, background: 'var(--bg)' }}>
@@ -155,20 +178,20 @@ export default function SavedPage() {
   )
 }
 
-function resolveSavedItem(item: SavedItem) {
+function resolveSavedItem(item: SavedItem, activities: Activity[], events: Event[], walks: Walk[]) {
   if (item.type === 'activity') {
-    const data = ACTIVITIES.find(activity => activity.slug === item.slug && activity.cityId === item.citySlug)
+    const data = activities.find(activity => activity.slug === item.slug && activity.cityId === item.citySlug)
     if (!data) return null
     return { type: 'activity' as const, data, savedItem: item }
   }
 
   if (item.type === 'walk') {
-    const data = WALKS.find(walk => walk.slug === item.slug && walk.cityId === item.citySlug)
+    const data = walks.find(walk => walk.slug === item.slug && walk.cityId === item.citySlug)
     if (!data) return null
     return { type: 'walk' as const, data, savedItem: item }
   }
 
-  const data = EVENTS.find(event => event.slug === item.slug && event.cityId === item.citySlug)
+  const data = events.find(event => event.slug === item.slug && event.cityId === item.citySlug)
   if (!data) return null
   return { type: 'event' as const, data, savedItem: item }
 }

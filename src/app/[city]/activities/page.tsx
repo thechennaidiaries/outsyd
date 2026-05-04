@@ -6,8 +6,10 @@ import { Search, MapPin, X } from 'lucide-react'
 import ActivityCard from '@/components/ActivityCard'
 import CategoryStrip from '@/components/CategoryStrip'
 import HScrollSection from '@/components/HScrollSection'
-import { getActivitiesByCity, getNewlyAddedActivities, TAG_META } from '@/data/activities'
-import { getCityBySlug } from '@/data/cities'
+import { TAG_META } from '@/data/activities'
+import type { Activity } from '@/data/activities'
+import type { City } from '@/data/cities'
+import { fetchCityBySlug, fetchActivitiesByCity, fetchNewlyAddedActivities } from '@/lib/supabase-data'
 
 /* ── Shuffle utility (Fisher-Yates) ──────────────────────────────── */
 function shuffleArray<T>(arr: T[]): T[] {
@@ -23,9 +25,10 @@ export default function ActivitiesPage() {
   const params = useParams()
   const router = useRouter()
   const citySlug = params.city as string
-  const city = getCityBySlug(citySlug)!
 
-  const cityActivities = getActivitiesByCity(city.id)
+  const [city, setCity] = useState<City | null>(null)
+  const [cityActivities, setCityActivities] = useState<Activity[]>([])
+  const [loading, setLoading] = useState(true)
 
   // ── Search state ──────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState('')
@@ -53,44 +56,43 @@ export default function ActivitiesPage() {
       }).slice(0, 8)
     : []
 
-  // Newly added activities (last 7 days)
-  const newlyAdded = getNewlyAddedActivities(city.id, 7).slice(0, 15)
-  const [shuffledNewlyAdded, setShuffledNewlyAdded] = useState(newlyAdded)
-
-  // Curated sections (base lists)
-  const sports = cityActivities.filter(a => a.tags?.includes('sports activities'))
-  const gaming = cityActivities.filter(a => a.tags?.includes('gaming activities'))
-  const adventure = cityActivities.filter(a => a.tags?.includes('adventure activities'))
-  const art = cityActivities.filter(a => a.tags?.includes('art activities'))
-  const water = cityActivities.filter(a => a.tags?.includes('water activities'))
-  const cultural = cityActivities.filter(a => a.tags?.includes('unique cultural experiences'))
-  const leisure = cityActivities.filter(a => a.tags?.includes('leisure activities'))
-  const group = cityActivities.filter(a => a.tags?.includes('group activities'))
-  const night = cityActivities.filter(a => a.tags?.includes('night activities'))
-
-  // Shuffled state
-  const [shuffledSports, setShuffledSports] = useState(sports)
-  const [shuffledGaming, setShuffledGaming] = useState(gaming)
-  const [shuffledAdventure, setShuffledAdventure] = useState(adventure)
-  const [shuffledArt, setShuffledArt] = useState(art)
-  const [shuffledWater, setShuffledWater] = useState(water)
-  const [shuffledCultural, setShuffledCultural] = useState(cultural)
-  const [shuffledLeisure, setShuffledLeisure] = useState(leisure)
-  const [shuffledGroup, setShuffledGroup] = useState(group)
-  const [shuffledNight, setShuffledNight] = useState(night)
+  // Shuffled state for sections
+  const [shuffledNewlyAdded, setShuffledNewlyAdded] = useState<Activity[]>([])
+  const [shuffledSports, setShuffledSports] = useState<Activity[]>([])
+  const [shuffledGaming, setShuffledGaming] = useState<Activity[]>([])
+  const [shuffledAdventure, setShuffledAdventure] = useState<Activity[]>([])
+  const [shuffledArt, setShuffledArt] = useState<Activity[]>([])
+  const [shuffledWater, setShuffledWater] = useState<Activity[]>([])
+  const [shuffledCultural, setShuffledCultural] = useState<Activity[]>([])
+  const [shuffledLeisure, setShuffledLeisure] = useState<Activity[]>([])
+  const [shuffledGroup, setShuffledGroup] = useState<Activity[]>([])
+  const [shuffledNight, setShuffledNight] = useState<Activity[]>([])
 
   useEffect(() => {
-    setShuffledNewlyAdded(shuffleArray(newlyAdded))
-    setShuffledSports(shuffleArray(sports))
-    setShuffledGaming(shuffleArray(gaming))
-    setShuffledAdventure(shuffleArray(adventure))
-    setShuffledArt(shuffleArray(art))
-    setShuffledWater(shuffleArray(water))
-    setShuffledCultural(shuffleArray(cultural))
-    setShuffledLeisure(shuffleArray(leisure))
-    setShuffledGroup(shuffleArray(group))
-    setShuffledNight(shuffleArray(night))
-  }, [city.id])
+    async function loadData() {
+      const [cityData, activities, newActivities] = await Promise.all([
+        fetchCityBySlug(citySlug),
+        fetchActivitiesByCity(citySlug),
+        fetchNewlyAddedActivities(citySlug, 7),
+      ])
+      if (cityData) setCity(cityData)
+      setCityActivities(activities)
+      setShuffledNewlyAdded(shuffleArray(newActivities.slice(0, 15)))
+      setShuffledSports(shuffleArray(activities.filter(a => a.tags?.includes('sports activities'))))
+      setShuffledGaming(shuffleArray(activities.filter(a => a.tags?.includes('gaming activities'))))
+      setShuffledAdventure(shuffleArray(activities.filter(a => a.tags?.includes('adventure activities'))))
+      setShuffledArt(shuffleArray(activities.filter(a => a.tags?.includes('art activities'))))
+      setShuffledWater(shuffleArray(activities.filter(a => a.tags?.includes('water activities'))))
+      setShuffledCultural(shuffleArray(activities.filter(a => a.tags?.includes('unique cultural experiences'))))
+      setShuffledLeisure(shuffleArray(activities.filter(a => a.tags?.includes('leisure activities'))))
+      setShuffledGroup(shuffleArray(activities.filter(a => a.tags?.includes('group activities'))))
+      setShuffledNight(shuffleArray(activities.filter(a => a.tags?.includes('night activities'))))
+      setLoading(false)
+    }
+    loadData()
+  }, [citySlug])
+
+  if (loading || !city) return <main style={{ minHeight: '100vh', paddingTop: '100px' }} />
 
   function handleTagChange(tagName: string | null) {
     if (!tagName || !city) return
@@ -147,7 +149,7 @@ export default function ActivitiesPage() {
             What's your Mood?
           </h3>
         </div>
-        <CategoryStrip activeTag={null} onTagChange={handleTagChange} cityId={city.id} featuredOnly={true} />
+        <CategoryStrip activeTag={null} onTagChange={handleTagChange} cityId={city.id} featuredOnly={true} tags={Array.from(new Set(cityActivities.flatMap(a => a.tags ?? [])))} />
 
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
           <div ref={searchRef} style={{ position: 'relative', margin: '0 auto', paddingTop: 24 }}>
@@ -204,7 +206,7 @@ export default function ActivitiesPage() {
       </div>
 
       {/* ═══ 2. Newly Added ═════════════════════════════════════════ */}
-      {newlyAdded.length > 0 && (
+      {shuffledNewlyAdded.length > 0 && (
         <HScrollSection emoji="🆕" heading="Newly Added" viewMoreHref={`/${citySlug}/activities`} hideViewMore={true}>
           {shuffledNewlyAdded.map(a => (
             <div key={a.id} style={cardStyle}>

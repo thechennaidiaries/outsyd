@@ -9,6 +9,9 @@ interface Props {
     params: { city: string; slug: string }
 }
 
+// ── ISR: revalidate every 60s so pages reflect Supabase changes ──
+export const revalidate = 60
+
 // ── Static params ────────────────────────────────────────────────
 export async function generateStaticParams() {
     const allWalks = await fetchAllWalks()

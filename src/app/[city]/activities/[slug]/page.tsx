@@ -16,6 +16,9 @@ interface Props {
     params: { city: string; slug: string }
 }
 
+// ── ISR: revalidate every 60s so pages reflect Supabase changes ──
+export const revalidate = 60
+
 // ── Helper: build/parse category archive slug ───────────────────
 function buildCategorySlug(tagSlug: string, cityId: string): string {
     // If the tagSlug already contains "activities", just add "-in-[cityId]"

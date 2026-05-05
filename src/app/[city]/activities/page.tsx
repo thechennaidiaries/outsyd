@@ -284,7 +284,7 @@ export default function ActivitiesPage() {
       {/* ═══ 8. Cultural Experiences ════════════════════════════════ */}
       {shuffledCultural.length > 0 && (
         <div id="cultural">
-          <HScrollSection emoji="🏛️" heading="Cultural Experiences" viewMoreHref={`/${citySlug}/activities/unique-cultural-experiences-in-${city.id}`}>
+          <HScrollSection emoji="🏛️" heading="Cultural Experiences" viewMoreHref={`/${citySlug}/activities/cultural-experiences-in-${city.id}`}>
             {shuffledCultural.slice(0, 8).map(a => (
               <div key={a.id} style={cardStyle}>
                 <ActivityCard activity={a} citySlug={citySlug} />

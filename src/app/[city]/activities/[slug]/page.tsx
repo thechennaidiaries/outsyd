@@ -135,6 +135,26 @@ export default async function SlugPage({ params }: Props) {
 
 
                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '28px 28px 32px' }}>
+                        {activity.tags && activity.tags.length > 0 && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
+                                {activity.tags.map(tag => {
+                                    const meta = TAG_META.find(t => t.name === tag);
+                                    return (
+                                        <span key={tag} style={{
+                                            fontSize: 10, fontWeight: 800, letterSpacing: '0.05em',
+                                            textTransform: 'uppercase', color: '#ffffff',
+                                            background: 'rgba(255, 255, 255, 0.15)',
+                                            backdropFilter: 'blur(8px)',
+                                            padding: '4px 10px', borderRadius: 6,
+                                            border: '1px solid rgba(255, 255, 255, 0.2)',
+                                            display: 'flex', alignItems: 'center', gap: 4
+                                        }}>
+                                            {meta?.emoji} {tag}
+                                        </span>
+                                    );
+                                })}
+                            </div>
+                        )}
                         <h1 style={{
                             fontSize: 'clamp(22px, 4vw, 38px)', fontWeight: 900,
                             letterSpacing: '-0.03em', color: '#ffffff', lineHeight: 1.15,

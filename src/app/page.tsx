@@ -143,7 +143,7 @@ export default function RootPage() {
           {
             id: 'banner-a-4',
             image: 'https://ik.imagekit.io/zxnq8x4yz/Design_one_card_202604261027%201.png',
-            link: `/${citySlug}/activities/night-activities-in-${citySlug}`,
+            link: `/${citySlug}/activities/water-activities-in-${citySlug}`,
           },
           {
             id: 'banner-a-5',

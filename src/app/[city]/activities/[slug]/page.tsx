@@ -16,8 +16,8 @@ interface Props {
     params: { city: string; slug: string }
 }
 
-// ── ISR: revalidate every 60s so pages reflect Supabase changes ──
-export const revalidate = 60
+// ── ISR: revalidate every 24h — activity content rarely changes ──
+export const revalidate = 86400
 
 // ── Helper: build/parse category archive slug ───────────────────
 function buildCategorySlug(tagSlug: string, cityId: string): string {

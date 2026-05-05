@@ -10,8 +10,8 @@ interface Props {
     params: { city: string; slug: string }
 }
 
-// ── ISR: revalidate every 60s so pages reflect Supabase changes ──
-export const revalidate = 60
+// ── ISR: revalidate every 1h — events can update venue/time/status ──
+export const revalidate = 3600
 
 // ── Static params ────────────────────────────────────────────────
 export async function generateStaticParams() {

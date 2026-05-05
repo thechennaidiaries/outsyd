@@ -1,4 +1,9 @@
 'use client'
+
+// ── ISR: cache the page shell at the edge, revalidate every 24h ──
+// Walk routes barely change; use /api/revalidate for instant updates
+export const revalidate = 86400
+
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'

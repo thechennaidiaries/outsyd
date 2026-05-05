@@ -1,4 +1,9 @@
 'use client'
+
+// ── ISR: cache the page shell at the edge, revalidate every 1h ──
+// New activities will appear within 1h, or instantly via /api/revalidate
+export const revalidate = 3600
+
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'

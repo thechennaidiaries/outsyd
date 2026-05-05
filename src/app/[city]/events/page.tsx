@@ -1,4 +1,9 @@
 'use client'
+
+// ── ISR: cache the page shell at the edge, revalidate every 30min ──
+// Events expire often; use /api/revalidate after adding new events
+export const revalidate = 1800
+
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'

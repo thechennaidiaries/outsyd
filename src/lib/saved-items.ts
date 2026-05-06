@@ -1,4 +1,3 @@
-import { ACTIVITIES } from '@/data/activities'
 
 export type SavedItemType = 'activity' | 'walk' | 'event'
 
@@ -73,14 +72,12 @@ function migrateLegacySavedActivities(): SavedItem[] {
       .filter((value): value is string => typeof value === 'string')
       .map(slug => slug.trim())
       .filter(Boolean)
-      .map(slug => {
-        const activity = ACTIVITIES.find(item => item.slug === slug)
-        return {
+        .map(slug => ({
           type: 'activity' as const,
           slug,
-          citySlug: activity?.cityId ?? 'chennai',
-        }
-      })
+          // Legacy items were all Chennai activities
+          citySlug: 'chennai',
+        }))
 
     window.localStorage.removeItem(LEGACY_SAVED_ACTIVITY_SLUGS_KEY)
     return normalizeSavedItems(legacyItems)

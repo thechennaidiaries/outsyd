@@ -1,5 +1,5 @@
 'use client'
-import { TAG_META } from '@/data/activities'
+import { TAG_META } from '@/data/tags'
 import { Grid3x3 } from 'lucide-react'
 
 interface Props {

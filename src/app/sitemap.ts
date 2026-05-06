@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { TAG_META } from '@/data/activities'
+import { TAG_META } from '@/data/tags'
 import { fetchCities, fetchAllActivities, fetchAllWalks } from '@/lib/supabase-data'
 
 // ── Cache the sitemap for 24h — crawlers don't need it fresher ──

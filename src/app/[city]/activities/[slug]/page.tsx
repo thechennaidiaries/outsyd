@@ -1,5 +1,5 @@
-import { TAG_META, getTagBySlug } from '@/data/activities'
-import type { TagMeta } from '@/data/activities'
+import { TAG_META, getTagBySlug } from '@/data/tags'
+import type { TagMeta } from '@/data/tags'
 import {
     fetchCityBySlug, fetchCities,
     fetchActivitiesByCity, fetchActivityBySlug, fetchActivitiesByCityAndTag,

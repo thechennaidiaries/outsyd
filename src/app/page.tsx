@@ -85,7 +85,19 @@ export default function RootPage() {
   return (
     <main style={{ paddingBottom: '100px' }}>
       {loading || !city ? (
-        <div style={{ minHeight: '100vh' }} />
+        <div style={{ minHeight: '100vh', background: 'var(--bg)', padding: '0 0 100px' }}>
+          {/* Hero skeleton */}
+          <div className="skeleton" style={{ height: 420, borderRadius: 0, marginBottom: 48 }} />
+          {/* Section skeleton */}
+          <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
+            <div className="skeleton" style={{ height: 24, width: 200, marginBottom: 24 }} />
+            <div style={{ display: 'flex', gap: 16, overflow: 'hidden' }}>
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="skeleton" style={{ minWidth: 220, height: 280, flexShrink: 0 }} />
+              ))}
+            </div>
+          </div>
+        </div>
       ) : (
       <>
       <Hero city={city} />

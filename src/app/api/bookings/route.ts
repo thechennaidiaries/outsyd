@@ -189,15 +189,11 @@ export async function POST(req: NextRequest) {
             peopleCount: body.people_count,
         })
         console.log(`[POST /api/bookings] Sending WhatsApp to ${place.phone_number}...`)
-        sendWhatsApp(place.phone_number, message).then(result => {
-            console.log(`[POST /api/bookings] WaSender result for ${booking.booking_reference}:`, JSON.stringify(result))
-            if (!result.success) {
-                console.error(
-                    `[POST /api/bookings] WhatsApp to vendor failed for ${booking.booking_reference}:`,
-                    result.error
-                )
-            }
-        })
+        const waResult = await sendWhatsApp(place.phone_number, message)
+        console.log(`[POST /api/bookings] WaSender result for ${booking.booking_reference}:`, JSON.stringify(waResult))
+        if (!waResult.success) {
+            console.error(`[POST /api/bookings] WhatsApp failed:`, waResult.error)
+        }
     } else {
         console.warn(
             `[POST /api/bookings] No phone_number set for place "${place.name}" — skipping WhatsApp notification`

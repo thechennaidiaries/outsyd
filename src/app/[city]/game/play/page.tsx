@@ -408,23 +408,24 @@ function WonCard({
       <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>{emojis}</div>
 
       <button onClick={onShare} className="share-btn" style={{
-        width: '100%', padding: '14px', borderRadius: 12,
+        padding: '10px 20px', borderRadius: 10,
         background: 'var(--accent)', border: 'none',
-        color: '#fff', fontSize: 14, fontWeight: 700,
-        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        color: '#fff', fontSize: 13, fontWeight: 700,
+        cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
         transition: 'opacity 0.2s',
       }}>
-        {copied ? <><Check size={16} /> Copied!</> : <><Share2 size={16} /> Share Result</>}
+        {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Share Result</>}
       </button>
 
-      {puzzle.mapsLink && (
-        <a href={puzzle.mapsLink} target="_blank" rel="noopener noreferrer" style={{
-          display: 'block', marginTop: 12, fontSize: 13, color: 'var(--accent)',
-          textDecoration: 'none', fontWeight: 600,
-        }}>
-          📍 Explore on Maps →
-        </a>
-      )}
+      <Link href="/chennai/activities" style={{
+        display: 'block', marginTop: 16, padding: '12px 16px',
+        background: 'var(--bg-elevated)', borderRadius: 12,
+        border: '1px solid var(--border)',
+        fontSize: 13, color: 'var(--text-2)', textDecoration: 'none', fontWeight: 600,
+        lineHeight: 1.4,
+      }}>
+        No Plans in Chennai? Explore 200+ Activities &amp; Side Quests →
+      </Link>
     </div>
   )
 }
@@ -449,20 +450,23 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
       <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>🟥🟥🟥</div>
 
       <button onClick={onShare} className="share-btn" style={{
-        width: '100%', padding: '14px', borderRadius: 12,
+        padding: '10px 20px', borderRadius: 10,
         background: 'var(--accent)', border: 'none',
-        color: '#fff', fontSize: 14, fontWeight: 700,
-        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        color: '#fff', fontSize: 13, fontWeight: 700,
+        cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
         transition: 'opacity 0.2s',
       }}>
-        {copied ? <><Check size={16} /> Copied!</> : <><Share2 size={16} /> Challenge Your Friends to Guess</>}
+        {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Challenge Your Friends to Guess</>}
       </button>
 
-      <Link href="/" style={{
-        display: 'block', marginTop: 12, fontSize: 13,
-        color: 'var(--text-3)', textDecoration: 'none', fontWeight: 600,
+      <Link href="/chennai/activities" style={{
+        display: 'block', marginTop: 16, padding: '12px 16px',
+        background: 'var(--bg-elevated)', borderRadius: 12,
+        border: '1px solid var(--border)',
+        fontSize: 13, color: 'var(--text-2)', textDecoration: 'none', fontWeight: 600,
+        lineHeight: 1.4,
       }}>
-        ← Back to Outsyd
+        No Plans in Chennai? Explore 200+ Activities &amp; Side Quests →
       </Link>
     </div>
   )

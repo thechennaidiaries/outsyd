@@ -1,24 +1,20 @@
 /**
  * POST /api/bookings
  *
- * Accepts a booking request from the frontend, validates it,
- * fetches activity + place details from Supabase, then inserts
- * a new booking row.
- *
  * Flow:
  *   1. Parse & validate request body
  *   2. Fetch activity (confirms it exists + gets place_name, city_id)
- *   3. Fetch place (gets response_timeout_minutes)
+ *   3. Fetch place (gets response_timeout_minutes + phone_number)
  *   4. Generate booking_reference + response_deadline
  *   5. Insert into bookings table
- *   6. Return booking_reference to frontend
- *
- * WhatsApp notification will be triggered here in a future step.
+ *   6. Send WhatsApp notification to vendor via WaSender
+ *   7. Return booking_reference to frontend
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { generateBookingReference, calculateResponseDeadline } from '@/lib/booking-utils'
+import { sendWhatsApp, vendorBookingMessage } from '@/lib/wasender'
 import type { CreateBookingPayload } from '@/data/bookings'
 
 // ── Validation helpers ───────────────────────────────────────────────────────
@@ -126,8 +122,8 @@ export async function POST(req: NextRequest) {
     // ── 4. Fetch place from Supabase ─────────────────────────────────────────
     const { data: place, error: placeError } = await supabase
         .from('places')
-        .select('name, city_id, booking_enabled, response_timeout_minutes')
-        .eq('name', activity.place_id)     // place_id on activities = places.name
+        .select('name, city_id, booking_enabled, response_timeout_minutes, phone_number')
+        .eq('name', activity.place_id)
         .eq('city_id', activity.city_id)
         .single()
 
@@ -177,9 +173,31 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Failed to create booking. Please try again.' }, { status: 500 })
     }
 
-    // ── 7. TODO: Trigger WhatsApp notification to vendor ─────────────────────
-    // Will be added in the next step. Payload ready:
-    // { place.phone_number, activity.title, bookingReference, body.* }
+    // ── 7. Send WhatsApp to vendor ────────────────────────────────────────────
+    // Non-blocking: a notification failure must NOT fail the booking itself.
+    if (place.phone_number) {
+        const message = vendorBookingMessage({
+            bookingRef: booking.booking_reference,
+            activityTitle: activity.title,
+            customerName: body.customer_name.trim(),
+            customerPhone: body.customer_phone,
+            bookingDate: body.booking_date,
+            timeSlot: body.time_slot,
+            peopleCount: body.people_count,
+        })
+        sendWhatsApp(place.phone_number, message).then(result => {
+            if (!result.success) {
+                console.error(
+                    `[POST /api/bookings] WhatsApp to vendor failed for ${booking.booking_reference}:`,
+                    result.error
+                )
+            }
+        })
+    } else {
+        console.warn(
+            `[POST /api/bookings] No phone_number set for place "${place.name}" — skipping WhatsApp notification`
+        )
+    }
 
     // ── 8. Return success ────────────────────────────────────────────────────
     return NextResponse.json(

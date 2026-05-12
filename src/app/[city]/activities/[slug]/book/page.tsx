@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, Clock, Users, Phone, User, Mail, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
+import BookingCalendar from '@/components/BookingCalendar'
 import { supabaseClient } from '@/lib/supabase-client'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -343,19 +344,11 @@ export default function BookingPage() {
 
                 {/* ── SECTION: Date ── */}
                 <FormSection icon={<Calendar size={16} />} label="Choose a Date">
-                    <input
-                        type="date"
+                    <BookingCalendar
                         value={bookingDate}
-                        min={getTodayIST()}
-                        onChange={e => setBookingDate(e.target.value)}
-                        required
-                        style={inputStyle}
+                        onChange={setBookingDate}
+                        bookingDays={activity.booking_days ?? []}
                     />
-                    {activity.booking_days?.length > 0 && (
-                        <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 8 }}>
-                            Available on: {activity.booking_days.map(d => d.charAt(0).toUpperCase() + d.slice(1)).join(', ')}
-                        </p>
-                    )}
                 </FormSection>
 
                 {/* ── SECTION: Group size ── */}

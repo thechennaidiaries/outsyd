@@ -409,8 +409,8 @@ function WonCard({
 
       <button onClick={onShare} className="share-btn" style={{
         padding: '10px 20px', borderRadius: 10,
-        background: 'var(--accent)', border: 'none',
-        color: '#fff', fontSize: 13, fontWeight: 700,
+        background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+        color: 'var(--text-2)', fontSize: 13, fontWeight: 700,
         cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
         transition: 'opacity 0.2s',
       }}>
@@ -419,12 +419,12 @@ function WonCard({
 
       <Link href="/chennai/activities" style={{
         display: 'block', marginTop: 16, padding: '12px 16px',
-        background: 'var(--bg-elevated)', borderRadius: 12,
-        border: '1px solid var(--border)',
-        fontSize: 13, color: 'var(--text-2)', textDecoration: 'none', fontWeight: 600,
+        background: 'var(--accent)', borderRadius: 12,
+        border: 'none',
+        fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
         lineHeight: 1.4,
       }}>
-        No Plans in Chennai? Explore 200+ Activities &amp; Side Quests →
+        Explore 200+ Activities &amp; Side Quests in Chennai →
       </Link>
     </div>
   )
@@ -451,8 +451,8 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
 
       <button onClick={onShare} className="share-btn" style={{
         padding: '10px 20px', borderRadius: 10,
-        background: 'var(--accent)', border: 'none',
-        color: '#fff', fontSize: 13, fontWeight: 700,
+        background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+        color: 'var(--text-2)', fontSize: 13, fontWeight: 700,
         cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
         transition: 'opacity 0.2s',
       }}>
@@ -461,12 +461,12 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
 
       <Link href="/chennai/activities" style={{
         display: 'block', marginTop: 16, padding: '12px 16px',
-        background: 'var(--bg-elevated)', borderRadius: 12,
-        border: '1px solid var(--border)',
-        fontSize: 13, color: 'var(--text-2)', textDecoration: 'none', fontWeight: 600,
+        background: 'var(--accent)', borderRadius: 12,
+        border: 'none',
+        fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
         lineHeight: 1.4,
       }}>
-        No Plans in Chennai? Explore 200+ Activities &amp; Side Quests →
+        Explore 200+ Activities &amp; Side Quests in Chennai →
       </Link>
     </div>
   )

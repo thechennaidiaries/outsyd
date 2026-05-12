@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation'
 import { MapPin, Camera, Share2, PlayCircle } from 'lucide-react'
 
 const HOW_TO_PLAY = [
-  { icon: <Camera size={18} />, text: 'A new Chennai spot to guess every day with hard to guess pictures' },
+  { icon: <Camera size={18} />, text: 'Guess the spot in chennai from hard to guess pictures' },
   { icon: <MapPin size={18} />, text: 'Try to identify the area or landmark with as few tries as possible' },
   { icon: <Share2 size={18} />, text: 'Share your results with friends' },
 ]

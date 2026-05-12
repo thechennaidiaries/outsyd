@@ -46,7 +46,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -55,7 +55,6 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
@@ -67,7 +66,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -76,7 +75,6 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
@@ -88,7 +86,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -97,7 +95,6 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
@@ -109,7 +106,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -118,7 +115,6 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
@@ -130,7 +126,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -139,28 +135,78 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
     id: 'game-006',
     date: '2026-05-13',
-    location: 'Pondy Bazaar',
-    area: 'T Nagar',
+    location: 'Nandanam',
+    area: 'Nandanam',
     placeType: 'Area',
     images: [
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/nandanam1.png?updatedAt=1778568483737',
+      'https://ik.imagekit.io/zxnq8x4yz/nandanam2.png?updatedAt=1778568483833',
+      'https://ik.imagekit.io/zxnq8x4yz/nandanam2.png?updatedAt=1778568483833',
     ],
     acceptedPatterns: [
-      'pond[yi]\\s*baz?aa?r',
-      'pandy\\s*baz?aa?r',
-      'pondi\\s*bazaar',
-      '^pondy$',
-      'pondybazar',
+      'nandanam',
+      'nandhannam',
+      'nandnam',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
-    mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
+  },
+  {
+    id: 'game-007',
+    date: '2026-05-14',
+    location: 'Sholinganallur',
+    area: 'Sholinganallur',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/shollinganallur1.png?updatedAt=1778568484842',
+      'https://ik.imagekit.io/zxnq8x4yz/shollinganallur1.png?updatedAt=1778568484842',
+      'https://ik.imagekit.io/zxnq8x4yz/shollinganallur3.png?updatedAt=1778568484330',
+    ],
+    acceptedPatterns: [
+      'shol+ingan(a|al)lur',
+      'sholinganalur',
+      'sholingnallur',
+      'shollinganallur',
+    ],
+  },
+  {
+    id: 'game-008',
+    date: '2026-05-15',
+    location: 'Kapaleeshwarar Temple',
+    area: 'Mylapore',
+    placeType: 'Temple',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/kapaleeswartemple1.png?updatedAt=1778568483876',
+      'https://ik.imagekit.io/zxnq8x4yz/kapaleeswarartemple2.png?updatedAt=1778568484990',
+      'https://ik.imagekit.io/zxnq8x4yz/kapaleeswarar%20temple3.png?updatedAt=1778568484107',
+    ],
+    acceptedPatterns: [
+      'kapale[ei]?s[h]?warar',
+      'kapaliswarar',
+      'kapaleeshwar',
+      'kapaleeswarar\\s*temple',
+      'kapaleeshwarar\\s*temple',
+      'mylapore\\s*temple',
+    ],
+  },
+  {
+    id: 'game-009',
+    date: '2026-05-16',
+    location: 'Perumbakkam',
+    area: 'Perumbakkam',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/perumbakkam1.png?updatedAt=1778568484564',
+      'https://ik.imagekit.io/zxnq8x4yz/perumbakkam2.png?updatedAt=1778568484814',
+      'https://ik.imagekit.io/zxnq8x4yz/perumbakkam3.png?updatedAt=1778568483986',
+    ],
+    acceptedPatterns: [
+      'perumbak+am',
+      'perumbakam',
+      'perumbakkam',
+    ],
   },
 ]

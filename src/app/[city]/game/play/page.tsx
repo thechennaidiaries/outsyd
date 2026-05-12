@@ -129,8 +129,8 @@ export default function GamePage() {
       day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata',
     })
     const text = status === 'won'
-      ? `📍 Chennai Guess — ${dateStr}\nI found ${puzzle.location} in ${guessCount}/3 tries! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nPlay at: outsyd.in/chennai/game`
-      : `📍 Chennai Guess — ${dateStr}\nCouldn't get today's spot 😔\n\n🟥🟥🟥\n\nThe answer was ${puzzle.location}\n\nPlay at: outsyd.in/chennai/game`
+      ? `📍 Route Thala — ${dateStr}\nI guessed today's mystery spot in Chennai in ${guessCount}/3 tries! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nPlay at: outsyd.in/chennai/game`
+      : `📍 Route Thala — ${dateStr}\n\nI couldn't guess today's mystery spot in Chennai 😔 Can you guess it?\n\nPlay at: outsyd.in/chennai/game`
     if (navigator.share) { try { await navigator.share({ text }) } catch { /**/ } }
     else {
       await navigator.clipboard.writeText(text)
@@ -456,12 +456,12 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
 
       <button onClick={onShare} className="share-btn" style={{
         width: '100%', padding: '14px', borderRadius: 12,
-        background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-        color: 'var(--text-2)', fontSize: 14, fontWeight: 700,
+        background: 'var(--accent)', border: 'none',
+        color: '#fff', fontSize: 14, fontWeight: 700,
         cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
         transition: 'opacity 0.2s',
       }}>
-        {copied ? <><Check size={16} /> Copied!</> : <><Share2 size={16} /> Share Result</>}
+        {copied ? <><Check size={16} /> Copied!</> : <><Share2 size={16} /> Challenge Your Friends to Guess</>}
       </button>
 
       <Link href="/" style={{

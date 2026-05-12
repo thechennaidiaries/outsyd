@@ -17,6 +17,7 @@ export interface Activity {
     timings?: string
     tags?: string[]
     bookingLink?: string
+    bookingEnabled?: boolean       // from activities.booking_enabled in Supabase
     pricingType?: PricingType
     pricing?: string
     cityId: string

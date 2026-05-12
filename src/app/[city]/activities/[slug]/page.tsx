@@ -229,7 +229,7 @@ export default async function SlugPage({ params }: Props) {
                     />
 
                     {/* ── Book a Slot (Outsyd booking system) ── */}
-                    {(activity as any).booking_enabled && activity.slug && (
+                    {activity.bookingEnabled && activity.slug && (
                         <Link
                             href={`/${city.id}/activities/${activity.slug}/book`}
                             style={{
@@ -250,7 +250,7 @@ export default async function SlugPage({ params }: Props) {
                     )}
 
                     {/* ── External booking / maps (fallback) ── */}
-                    {!(activity as any).booking_enabled && (activity.bookingLink || activity.locationLink) && (
+                    {!activity.bookingEnabled && (activity.bookingLink || activity.locationLink) && (
                         <a
                             href={activity.bookingLink || activity.locationLink}
                             target="_blank"

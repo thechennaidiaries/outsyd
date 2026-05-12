@@ -110,9 +110,15 @@ export default function GamePage() {
     } else {
       const next = [...guesses, trimmed]
       setGuesses(next)
-      setLastWrong(trimmed)
       setInput('')
-      setStatus('countdown')
+      if (next.length >= 3) {
+        // Final wrong guess — show result immediately
+        setFinalElapsed(Math.floor((Date.now() - startTsRef.current) / 1000))
+        setStatus('lost')
+      } else {
+        setLastWrong(trimmed)
+        setStatus('countdown')
+      }
     }
   }
 
@@ -401,12 +407,6 @@ function WonCard({
 
       <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>{emojis}</div>
 
-      {puzzle.funFact && (
-        <p style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.6, marginBottom: 20, fontStyle: 'italic' }}>
-          💡 {puzzle.funFact}
-        </p>
-      )}
-
       <button onClick={onShare} className="share-btn" style={{
         width: '100%', padding: '14px', borderRadius: 12,
         background: 'var(--accent)', border: 'none',
@@ -447,12 +447,6 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
       </div>
 
       <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>🟥🟥🟥</div>
-
-      {puzzle.funFact && (
-        <p style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.6, marginBottom: 20, fontStyle: 'italic' }}>
-          💡 {puzzle.funFact}
-        </p>
-      )}
 
       <button onClick={onShare} className="share-btn" style={{
         width: '100%', padding: '14px', borderRadius: 12,

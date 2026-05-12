@@ -175,6 +175,9 @@ export async function POST(req: NextRequest) {
 
     // ── 7. Send WhatsApp to vendor ────────────────────────────────────────────
     // Non-blocking: a notification failure must NOT fail the booking itself.
+    console.log(`[POST /api/bookings] place.phone_number = "${place.phone_number}" for place "${place.name}"`)
+    console.log(`[POST /api/bookings] WASENDER_API_KEY set: ${!!process.env.WASENDER_API_KEY}`)
+
     if (place.phone_number) {
         const message = vendorBookingMessage({
             bookingRef: booking.booking_reference,
@@ -185,7 +188,9 @@ export async function POST(req: NextRequest) {
             timeSlot: body.time_slot,
             peopleCount: body.people_count,
         })
+        console.log(`[POST /api/bookings] Sending WhatsApp to ${place.phone_number}...`)
         sendWhatsApp(place.phone_number, message).then(result => {
+            console.log(`[POST /api/bookings] WaSender result for ${booking.booking_reference}:`, JSON.stringify(result))
             if (!result.success) {
                 console.error(
                     `[POST /api/bookings] WhatsApp to vendor failed for ${booking.booking_reference}:`,

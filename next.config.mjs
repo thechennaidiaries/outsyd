@@ -1,3 +1,5 @@
+import withBundleAnalyzer from '@next/bundle-analyzer'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -6,6 +8,11 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-};
+}
 
-export default nextConfig;
+const analyze = withBundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
+
+export default analyze(nextConfig)
+

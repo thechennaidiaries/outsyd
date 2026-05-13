@@ -355,7 +355,7 @@ export default function GamePage() {
                 </span>
               </p>
               <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
-                Just type <span style={{ color: '#4ade80', fontWeight: 700 }}>routethala.in</span> on your browser
+                Just type <span style={{ color: 'var(--text-2)', fontWeight: 700 }}>routethala.in</span> on your browser
               </p>
             </div>
           )}

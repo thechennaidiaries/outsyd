@@ -427,13 +427,13 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
       border: '1.5px solid var(--border)', padding: '32px 24px', textAlign: 'center',
     }}>
       <div style={{ fontSize: 36, marginBottom: 10 }}>😔</div>
-      <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 24 }}>Better luck tomorrow!</h2>
+      <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>Better luck tomorrow!</h2>
+      <p style={{ fontSize: 14, color: 'var(--text-3)', marginBottom: 24 }}>The answer was…</p>
 
       <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
-        <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em', marginBottom: 2 }}>
+        <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em' }}>
           {puzzle.location}
         </p>
-        <p style={{ fontSize: 13, color: 'var(--text-3)', fontWeight: 500 }}>{puzzle.area}</p>
       </div>
 
       <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>🟥🟥🟥</div>

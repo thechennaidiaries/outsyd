@@ -162,9 +162,9 @@ export const PUZZLES: GamePuzzle[] = [
     area: 'Nandanam',
     placeType: 'Area',
     images: [
-      'https://ik.imagekit.io/zxnq8x4yz/nandanam1.png?updatedAt=1778568483737',
-      'https://ik.imagekit.io/zxnq8x4yz/nandanam2.png?updatedAt=1778568483833',
-      'https://ik.imagekit.io/zxnq8x4yz/nandanam2.png?updatedAt=1778568483833',
+      'https://ik.imagekit.io/zxnq8x4yz/nandanam1.png',
+      'https://ik.imagekit.io/zxnq8x4yz/Screenshot%202026-05-14%20at%201.53.29%E2%80%AFAM.png',
+      'https://ik.imagekit.io/zxnq8x4yz/Screenshot%202026-05-14%20at%201.54.30%E2%80%AFAM.png',
     ],
     acceptedPatterns: [
       'nandanam',

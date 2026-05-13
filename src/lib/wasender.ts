@@ -74,8 +74,8 @@ export function vendorBookingMessage({
     bookingDate: string
     timeSlot: string
     peopleCount: number
+    baseUrl: string
 }): string {
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://outsyd.in'
     const confirmUrl = `${baseUrl}/vendor/${bookingRef}/confirm`
     const rejectUrl  = `${baseUrl}/vendor/${bookingRef}/reject`
 

@@ -179,6 +179,7 @@ export async function POST(req: NextRequest) {
     console.log(`[POST /api/bookings] WASENDER_API_KEY set: ${!!process.env.WASENDER_API_KEY}`)
 
     if (place.phone_number) {
+        const baseUrl = `${req.headers.get('x-forwarded-proto') ?? 'https'}://${req.headers.get('host')}`
         const message = vendorBookingMessage({
             bookingRef: booking.booking_reference,
             activityTitle: activity.title,
@@ -187,6 +188,7 @@ export async function POST(req: NextRequest) {
             bookingDate: body.booking_date,
             timeSlot: body.time_slot,
             peopleCount: body.people_count,
+            baseUrl,
         })
         console.log(`[POST /api/bookings] Sending WhatsApp to ${place.phone_number}...`)
         const waResult = await sendWhatsApp(place.phone_number, message)

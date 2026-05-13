@@ -75,19 +75,6 @@ export default function RouteThalaLandingPage() {
       }}>
         <div style={{ maxWidth: 520, width: '100%', padding: '0 20px' }}>
 
-          {/* ── Pin icon ── */}
-          <div className="rt-fade-1" style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
-            <div className="rt-pin" style={{
-              width: 64, height: 64, borderRadius: '50%',
-              background: 'var(--accent-dim)',
-              border: '1.5px solid var(--accent-border)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              animation: 'rt-pin-bob 2.8s ease-in-out infinite, rt-pulse-ring 2.5s ease-in-out infinite',
-            }}>
-              <MapPin size={28} color="var(--accent)" strokeWidth={2.2} />
-            </div>
-          </div>
-
           {/* ── Title ── */}
           <div className="rt-fade-2" style={{ textAlign: 'center', marginBottom: 10 }}>
             <h1 className="rt-title">
@@ -170,7 +157,7 @@ export default function RouteThalaLandingPage() {
               }}
             >
               <PlayCircle size={20} strokeWidth={2.2} />
-              Play Today&apos;s Puzzle
+              Play Route Thala
             </Link>
             <p style={{
               textAlign: 'center', fontSize: 12,

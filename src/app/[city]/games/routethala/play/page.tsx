@@ -241,15 +241,13 @@ export default function GamePage() {
               </div>
               <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>{dateDisplay}</p>
             </div>
-            {/* Timer */}
+            {/* Hint Badge */}
             <div style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              background: 'var(--bg-card)', border: '1px solid var(--border)',
-              borderRadius: 10, padding: '8px 14px',
+              background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
+              borderRadius: 10, padding: '7px 14px',
             }}>
-              <Timer size={13} color="var(--text-3)" />
-              <span style={{ fontFamily: 'monospace', fontSize: 15, fontWeight: 700, color: 'var(--text)', letterSpacing: '0.05em' }}>
-                {formatTime(displayTime)}
+              <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--accent)', letterSpacing: '-0.01em' }}>
+                Hint {imageIndex + 1} of 3
               </span>
             </div>
           </div>
@@ -304,7 +302,7 @@ export default function GamePage() {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleGuess()}
-                  placeholder="Type a Chennai place or street…"
+                  placeholder="Type a Chennai place or area..."
                   autoComplete="off"
                   style={{
                     flex: 1, padding: '14px 16px',
@@ -321,18 +319,24 @@ export default function GamePage() {
                   disabled={!input.trim()}
                   style={{
                     padding: '14px 22px', borderRadius: 12,
-                    background: input.trim() ? 'var(--accent)' : 'var(--bg-elevated)',
+                    background: 'var(--accent)',
                     border: 'none', color: '#fff', fontSize: 14, fontWeight: 700,
-                    cursor: input.trim() ? 'pointer' : 'not-allowed',
+                    cursor: input.trim() ? 'pointer' : 'default',
+                    opacity: input.trim() ? 1 : 0.5,
                     transition: 'all 0.2s ease', whiteSpace: 'nowrap',
                   }}
                 >
                   Guess →
                 </button>
               </div>
-              <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 8, textAlign: 'center' }}>
-                {3 - guesses.length} {3 - guesses.length === 1 ? 'attempt' : 'attempts'} left
-              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, padding: '0 2px' }}>
+                <span style={{ fontFamily: 'monospace', fontSize: 12, color: 'rgba(255,255,255,0.35)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Timer size={11} />{formatTime(displayTime)}
+                </span>
+                <span style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 600 }}>
+                  {3 - guesses.length} {3 - guesses.length === 1 ? 'Chance' : 'Chances'} Left
+                </span>
+              </div>
             </div>
           )}
 

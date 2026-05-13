@@ -15,9 +15,9 @@ export function generateBookingReference(): string {
 /**
  * Calculates the response deadline timestamp.
  * @param fromDate  base time (defaults to now)
- * @param minutes   timeout window from the place settings (default 30)
+ * @param minutes   timeout window from the place settings (default 2880 = 48 hours)
  */
-export function calculateResponseDeadline(minutes: number = 30, fromDate: Date = new Date()): string {
+export function calculateResponseDeadline(minutes: number = 2880, fromDate: Date = new Date()): string {
     const deadline = new Date(fromDate.getTime() + minutes * 60 * 1000)
     return deadline.toISOString()
 }

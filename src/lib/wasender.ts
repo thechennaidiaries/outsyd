@@ -103,7 +103,7 @@ export function vendorBookingMessage({
         `❌ Reject  → ${rejectUrl}`,
         `─────────────────`,
         ``,
-        `_Links expire in 30 minutes · Powered by Outsyd_`,
+        `_Powered by Outsyd_`,
     ].join('\n')
 }
 

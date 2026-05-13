@@ -164,6 +164,13 @@ export default function BookingPage() {
 
     // ── Success ──────────────────────────────────────────────────────────────
     if (step === 'success') {
+        // Check if current IST time is off-hours (9PM–9AM)
+        const istHour = parseInt(
+            new Intl.DateTimeFormat('en-IN', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' }).format(new Date()),
+            10
+        )
+        const isOffHours = istHour >= 21 || istHour < 9
+
         return (
             <main style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
                 <div style={{
@@ -177,10 +184,33 @@ export default function BookingPage() {
                 <h1 style={{ fontSize: 26, fontWeight: 900, color: 'var(--text)', marginBottom: 8, textAlign: 'center', letterSpacing: '-0.03em' }}>
                     Request Sent! 🎉
                 </h1>
-                <p style={{ fontSize: 14, color: 'var(--text-2)', marginBottom: 24, textAlign: 'center', lineHeight: 1.7 }}>
+                <p style={{ fontSize: 14, color: 'var(--text-2)', marginBottom: 20, textAlign: 'center', lineHeight: 1.7 }}>
                     Your booking request has been submitted.<br />
-                    The venue will confirm shortly.
+                    {isOffHours
+                        ? 'The venue will confirm once they're available.'
+                        : 'Usually confirmed within 15 minutes.'
+                    }
                 </p>
+
+                {/* Off-hours notice */}
+                {isOffHours && (
+                    <div style={{
+                        width: '100%', maxWidth: 360, marginBottom: 20,
+                        background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)',
+                        borderRadius: 'var(--radius-sm)', padding: '12px 16px',
+                        display: 'flex', gap: 10, alignItems: 'flex-start',
+                    }}>
+                        <span style={{ fontSize: 18, flexShrink: 0 }}>🌙</span>
+                        <div>
+                            <div style={{ fontSize: 13, fontWeight: 700, color: '#fbbf24', marginBottom: 3 }}>
+                                Off-hours booking
+                            </div>
+                            <div style={{ fontSize: 12, color: 'var(--text-3)', lineHeight: 1.6 }}>
+                                Venues typically respond in 15 minutes, but since it's nighttime your confirmation may be a little delayed. We'll notify you as soon as they respond.
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Booking reference card */}
                 <div style={{

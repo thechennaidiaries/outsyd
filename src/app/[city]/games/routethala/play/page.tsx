@@ -241,15 +241,9 @@ export default function GamePage() {
               </div>
               <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>{dateDisplay}</p>
             </div>
-            {/* Hint Badge */}
-            <div style={{
-              background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
-              borderRadius: 10, padding: '7px 16px',
-            }}>
-              <span style={{ fontSize: 16, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em' }}>
-                Hint {imageIndex + 1}
-              </span>
-            </div>
+            <span style={{ fontSize: 18, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em' }}>
+              Hint {imageIndex + 1}
+            </span>
           </div>
           )}
 
@@ -269,14 +263,6 @@ export default function GamePage() {
                 className="game-img"
                 style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }}
               />
-              <div style={{
-                position: 'absolute', bottom: 12, left: 12,
-                background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
-                borderRadius: 8, padding: '4px 10px',
-                fontSize: 12, fontWeight: 700, color: '#fff',
-              }}>
-                Clue {imageIndex + 1} of 3
-              </div>
             </div>
           )}
 

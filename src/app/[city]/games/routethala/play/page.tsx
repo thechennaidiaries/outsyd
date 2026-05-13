@@ -231,7 +231,7 @@ export default function GamePage() {
 
           {/* ── Header ── */}
           {(status === 'playing' || status === 'countdown') && (
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '24px 0 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0 20px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <MapPin size={16} color="var(--accent)" />

@@ -187,8 +187,8 @@ export default function BookingPage() {
                 <p style={{ fontSize: 14, color: 'var(--text-2)', marginBottom: 20, textAlign: 'center', lineHeight: 1.7 }}>
                     Your booking request has been submitted.<br />
                     {isOffHours
-                        ? 'The venue will confirm once they're available.'
-                        : 'Usually confirmed within 15 minutes.'
+                        ? "The venue will confirm once they're available."
+                        : "Usually confirmed within 15 minutes."
                     }
                 </p>
 

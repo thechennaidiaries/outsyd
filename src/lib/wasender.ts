@@ -149,3 +149,77 @@ export function opsEscalationMessage({
         `Vendor did not respond in time. Please follow up manually.`,
     ].join('\n')
 }
+
+/**
+ * Message sent to the CUSTOMER when vendor confirms their booking.
+ */
+export function customerConfirmedMessage({
+    bookingRef,
+    activityTitle,
+    placeName,
+    bookingDate,
+    timeSlot,
+    peopleCount,
+}: {
+    bookingRef: string
+    activityTitle: string
+    placeName: string
+    bookingDate: string
+    timeSlot: string
+    peopleCount: number
+}): string {
+    const formattedDate = new Date(bookingDate + 'T00:00:00').toLocaleDateString('en-IN', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    })
+    return [
+        `✅ *Booking Confirmed — Outsyd*`,
+        ``,
+        `Great news! Your booking has been confirmed by the venue.`,
+        ``,
+        `*Ref:* ${bookingRef}`,
+        `*Activity:* ${activityTitle}`,
+        `*Venue:* ${placeName}`,
+        ``,
+        `*Date:* ${formattedDate}`,
+        `*Time:* ${timeSlot}`,
+        `*People:* ${peopleCount}`,
+        ``,
+        `Please arrive on time. Contact the venue if you need to reschedule.`,
+        ``,
+        `_See you there 🎉 — Outsyd_`,
+    ].join('\n')
+}
+
+/**
+ * Message sent to the CUSTOMER when vendor rejects their booking.
+ */
+export function customerRejectedMessage({
+    bookingRef,
+    activityTitle,
+    bookingDate,
+    timeSlot,
+}: {
+    bookingRef: string
+    activityTitle: string
+    bookingDate: string
+    timeSlot: string
+}): string {
+    const formattedDate = new Date(bookingDate + 'T00:00:00').toLocaleDateString('en-IN', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    })
+    return [
+        `❌ *Booking Unavailable — Outsyd*`,
+        ``,
+        `Unfortunately, the venue is unable to accommodate your booking request.`,
+        ``,
+        `*Ref:* ${bookingRef}`,
+        `*Activity:* ${activityTitle}`,
+        `*Date:* ${formattedDate}`,
+        `*Time:* ${timeSlot}`,
+        ``,
+        `No payment was taken. Please try booking a different date or time.`,
+        ``,
+        `_Sorry for the inconvenience — Outsyd_`,
+    ].join('\n')
+}
+

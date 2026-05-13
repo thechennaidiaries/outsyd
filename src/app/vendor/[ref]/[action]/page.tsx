@@ -13,6 +13,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
+import { sendWhatsApp, customerConfirmedMessage, customerRejectedMessage } from '@/lib/wasender'
 import { notFound } from 'next/navigation'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -33,7 +34,7 @@ async function processAction(ref: string, action: Action): Promise<UpdateResult>
     // 1. Fetch booking
     const { data: booking, error } = await supabase
         .from('bookings')
-        .select('id, status, response_deadline, customer_name, booking_date, time_slot, people_count, activity_id')
+        .select('id, status, response_deadline, customer_name, customer_phone, booking_date, time_slot, people_count, activity_id, place_name, booking_reference')
         .eq('booking_reference', ref)
         .single()
 
@@ -85,6 +86,26 @@ async function processAction(ref: string, action: Action): Promise<UpdateResult>
             .eq('id', booking.activity_id)
             .single()
         activityTitle = activity?.title
+    }
+
+    // 7. Send WhatsApp to customer — non-blocking, failure doesn't affect result screen
+    if (booking.customer_phone) {
+        const message = action === 'confirm'
+            ? customerConfirmedMessage({
+                bookingRef: ref,
+                activityTitle: activityTitle ?? 'your activity',
+                placeName: booking.place_name ?? '',
+                bookingDate: booking.booking_date,
+                timeSlot: booking.time_slot,
+                peopleCount: booking.people_count,
+              })
+            : customerRejectedMessage({
+                bookingRef: ref,
+                activityTitle: activityTitle ?? 'your activity',
+                bookingDate: booking.booking_date,
+                timeSlot: booking.time_slot,
+              })
+        await sendWhatsApp(booking.customer_phone, message)
     }
 
     return {

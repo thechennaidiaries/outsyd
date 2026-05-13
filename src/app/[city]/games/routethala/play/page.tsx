@@ -347,15 +347,20 @@ export default function GamePage() {
 
           {/* ── Next Puzzle Countdown ── */}
           {(status === 'won' || status === 'lost') && midnightCountdown && (
-            <p style={{
-              textAlign: 'center', marginTop: 20,
-              fontSize: 12, color: 'var(--text-3)', fontWeight: 500,
-            }}>
-              Come back Tomorrow for a New {puzzle.placeType}. Loading in{' '}
-              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-2)' }}>
-                {midnightCountdown}
-              </span>
-            </p>
+            <div style={{ textAlign: 'center', marginTop: 20 }}>
+              <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500, marginBottom: 4 }}>
+                Come back tomorrow for a new puzzle
+              </p>
+              <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500, marginBottom: 4 }}>
+                Just type <span style={{ color: 'var(--text-2)', fontWeight: 700 }}>routethala.in</span> on your browser
+              </p>
+              <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
+                Next puzzle loading in{' '}
+                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-2)' }}>
+                  {midnightCountdown}
+                </span>
+              </p>
+            </div>
           )}
 
         </div>

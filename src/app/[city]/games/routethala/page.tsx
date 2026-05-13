@@ -10,7 +10,7 @@ const HOW_TO_PLAY = [
   { icon: <Share2 size={18} />, text: 'Share your results with friends' },
 ]
 
-export default function GameLandingPage() {
+export default function RouteThalaLandingPage() {
   const params = useParams()
   const city = params?.city ?? 'chennai'
 
@@ -156,7 +156,7 @@ export default function GameLandingPage() {
           {/* ── Play Now CTA ── */}
           <div className="rt-fade-5">
             <Link
-              href={`/${city}/game/play`}
+              href={`/${city}/games/routethala/play`}
               className="rt-play-btn"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,

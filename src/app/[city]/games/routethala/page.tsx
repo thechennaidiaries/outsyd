@@ -82,11 +82,11 @@ export default function RouteThalaLandingPage() {
             </h1>
             <p style={{
               fontSize: 16,
-              color: 'var(--text-2)',
+              color: 'var(--text)',
               fontWeight: 500,
               lineHeight: 1.5,
             }}>
-              Guess today&apos;s mystery Chennai spot in&nbsp;<strong style={{ color: 'var(--text)' }}>3 Chances</strong>
+              Guess today&apos;s mystery Chennai spot in&nbsp;<strong>3 Chances</strong>
             </p>
           </div>
 

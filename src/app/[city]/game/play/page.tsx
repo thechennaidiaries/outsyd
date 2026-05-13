@@ -70,11 +70,14 @@ export default function GamePage() {
     function tick() {
       const now = new Date()
       const istOffset = 5.5 * 60 * 60 * 1000
+      // Get current time expressed in IST
       const istNow = new Date(now.getTime() + istOffset)
-      const midnight = new Date(Date.UTC(
-        istNow.getUTCFullYear(), istNow.getUTCMonth(), istNow.getUTCDate() + 1
-      ))
-      const diff = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000))
+      // Next midnight IST = start of next IST day in UTC (subtract offset back)
+      const nextMidnightIST = new Date(
+        Date.UTC(istNow.getUTCFullYear(), istNow.getUTCMonth(), istNow.getUTCDate() + 1)
+        - istOffset
+      )
+      const diff = Math.max(0, Math.floor((nextMidnightIST.getTime() - now.getTime()) / 1000))
       const h = Math.floor(diff / 3600)
       const m = Math.floor((diff % 3600) / 60)
       const s = diff % 60

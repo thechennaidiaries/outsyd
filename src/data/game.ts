@@ -144,7 +144,7 @@ export const PUZZLES: GamePuzzle[] = [
     area: 'Alandur',
     placeType: 'Area',
     images: [
-      'https://ik.imagekit.io/zxnq8x4yz/alandur1.png',
+      'https://ik.imagekit.io/zxnq8x4yz/Screenshot%202026-05-13%20at%201.13.30%E2%80%AFPM.png',
       'https://ik.imagekit.io/zxnq8x4yz/alandur2.png',
       'https://ik.imagekit.io/zxnq8x4yz/alandur3.png',
     ],

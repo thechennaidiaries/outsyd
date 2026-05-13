@@ -21,6 +21,7 @@ export default function GamePage() {
   const [input, setInput] = useState('')
   const [copied, setCopied] = useState(false)
   const [ready, setReady] = useState(false)
+  const [midnightCountdown, setMidnightCountdown] = useState('')
 
   const startTsRef = useRef<number>(Date.now())
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -62,6 +63,32 @@ export default function GamePage() {
       startTimestamp: startTsRef.current, finalElapsed, guessCount,
     }))
   }, [status, guesses, imageIndex, finalElapsed, guessCount, ready])
+
+  // ── Midnight Countdown ────────────────────────────────────────
+  useEffect(() => {
+    if (status !== 'won' && status !== 'lost') return
+    function tick() {
+      const now = new Date()
+      const istOffset = 5.5 * 60 * 60 * 1000
+      // Get current time expressed in IST
+      const istNow = new Date(now.getTime() + istOffset)
+      // Next midnight IST = start of next IST day in UTC (subtract offset back)
+      const nextMidnightIST = new Date(
+        Date.UTC(istNow.getUTCFullYear(), istNow.getUTCMonth(), istNow.getUTCDate() + 1)
+        - istOffset
+      )
+      const diff = Math.max(0, Math.floor((nextMidnightIST.getTime() - now.getTime()) / 1000))
+      const h = Math.floor(diff / 3600)
+      const m = Math.floor((diff % 3600) / 60)
+      const s = diff % 60
+      setMidnightCountdown(
+        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+      )
+    }
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [status])
 
   // ── Timer ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -110,9 +137,15 @@ export default function GamePage() {
     } else {
       const next = [...guesses, trimmed]
       setGuesses(next)
-      setLastWrong(trimmed)
       setInput('')
-      setStatus('countdown')
+      if (next.length >= 3) {
+        // Final wrong guess — show result immediately
+        setFinalElapsed(Math.floor((Date.now() - startTsRef.current) / 1000))
+        setStatus('lost')
+      } else {
+        setLastWrong(trimmed)
+        setStatus('countdown')
+      }
     }
   }
 
@@ -129,8 +162,8 @@ export default function GamePage() {
       day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata',
     })
     const text = status === 'won'
-      ? `📍 Chennai Guess — ${dateStr}\nI found ${puzzle.location} in ${guessCount}/3 tries! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nPlay at: outsyd.in/chennai/game`
-      : `📍 Chennai Guess — ${dateStr}\nCouldn't get today's spot 😔\n\n🟥🟥🟥\n\nThe answer was ${puzzle.location}\n\nPlay at: outsyd.in/chennai/game`
+      ? `📍 Route Thala — ${dateStr}\nI guessed today's mystery spot in Chennai in ${guessCount}/3 tries! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nPlay at: outsyd.in/chennai/game`
+      : `📍 Route Thala — ${dateStr}\n\nI couldn't guess today's mystery spot in Chennai 😔 Can you guess it?\n\nPlay at: outsyd.in/chennai/game`
     if (navigator.share) { try { await navigator.share({ text }) } catch { /**/ } }
     else {
       await navigator.clipboard.writeText(text)
@@ -188,8 +221,8 @@ export default function GamePage() {
         }
         .won-card { animation: wonAppear 0.4s ease forwards; }
         .game-img { animation: imgFade 0.4s ease; }
-        .guess-btn:hover { background: var(--accent-hover) !important; transform: translateY(-1px); }
-        .guess-btn:active { transform: translateY(0); }
+        .guess-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,0,0.35); }
+        .guess-btn:active { opacity: 0.75; transform: translateY(0); box-shadow: none; }
         .share-btn:hover { opacity: 0.85; }
       `}</style>
 
@@ -197,7 +230,8 @@ export default function GamePage() {
         <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 16px' }}>
 
           {/* ── Header ── */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '24px 0 20px' }}>
+          {(status === 'playing' || status === 'countdown') && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0 20px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <MapPin size={16} color="var(--accent)" />
@@ -207,18 +241,11 @@ export default function GamePage() {
               </div>
               <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>{dateDisplay}</p>
             </div>
-            {/* Timer */}
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              background: 'var(--bg-card)', border: '1px solid var(--border)',
-              borderRadius: 10, padding: '8px 14px',
-            }}>
-              <Timer size={13} color="var(--text-3)" />
-              <span style={{ fontFamily: 'monospace', fontSize: 15, fontWeight: 700, color: status === 'won' ? '#22c55e' : 'var(--text)', letterSpacing: '0.05em' }}>
-                {formatTime(displayTime)}
-              </span>
-            </div>
+            <span style={{ fontSize: 18, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em' }}>
+              Hint {imageIndex + 1}
+            </span>
           </div>
+          )}
 
           {/* ── Image / Countdown / Result Area ── */}
           {status === 'won' ? (
@@ -236,14 +263,6 @@ export default function GamePage() {
                 className="game-img"
                 style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }}
               />
-              <div style={{
-                position: 'absolute', bottom: 12, left: 12,
-                background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)',
-                borderRadius: 8, padding: '4px 10px',
-                fontSize: 12, fontWeight: 700, color: '#fff',
-              }}>
-                Clue {imageIndex + 1} of 3
-              </div>
             </div>
           )}
 
@@ -269,7 +288,7 @@ export default function GamePage() {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && handleGuess()}
-                  placeholder="Type a Chennai place or street…"
+                  placeholder="Type a Chennai place or area..."
                   autoComplete="off"
                   style={{
                     flex: 1, padding: '14px 16px',
@@ -283,21 +302,25 @@ export default function GamePage() {
                 <button
                   onClick={handleGuess}
                   className="guess-btn"
-                  disabled={!input.trim()}
                   style={{
                     padding: '14px 22px', borderRadius: 12,
-                    background: input.trim() ? 'var(--accent)' : 'var(--bg-elevated)',
+                    background: 'var(--accent)',
                     border: 'none', color: '#fff', fontSize: 14, fontWeight: 700,
-                    cursor: input.trim() ? 'pointer' : 'not-allowed',
+                    cursor: 'pointer',
                     transition: 'all 0.2s ease', whiteSpace: 'nowrap',
                   }}
                 >
                   Guess →
                 </button>
               </div>
-              <p style={{ fontSize: 12, color: 'var(--text-3)', marginTop: 8, textAlign: 'center' }}>
-                {3 - guesses.length} {3 - guesses.length === 1 ? 'attempt' : 'attempts'} left
-              </p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 8, padding: '0 2px' }}>
+                <span style={{ fontFamily: 'monospace', fontSize: 12, color: 'rgba(255,255,255,0.35)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <Timer size={11} />{formatTime(displayTime)}
+                </span>
+                <span style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 600 }}>
+                  {3 - guesses.length} {3 - guesses.length === 1 ? 'Chance' : 'Chances'} Left
+                </span>
+              </div>
             </div>
           )}
 
@@ -320,6 +343,19 @@ export default function GamePage() {
                 ))}
               </div>
             </div>
+          )}
+
+          {/* ── Next Puzzle Countdown ── */}
+          {(status === 'won' || status === 'lost') && midnightCountdown && (
+            <p style={{
+              textAlign: 'center', marginTop: 20,
+              fontSize: 12, color: 'var(--text-3)', fontWeight: 500,
+            }}>
+              Come back Tomorrow for a New {puzzle.placeType}. Loading in{' '}
+              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-2)' }}>
+                {midnightCountdown}
+              </span>
+            </p>
           )}
 
         </div>
@@ -347,7 +383,7 @@ function WrongCountdownCard({ guess, countdown }: { guess: string; countdown: nu
         {countdown}
       </div>
       <p style={{ fontSize: 13, color: 'rgba(248,113,113,0.6)', marginTop: 12 }}>
-        {countdown === 0 ? 'Loading next clue…' : `Next clue in ${countdown} second${countdown !== 1 ? 's' : ''}`}
+        {countdown === 0 ? 'Loading next hint…' : `Next hint in ${countdown} second${countdown !== 1 ? 's' : ''}`}
       </p>
     </div>
   )
@@ -372,20 +408,10 @@ function WonCard({
       padding: '32px 24px', textAlign: 'center',
       boxShadow: '0 0 40px rgba(34,197,94,0.12)',
     }}>
-      <div style={{ fontSize: 36, marginBottom: 10 }}>🎉</div>
-      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4ade80', marginBottom: 4, letterSpacing: '-0.02em' }}>
-        You got it!
+      <div style={{ fontSize: 36, marginBottom: 10 }}>😎</div>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4ade80', marginBottom: 24, letterSpacing: '-0.02em' }}>
+        Correct Guess! You&apos;re a Route Thala.
       </h2>
-      <p style={{ fontSize: 14, color: 'rgba(74,222,128,0.7)', marginBottom: 24 }}>Chennai&apos;s hardest guesser 🏆</p>
-
-      <div style={{
-        background: 'rgba(0,0,0,0.3)', borderRadius: 12, padding: '16px 20px', marginBottom: 20,
-      }}>
-        <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.02em', marginBottom: 2 }}>
-          {puzzle.location}
-        </p>
-        <p style={{ fontSize: 13, color: 'var(--text-3)', fontWeight: 500 }}>{puzzle.area}</p>
-      </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 24 }}>
         <div>
@@ -401,30 +427,25 @@ function WonCard({
 
       <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>{emojis}</div>
 
-      {puzzle.funFact && (
-        <p style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.6, marginBottom: 20, fontStyle: 'italic' }}>
-          💡 {puzzle.funFact}
-        </p>
-      )}
-
       <button onClick={onShare} className="share-btn" style={{
-        width: '100%', padding: '14px', borderRadius: 12,
-        background: 'var(--accent)', border: 'none',
-        color: '#fff', fontSize: 14, fontWeight: 700,
-        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        padding: '10px 20px', borderRadius: 10,
+        background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+        color: 'var(--text-2)', fontSize: 13, fontWeight: 700,
+        cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
         transition: 'opacity 0.2s',
       }}>
-        {copied ? <><Check size={16} /> Copied!</> : <><Share2 size={16} /> Share Result</>}
+        {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Share Result</>}
       </button>
 
-      {puzzle.mapsLink && (
-        <a href={puzzle.mapsLink} target="_blank" rel="noopener noreferrer" style={{
-          display: 'block', marginTop: 12, fontSize: 13, color: 'var(--accent)',
-          textDecoration: 'none', fontWeight: 600,
-        }}>
-          📍 Explore on Maps →
-        </a>
-      )}
+      <Link href="/" style={{
+        display: 'block', marginTop: 16, padding: '12px 16px',
+        background: 'var(--accent)', borderRadius: 12,
+        border: 'none',
+        fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
+        lineHeight: 1.4,
+      }}>
+        Explore 200+ Activities &amp; Side Quests in Chennai →
+      </Link>
     </div>
   )
 }
@@ -436,39 +457,35 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
       border: '1.5px solid var(--border)', padding: '32px 24px', textAlign: 'center',
     }}>
       <div style={{ fontSize: 36, marginBottom: 10 }}>😔</div>
-      <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>Better luck tomorrow!</h2>
+      <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>Game Over!</h2>
       <p style={{ fontSize: 14, color: 'var(--text-3)', marginBottom: 24 }}>The answer was…</p>
 
       <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
-        <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em', marginBottom: 2 }}>
+        <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em' }}>
           {puzzle.location}
         </p>
-        <p style={{ fontSize: 13, color: 'var(--text-3)', fontWeight: 500 }}>{puzzle.area}</p>
       </div>
 
       <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>🟥🟥🟥</div>
 
-      {puzzle.funFact && (
-        <p style={{ fontSize: 13, color: 'var(--text-3)', lineHeight: 1.6, marginBottom: 20, fontStyle: 'italic' }}>
-          💡 {puzzle.funFact}
-        </p>
-      )}
-
       <button onClick={onShare} className="share-btn" style={{
-        width: '100%', padding: '14px', borderRadius: 12,
+        padding: '10px 20px', borderRadius: 10,
         background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-        color: 'var(--text-2)', fontSize: 14, fontWeight: 700,
-        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+        color: 'var(--text-2)', fontSize: 13, fontWeight: 700,
+        cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 6,
         transition: 'opacity 0.2s',
       }}>
-        {copied ? <><Check size={16} /> Copied!</> : <><Share2 size={16} /> Share Result</>}
+        {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Challenge Your Friends to Guess</>}
       </button>
 
       <Link href="/" style={{
-        display: 'block', marginTop: 12, fontSize: 13,
-        color: 'var(--text-3)', textDecoration: 'none', fontWeight: 600,
+        display: 'block', marginTop: 16, padding: '12px 16px',
+        background: 'var(--accent)', borderRadius: 12,
+        border: 'none',
+        fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
+        lineHeight: 1.4,
       }}>
-        ← Back to Outsyd
+        Explore 200+ Activities &amp; Side Quests in Chennai →
       </Link>
     </div>
   )

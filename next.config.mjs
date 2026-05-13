@@ -8,6 +8,20 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/:city/game',
+        destination: '/:city/games/routethala',
+        permanent: true,
+      },
+      {
+        source: '/:city/game/play',
+        destination: '/:city/games/routethala/play',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 const analyze = withBundleAnalyzer({

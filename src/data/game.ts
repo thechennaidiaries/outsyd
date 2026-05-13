@@ -30,9 +30,10 @@ export function formatTime(seconds: number): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-export function getPuzzleForToday(): GamePuzzle | null {
+export function getPuzzleForToday(): GamePuzzle {
   const today = getTodayIST()
-  return PUZZLES.find(p => p.date === today) || null
+  return PUZZLES.find(p => p.date === today)
+    ?? PUZZLES.find(p => p.id === 'game-006')!  // fallback: Alandur
 }
 
 // ── Puzzle Schedule ───────────────────────────────────────────────
@@ -46,7 +47,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -55,7 +56,6 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
@@ -67,7 +67,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -76,7 +76,6 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
@@ -88,7 +87,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -97,7 +96,6 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
@@ -109,7 +107,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -118,7 +116,6 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
@@ -130,7 +127,7 @@ export const PUZZLES: GamePuzzle[] = [
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -139,19 +136,52 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
   },
   {
     id: 'game-006',
     date: '2026-05-13',
+    location: 'Alandur',
+    area: 'Alandur',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/Screenshot%202026-05-13%20at%201.13.30%E2%80%AFPM.png',
+      'https://ik.imagekit.io/zxnq8x4yz/alandur2.png',
+      'https://ik.imagekit.io/zxnq8x4yz/alandur3.png',
+    ],
+    acceptedPatterns: [
+      'alandur',
+      'aalandur',
+      'alandhur',
+    ],
+  },
+  {
+    id: 'game-007',
+    date: '2026-05-14',
+    location: 'Nandanam',
+    area: 'Nandanam',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/nandanam1.png?updatedAt=1778568483737',
+      'https://ik.imagekit.io/zxnq8x4yz/nandanam2.png?updatedAt=1778568483833',
+      'https://ik.imagekit.io/zxnq8x4yz/nandanam2.png?updatedAt=1778568483833',
+    ],
+    acceptedPatterns: [
+      'nandanam',
+      'nandhannam',
+      'nandnam',
+    ],
+  },
+  {
+    id: 'game-008',
+    date: '2026-05-15',
     location: 'Pondy Bazaar',
     area: 'T Nagar',
     placeType: 'Area',
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
       'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue3.png',
+      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
     ],
     acceptedPatterns: [
       'pond[yi]\\s*baz?aa?r',
@@ -160,7 +190,61 @@ export const PUZZLES: GamePuzzle[] = [
       '^pondy$',
       'pondybazar',
     ],
-    funFact: 'Pondy Bazaar is one of the busiest shopping hubs in Chennai, lined with street vendors, stores, and iconic food stalls.',
     mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
+  },
+  {
+    id: 'game-009',
+    date: '2026-05-16',
+    location: 'Kapaleeshwarar Temple',
+    area: 'Mylapore',
+    placeType: 'Temple',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/kapaleeswartemple1.png?updatedAt=1778568483876',
+      'https://ik.imagekit.io/zxnq8x4yz/kapaleeswarartemple2.png?updatedAt=1778568484990',
+      'https://ik.imagekit.io/zxnq8x4yz/kapaleeswarar%20temple3.png?updatedAt=1778568484107',
+    ],
+    acceptedPatterns: [
+      'kapale[ei]?s[h]?warar',
+      'kapaliswarar',
+      'kapaleeshwar',
+      'kapaleeswarar\\s*temple',
+      'kapaleeshwarar\\s*temple',
+      'mylapore\\s*temple',
+    ],
+  },
+  {
+    id: 'game-010',
+    date: '2026-05-17',
+    location: 'Sholinganallur',
+    area: 'Sholinganallur',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/shollinganallur1.png?updatedAt=1778568484842',
+      'https://ik.imagekit.io/zxnq8x4yz/shollinganallur1.png?updatedAt=1778568484842',
+      'https://ik.imagekit.io/zxnq8x4yz/shollinganallur3.png?updatedAt=1778568484330',
+    ],
+    acceptedPatterns: [
+      'shol+ingan(a|al)lur',
+      'sholinganalur',
+      'sholingnallur',
+      'shollinganallur',
+    ],
+  },
+  {
+    id: 'game-011',
+    date: '2026-05-18',
+    location: 'Perumbakkam',
+    area: 'Perumbakkam',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/perumbakkam1.png?updatedAt=1778568484564',
+      'https://ik.imagekit.io/zxnq8x4yz/perumbakkam2.png?updatedAt=1778568484814',
+      'https://ik.imagekit.io/zxnq8x4yz/perumbakkam3.png?updatedAt=1778568483986',
+    ],
+    acceptedPatterns: [
+      'perumbak+am',
+      'perumbakam',
+      'perumbakkam',
+    ],
   },
 ]

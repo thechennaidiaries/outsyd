@@ -162,8 +162,8 @@ export default function GamePage() {
       day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata',
     })
     const text = status === 'won'
-      ? `📍 Route Thala — ${dateStr}\nI guessed today's mystery spot in Chennai in ${guessCount}/3 tries! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nPlay at: outsyd.in/chennai/game`
-      : `📍 Route Thala — ${dateStr}\n\nI couldn't guess today's mystery spot in Chennai 😔 Can you guess it?\n\nPlay at: outsyd.in/chennai/game`
+      ? `📍 Route Thala — ${dateStr}\nI guessed today's mystery Chennai spot in ${guessCount}/3 chances! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nCan you beat my score? Play at: routethala.in`
+      : `📍 Route Thala — ${dateStr}\n\nI couldn't crack today's mystery Chennai spot 😔 Can you?\n\n🟥🟥🟥\n\nPlay at: routethala.in`
     if (navigator.share) { try { await navigator.share({ text }) } catch { /**/ } }
     else {
       await navigator.clipboard.writeText(text)

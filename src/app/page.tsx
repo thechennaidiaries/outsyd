@@ -153,10 +153,10 @@ export default function RootPage() {
         ]}
       />
 
-      {/* ═══ "I'm Bored" CTA Strip ═══════════════════════════════ */}
+      {/* ═══ Route Thala CTA Strip ══════════════════════════════ */}
       <div style={{ maxWidth: 1400, margin: '0 auto', padding: '32px 28px 0' }}>
         <Link
-          href={`/${citySlug}/surprise`}
+          href={`/${citySlug}/games/routethala`}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -185,7 +185,7 @@ export default function RootPage() {
           }} />
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, position: 'relative', zIndex: 1 }}>
-            <span style={{ fontSize: 28 }}>🫠</span>
+            <span style={{ fontSize: 28 }}>🎮</span>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               <span style={{
                 fontSize: 16,
@@ -194,7 +194,7 @@ export default function RootPage() {
                 fontFamily: '"PP Neue Montreal", sans-serif',
                 letterSpacing: '-0.01em',
               }}>
-                I&apos;m bored Button
+                Play Route Thala Game
               </span>
               <span style={{
                 fontSize: 13,
@@ -202,7 +202,7 @@ export default function RootPage() {
                 color: 'rgba(255, 255, 255, 0.9)',
                 fontFamily: '"PP Neue Montreal", sans-serif',
               }}>
-                Can&apos;t decide where to go? Hit me
+                Guess today&apos;s mystery Chennai spot in 3 chances
               </span>
             </div>
           </div>

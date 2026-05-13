@@ -378,20 +378,10 @@ function WonCard({
       padding: '32px 24px', textAlign: 'center',
       boxShadow: '0 0 40px rgba(34,197,94,0.12)',
     }}>
-      <div style={{ fontSize: 36, marginBottom: 10 }}>🎉</div>
-      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4ade80', marginBottom: 4, letterSpacing: '-0.02em' }}>
-        You got it!
+      <div style={{ fontSize: 36, marginBottom: 10 }}>😎</div>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#4ade80', marginBottom: 24, letterSpacing: '-0.02em' }}>
+        Correct Guess! You&apos;re a Route Thala.
       </h2>
-      <p style={{ fontSize: 14, color: 'rgba(74,222,128,0.7)', marginBottom: 24 }}>Chennai&apos;s hardest guesser 🏆</p>
-
-      <div style={{
-        background: 'rgba(0,0,0,0.3)', borderRadius: 12, padding: '16px 20px', marginBottom: 20,
-      }}>
-        <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.02em', marginBottom: 2 }}>
-          {puzzle.location}
-        </p>
-        <p style={{ fontSize: 13, color: 'var(--text-3)', fontWeight: 500 }}>{puzzle.area}</p>
-      </div>
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 24 }}>
         <div>

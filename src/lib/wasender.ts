@@ -56,6 +56,7 @@ export async function sendWhatsApp(to: string, text: string): Promise<SendResult
 
 /**
  * Message sent to the VENDOR when a new booking request arrives.
+ * Includes one-tap confirm / reject links.
  */
 export function vendorBookingMessage({
     bookingRef,
@@ -74,6 +75,15 @@ export function vendorBookingMessage({
     timeSlot: string
     peopleCount: number
 }): string {
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://outsyd.in'
+    const confirmUrl = `${baseUrl}/vendor/${bookingRef}/confirm`
+    const rejectUrl  = `${baseUrl}/vendor/${bookingRef}/reject`
+
+    // Format date nicely: "2026-05-17" → "17 May 2026"
+    const formattedDate = new Date(bookingDate + 'T00:00:00').toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'long', year: 'numeric',
+    })
+
     return [
         `📅 *New Booking Request — Outsyd*`,
         ``,
@@ -83,13 +93,16 @@ export function vendorBookingMessage({
         `*Customer:* ${customerName}`,
         `*Phone:* ${customerPhone}`,
         ``,
-        `*Date:* ${bookingDate}`,
+        `*Date:* ${formattedDate}`,
         `*Time:* ${timeSlot}`,
         `*People:* ${peopleCount}`,
         ``,
-        `Please reply *CONFIRM ${bookingRef}* or *REJECT ${bookingRef}* within 30 minutes.`,
+        `─────────────────`,
+        `✅ Confirm → ${confirmUrl}`,
+        `❌ Reject  → ${rejectUrl}`,
+        `─────────────────`,
         ``,
-        `_Powered by Outsyd_`,
+        `_Links expire in 30 minutes · Powered by Outsyd_`,
     ].join('\n')
 }
 

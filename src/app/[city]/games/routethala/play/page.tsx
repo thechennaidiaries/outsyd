@@ -221,8 +221,8 @@ export default function GamePage() {
         }
         .won-card { animation: wonAppear 0.4s ease forwards; }
         .game-img { animation: imgFade 0.4s ease; }
-        .guess-btn:hover { background: var(--accent-hover) !important; transform: translateY(-1px); }
-        .guess-btn:active { transform: translateY(0); }
+        .guess-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(255,107,0,0.35); }
+        .guess-btn:active { opacity: 0.75; transform: translateY(0); box-shadow: none; }
         .share-btn:hover { opacity: 0.85; }
       `}</style>
 
@@ -244,10 +244,10 @@ export default function GamePage() {
             {/* Hint Badge */}
             <div style={{
               background: 'var(--accent-dim)', border: '1px solid var(--accent-border)',
-              borderRadius: 10, padding: '7px 14px',
+              borderRadius: 10, padding: '7px 16px',
             }}>
-              <span style={{ fontSize: 13, fontWeight: 800, color: 'var(--accent)', letterSpacing: '-0.01em' }}>
-                Hint {imageIndex + 1} of 3
+              <span style={{ fontSize: 16, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em' }}>
+                Hint {imageIndex + 1}
               </span>
             </div>
           </div>
@@ -316,13 +316,11 @@ export default function GamePage() {
                 <button
                   onClick={handleGuess}
                   className="guess-btn"
-                  disabled={!input.trim()}
                   style={{
                     padding: '14px 22px', borderRadius: 12,
                     background: 'var(--accent)',
                     border: 'none', color: '#fff', fontSize: 14, fontWeight: 700,
-                    cursor: input.trim() ? 'pointer' : 'default',
-                    opacity: input.trim() ? 1 : 0.5,
+                    cursor: 'pointer',
                     transition: 'all 0.2s ease', whiteSpace: 'nowrap',
                   }}
                 >

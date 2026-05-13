@@ -203,6 +203,7 @@ export default function GamePage() {
         <div style={{ maxWidth: 600, margin: '0 auto', padding: '0 16px' }}>
 
           {/* ── Header ── */}
+          {(status === 'playing' || status === 'countdown') && (
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '24px 0 20px' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
@@ -220,11 +221,12 @@ export default function GamePage() {
               borderRadius: 10, padding: '8px 14px',
             }}>
               <Timer size={13} color="var(--text-3)" />
-              <span style={{ fontFamily: 'monospace', fontSize: 15, fontWeight: 700, color: status === 'won' ? '#22c55e' : 'var(--text)', letterSpacing: '0.05em' }}>
+              <span style={{ fontFamily: 'monospace', fontSize: 15, fontWeight: 700, color: 'var(--text)', letterSpacing: '0.05em' }}>
                 {formatTime(displayTime)}
               </span>
             </div>
           </div>
+          )}
 
           {/* ── Image / Countdown / Result Area ── */}
           {status === 'won' ? (
@@ -427,7 +429,7 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
       border: '1.5px solid var(--border)', padding: '32px 24px', textAlign: 'center',
     }}>
       <div style={{ fontSize: 36, marginBottom: 10 }}>😔</div>
-      <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>Better luck tomorrow!</h2>
+      <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>Game Over!</h2>
       <p style={{ fontSize: 14, color: 'var(--text-3)', marginBottom: 24 }}>The answer was…</p>
 
       <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>

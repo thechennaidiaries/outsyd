@@ -30,9 +30,10 @@ export function formatTime(seconds: number): string {
   return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
 }
 
-export function getPuzzleForToday(): GamePuzzle | null {
+export function getPuzzleForToday(): GamePuzzle {
   const today = getTodayIST()
-  return PUZZLES.find(p => p.date === today) || null
+  return PUZZLES.find(p => p.date === today)
+    ?? PUZZLES.find(p => p.id === 'game-006')!  // fallback: Alandur
 }
 
 // ── Puzzle Schedule ───────────────────────────────────────────────

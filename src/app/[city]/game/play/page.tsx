@@ -21,6 +21,7 @@ export default function GamePage() {
   const [input, setInput] = useState('')
   const [copied, setCopied] = useState(false)
   const [ready, setReady] = useState(false)
+  const [midnightCountdown, setMidnightCountdown] = useState('')
 
   const startTsRef = useRef<number>(Date.now())
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -62,6 +63,29 @@ export default function GamePage() {
       startTimestamp: startTsRef.current, finalElapsed, guessCount,
     }))
   }, [status, guesses, imageIndex, finalElapsed, guessCount, ready])
+
+  // ── Midnight Countdown ────────────────────────────────────────
+  useEffect(() => {
+    if (status !== 'won' && status !== 'lost') return
+    function tick() {
+      const now = new Date()
+      const istOffset = 5.5 * 60 * 60 * 1000
+      const istNow = new Date(now.getTime() + istOffset)
+      const midnight = new Date(Date.UTC(
+        istNow.getUTCFullYear(), istNow.getUTCMonth(), istNow.getUTCDate() + 1
+      ))
+      const diff = Math.max(0, Math.floor((midnight.getTime() - now.getTime()) / 1000))
+      const h = Math.floor(diff / 3600)
+      const m = Math.floor((diff % 3600) / 60)
+      const s = diff % 60
+      setMidnightCountdown(
+        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+      )
+    }
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [status])
 
   // ── Timer ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -328,6 +352,19 @@ export default function GamePage() {
                 ))}
               </div>
             </div>
+          )}
+
+          {/* ── Next Puzzle Countdown ── */}
+          {(status === 'won' || status === 'lost') && midnightCountdown && (
+            <p style={{
+              textAlign: 'center', marginTop: 20,
+              fontSize: 12, color: 'var(--text-3)', fontWeight: 500,
+            }}>
+              Come back Tomorrow for a New {puzzle.placeType}. Loading in{' '}
+              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-2)' }}>
+                {midnightCountdown}
+              </span>
+            </p>
           )}
 
         </div>

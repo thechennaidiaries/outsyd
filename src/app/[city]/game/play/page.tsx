@@ -407,7 +407,7 @@ function WonCard({
         {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Share Result</>}
       </button>
 
-      <Link href="/chennai/activities" style={{
+      <Link href="/" style={{
         display: 'block', marginTop: 16, padding: '12px 16px',
         background: 'var(--accent)', borderRadius: 12,
         border: 'none',
@@ -427,8 +427,7 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
       border: '1.5px solid var(--border)', padding: '32px 24px', textAlign: 'center',
     }}>
       <div style={{ fontSize: 36, marginBottom: 10 }}>😔</div>
-      <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>Better luck tomorrow!</h2>
-      <p style={{ fontSize: 14, color: 'var(--text-3)', marginBottom: 24 }}>The answer was…</p>
+      <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 24 }}>Better luck tomorrow!</h2>
 
       <div style={{ background: 'var(--bg-elevated)', borderRadius: 12, padding: '16px 20px', marginBottom: 20 }}>
         <p style={{ fontSize: 24, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em', marginBottom: 2 }}>
@@ -449,7 +448,7 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
         {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Challenge Your Friends to Guess</>}
       </button>
 
-      <Link href="/chennai/activities" style={{
+      <Link href="/" style={{
         display: 'block', marginTop: 16, padding: '12px 16px',
         background: 'var(--accent)', borderRadius: 12,
         border: 'none',

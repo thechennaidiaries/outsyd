@@ -162,8 +162,8 @@ export default function GamePage() {
       day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata',
     })
     const text = status === 'won'
-      ? `📍 Route Thala — ${dateStr}\nI guessed today's mystery spot in Chennai in ${guessCount}/3 tries! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nPlay at: outsyd.in/chennai/game`
-      : `📍 Route Thala — ${dateStr}\n\nI couldn't guess today's mystery spot in Chennai 😔 Can you guess it?\n\nPlay at: outsyd.in/chennai/game`
+      ? `📍 Route Thala — ${dateStr}\nI guessed today's mystery Chennai spot in ${guessCount}/3 chances! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nCan you beat my score? Play at: routethala.in`
+      : `📍 Route Thala — ${dateStr}\n\nI couldn't crack today's mystery Chennai spot 😔 Can you?\n\n🟥🟥🟥\n\nPlay at: routethala.in`
     if (navigator.share) { try { await navigator.share({ text }) } catch { /**/ } }
     else {
       await navigator.clipboard.writeText(text)
@@ -347,15 +347,17 @@ export default function GamePage() {
 
           {/* ── Next Puzzle Countdown ── */}
           {(status === 'won' || status === 'lost') && midnightCountdown && (
-            <p style={{
-              textAlign: 'center', marginTop: 20,
-              fontSize: 12, color: 'var(--text-3)', fontWeight: 500,
-            }}>
-              Come back Tomorrow for a New {puzzle.placeType}. Loading in{' '}
-              <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text-2)' }}>
-                {midnightCountdown}
-              </span>
-            </p>
+            <div style={{ textAlign: 'center', marginTop: 20 }}>
+              <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500, marginBottom: 4 }}>
+                Come back tomorrow for a new puzzle in{' '}
+                <span style={{ fontFamily: 'monospace', fontWeight: 500 }}>
+                  {midnightCountdown}
+                </span>
+              </p>
+              <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
+                Just type <span style={{ color: 'var(--text-2)', fontWeight: 700 }}>routethala.in</span> on your browser
+              </p>
+            </div>
           )}
 
         </div>

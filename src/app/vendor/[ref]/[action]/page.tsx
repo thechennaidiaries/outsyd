@@ -27,7 +27,7 @@ interface PageProps {
 
 type UpdateResult =
     | { ok: true; booking: { customer_name: string; booking_date: string; time_slot: string; people_count: number; activity_title?: string } }
-    | { ok: false; reason: 'not_found' | 'expired' | 'already_responded' | 'invalid_action' | 'error' }
+    | { ok: false; reason: 'not_found' | 'expired' | 'already_responded' | 'invalid_action' | 'error'; currentStatus?: string }
 
 async function processAction(ref: string, action: Action): Promise<UpdateResult> {
     // 1. Fetch booking
@@ -39,9 +39,9 @@ async function processAction(ref: string, action: Action): Promise<UpdateResult>
 
     if (error || !booking) return { ok: false, reason: 'not_found' }
 
-    // 2. Already responded?
+    // 2. Already responded? Lock it — vendor cannot change their answer.
     if (booking.status === 'confirmed' || booking.status === 'rejected') {
-        return { ok: false, reason: 'already_responded' }
+        return { ok: false, reason: 'already_responded', currentStatus: booking.status }
     }
 
     // 3. Expired?
@@ -54,9 +54,9 @@ async function processAction(ref: string, action: Action): Promise<UpdateResult>
         return { ok: false, reason: 'error' }
     }
 
-    // 5. Update status
+    // 5. Update status — ONLY if still pending_vendor (atomic SQL guard)
     const newStatus = action === 'confirm' ? 'confirmed' : 'rejected'
-    const { error: updateError } = await supabase
+    const { data: updated, error: updateError } = await supabase
         .from('bookings')
         .update({
             status: newStatus,
@@ -64,10 +64,16 @@ async function processAction(ref: string, action: Action): Promise<UpdateResult>
             internal_notes: `Vendor ${newStatus} via link at ${new Date().toISOString()}`,
         })
         .eq('id', booking.id)
+        .eq('status', 'pending_vendor')   // atomic guard — only updates if still pending
+        .select('id')
 
-    if (updateError) {
-        console.error('[vendor/action] Update error:', updateError)
-        return { ok: false, reason: 'error' }
+    // If no rows updated, someone else beat us to it (race condition)
+    if (updateError || !updated || updated.length === 0) {
+        if (updateError) console.error('[vendor/action] Update error:', updateError)
+        // Re-fetch to get actual current status
+        const { data: refetch } = await supabase
+            .from('bookings').select('status').eq('id', booking.id).single()
+        return { ok: false, reason: 'already_responded', currentStatus: refetch?.status }
     }
 
     // 6. Fetch activity title for the result screen
@@ -155,7 +161,7 @@ export default async function VendorActionPage({ params }: PageProps) {
                     {result.ok ? (
                         <SuccessView action={action as Action} ref_={ref} booking={result.booking} />
                     ) : (
-                        <ErrorView reason={result.reason} action={action as Action} ref_={ref} />
+                        <ErrorView reason={result.reason} action={action as Action} ref_={ref} currentStatus={result.currentStatus} />
                     )}
                 </div>
             </body>
@@ -224,7 +230,12 @@ function SuccessView({
     )
 }
 
-function ErrorView({ reason, action, ref_ }: { reason: string; action: Action; ref_: string }) {
+function ErrorView({ reason, action, ref_, currentStatus }: { reason: string; action: Action; ref_: string; currentStatus?: string }) {
+    // Build a human-readable version of the actual current status
+    const statusLabel = currentStatus === 'confirmed' ? 'confirmed ✅'
+        : currentStatus === 'rejected' ? 'rejected ❌'
+        : 'responded'
+
     const msgs: Record<string, { icon: string; title: string; body: string }> = {
         not_found: {
             icon: '🔍',
@@ -237,9 +248,9 @@ function ErrorView({ reason, action, ref_ }: { reason: string; action: Action; r
             body: 'This booking link has expired. Please contact the Outsyd team for help.',
         },
         already_responded: {
-            icon: '✔️',
+            icon: '🔒',
             title: 'Already Responded',
-            body: `This booking has already been ${action === 'confirm' ? 'confirmed' : 'rejected'}. No changes were made.`,
+            body: `You've already ${statusLabel} this booking. The status cannot be changed.`,
         },
         error: {
             icon: '⚠️',

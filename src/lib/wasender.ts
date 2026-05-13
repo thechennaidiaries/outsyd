@@ -66,6 +66,7 @@ export function vendorBookingMessage({
     bookingDate,
     timeSlot,
     peopleCount,
+    baseUrl,
 }: {
     bookingRef: string
     activityTitle: string

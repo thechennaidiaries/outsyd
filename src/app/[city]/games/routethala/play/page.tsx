@@ -383,7 +383,7 @@ function WrongCountdownCard({ guess, countdown }: { guess: string; countdown: nu
         {countdown}
       </div>
       <p style={{ fontSize: 13, color: 'rgba(248,113,113,0.6)', marginTop: 12 }}>
-        {countdown === 0 ? 'Loading next clue…' : `Next clue in ${countdown} second${countdown !== 1 ? 's' : ''}`}
+        {countdown === 0 ? 'Loading next hint…' : `Next hint in ${countdown} second${countdown !== 1 ? 's' : ''}`}
       </p>
     </div>
   )

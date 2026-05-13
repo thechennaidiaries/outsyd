@@ -6,7 +6,7 @@ import { MapPin, Camera, Share2, PlayCircle } from 'lucide-react'
 
 const HOW_TO_PLAY = [
   { icon: <Camera size={18} />, text: 'Guess the spot in chennai from hard to guess pictures' },
-  { icon: <MapPin size={18} />, text: 'Try to identify the area or landmark with as few tries as possible' },
+  { icon: <MapPin size={18} />, text: 'Try to identify the area or landmark with as few hints as possible' },
   { icon: <Share2 size={18} />, text: 'Share your results with friends' },
 ]
 
@@ -86,7 +86,7 @@ export default function RouteThalaLandingPage() {
               fontWeight: 500,
               lineHeight: 1.5,
             }}>
-              Guess today&apos;s mystery Chennai spot in&nbsp;<strong style={{ color: 'var(--text)' }}>3 tries</strong>
+              Guess today&apos;s mystery Chennai spot in&nbsp;<strong style={{ color: 'var(--text)' }}>3 Chances</strong>
             </p>
           </div>
 

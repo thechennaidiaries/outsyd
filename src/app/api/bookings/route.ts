@@ -137,8 +137,9 @@ export async function POST(req: NextRequest) {
 
     // ── 5. Generate booking_reference + response_deadline ────────────────────
     const bookingReference = generateBookingReference()
-    const timeoutMinutes = place.response_timeout_minutes ?? 30
-    const responseDeadline = calculateResponseDeadline(timeoutMinutes)
+    // Response deadline — hardcoded to 48 hours (2880 min).
+    // Intentionally ignores place.response_timeout_minutes which defaults to 30 in the DB.
+    const responseDeadline = calculateResponseDeadline(2880)
 
     // ── 6. Insert booking into Supabase ──────────────────────────────────────
     const { data: booking, error: insertError } = await supabase

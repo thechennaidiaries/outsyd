@@ -158,6 +158,7 @@ export async function POST(req: NextRequest) {
             status: 'pending_vendor',
             booking_source: 'web',
             response_deadline: responseDeadline,
+            user_id: body.user_id || null,  // set after OTP verification
         })
         .select('id, booking_reference, status, response_deadline')
         .single()

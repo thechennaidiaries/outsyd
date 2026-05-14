@@ -34,7 +34,7 @@ interface ActivityBookingInfo {
     cancellation_policy?: string
 }
 
-type Step = 'form' | 'submitting' | 'success' | 'error'
+type Step = 'form' | 'otp' | 'submitting' | 'success' | 'error'
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -92,6 +92,11 @@ export default function BookingPage() {
     const [bookingRef, setBookingRef] = useState('')
     const [errorMsg, setErrorMsg] = useState('')
 
+    // ── OTP state ────────────────────────────────────────────────────────────
+    const [otpCode, setOtpCode] = useState('')
+    const [otpError, setOtpError] = useState('')
+    const [otpSending, setOtpSending] = useState(false)
+
     const canSubmit =
         selectedSlot &&
         bookingDate &&
@@ -99,15 +104,63 @@ export default function BookingPage() {
         customerName.trim().length >= 2 &&
         customerPhone.length >= 10
 
+    // Step 1: send OTP to the customer's WhatsApp
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         if (!activity || !canSubmit) return
+
+        const phone = formatINPhone(customerPhone)
+        setOtpSending(true)
+
+        try {
+            const res = await fetch('/api/auth/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone }),
+            })
+            const json = await res.json()
+            if (!res.ok) {
+                setErrorMsg(json.error || 'Failed to send verification code.')
+                setStep('error')
+            } else {
+                setStep('otp')
+            }
+        } catch {
+            setErrorMsg('Network error. Please check your connection and try again.')
+            setStep('error')
+        } finally {
+            setOtpSending(false)
+        }
+    }
+
+    // Step 2: verify OTP → create account → submit booking
+    async function handleVerifyOtp(e: React.FormEvent) {
+        e.preventDefault()
+        if (!activity || otpCode.length !== 6) return
+        setOtpError('')
         setStep('submitting')
 
         const phone = formatINPhone(customerPhone)
 
         try {
-            const res = await fetch('/api/bookings', {
+            // 2a. Verify OTP + create/find user account
+            const verifyRes = await fetch('/api/auth/verify-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone, otp: otpCode, name: customerName.trim() }),
+            })
+            const verifyJson = await verifyRes.json()
+
+            if (!verifyRes.ok) {
+                setOtpError(verifyJson.error || 'Incorrect code. Please try again.')
+                setStep('otp')
+                return
+            }
+
+            const verifiedUserId: string = verifyJson.userId
+
+            // 2b. Submit booking with user_id attached
+            const bookingRes = await fetch('/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -118,19 +171,38 @@ export default function BookingPage() {
                     booking_date: bookingDate,
                     time_slot: selectedSlot,
                     people_count: peopleCount,
+                    user_id: verifiedUserId,
                 }),
             })
-            const json = await res.json()
-            if (!res.ok) {
-                setErrorMsg(json.error || 'Something went wrong. Please try again.')
+            const bookingJson = await bookingRes.json()
+
+            if (!bookingRes.ok) {
+                setErrorMsg(bookingJson.error || 'Something went wrong. Please try again.')
                 setStep('error')
             } else {
-                setBookingRef(json.booking_reference)
+                setBookingRef(bookingJson.booking_reference)
                 setStep('success')
             }
         } catch {
             setErrorMsg('Network error. Please check your connection and try again.')
             setStep('error')
+        }
+    }
+
+    // Resend OTP — re-runs the send step
+    async function handleResendOtp() {
+        const phone = formatINPhone(customerPhone)
+        setOtpCode('')
+        setOtpError('')
+        setOtpSending(true)
+        try {
+            await fetch('/api/auth/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone }),
+            })
+        } finally {
+            setOtpSending(false)
         }
     }
 
@@ -158,6 +230,88 @@ export default function BookingPage() {
                 }}>
                     ← Back to Activity
                 </Link>
+            </main>
+        )
+    }
+
+    // ── OTP verification screen ───────────────────────────────────────────────
+    if (step === 'otp') {
+        const phone = formatINPhone(customerPhone)
+        return (
+            <main style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+                <div style={{ width: '100%', maxWidth: 380 }}>
+                    <button
+                        onClick={() => { setStep('form'); setOtpCode(''); setOtpError('') }}
+                        style={{ background: 'none', border: 'none', color: 'var(--text-3)', fontSize: 13, cursor: 'pointer', marginBottom: 32, display: 'flex', alignItems: 'center', gap: 4, padding: 0 }}
+                    >
+                        ← Back
+                    </button>
+
+                    <div style={{ textAlign: 'center', marginBottom: 36 }}>
+                        <div style={{ fontSize: 48, marginBottom: 16 }}>💬</div>
+                        <h1 style={{ fontSize: 22, fontWeight: 900, color: 'var(--text)', marginBottom: 10, letterSpacing: '-0.03em' }}>
+                            Verify your number
+                        </h1>
+                        <p style={{ fontSize: 14, color: 'var(--text-3)', lineHeight: 1.7 }}>
+                            We sent a 6-digit code to<br />
+                            <strong style={{ color: 'var(--text)' }}>{phone}</strong> on WhatsApp
+                        </p>
+                    </div>
+
+                    <form onSubmit={handleVerifyOtp}>
+                        <input
+                            id="otp-input"
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={6}
+                            placeholder="000000"
+                            value={otpCode}
+                            onChange={e => { setOtpCode(e.target.value.replace(/\D/g, '')); setOtpError('') }}
+                            autoFocus
+                            style={{
+                                width: '100%', padding: '18px', borderRadius: 'var(--radius)',
+                                border: `2px solid ${otpError ? '#ef4444' : otpCode.length === 6 ? 'var(--accent)' : 'var(--border)'}`,
+                                background: 'var(--bg-card)', color: 'var(--text)',
+                                fontSize: 32, fontWeight: 900, textAlign: 'center',
+                                letterSpacing: '0.5em', fontFamily: 'monospace', outline: 'none',
+                                marginBottom: otpError ? 6 : 20, transition: 'border-color 0.2s',
+                                boxSizing: 'border-box',
+                            }}
+                        />
+                        {otpError && (
+                            <p style={{ fontSize: 12, color: '#ef4444', marginBottom: 16, textAlign: 'center' }}>{otpError}</p>
+                        )}
+
+                        <button
+                            id="otp-verify-btn"
+                            type="submit"
+                            disabled={otpCode.length !== 6}
+                            style={{
+                                width: '100%', padding: '15px', borderRadius: 'var(--radius)',
+                                background: otpCode.length === 6 ? 'var(--accent)' : 'var(--bg-card)',
+                                color: otpCode.length === 6 ? '#000' : 'var(--text-3)',
+                                fontWeight: 800, fontSize: 16, border: '1px solid var(--border)',
+                                cursor: otpCode.length === 6 ? 'pointer' : 'not-allowed',
+                                transition: 'all 0.2s', marginBottom: 12,
+                            }}
+                        >
+                            Confirm &amp; Book
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={handleResendOtp}
+                            disabled={otpSending}
+                            style={{
+                                width: '100%', padding: '10px', background: 'none',
+                                border: 'none', color: 'var(--text-3)', fontSize: 13,
+                                cursor: otpSending ? 'not-allowed' : 'pointer',
+                            }}
+                        >
+                            {otpSending ? 'Sending...' : "Didn't receive a code? Resend"}
+                        </button>
+                    </form>
+                </div>
             </main>
         )
     }
@@ -244,13 +398,22 @@ export default function BookingPage() {
                     ))}
                 </div>
 
-                <Link href={`/${citySlug}/activities/${activitySlug}`} style={{
-                    padding: '14px 28px', borderRadius: 'var(--radius)',
-                    background: 'var(--bg-card)', border: '1px solid var(--border)',
-                    color: 'var(--text)', fontWeight: 700, fontSize: 15, textDecoration: 'none',
-                }}>
-                    Back to Activity
-                </Link>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%', maxWidth: 360 }}>
+                    <Link href="/account/bookings" style={{
+                        padding: '14px 28px', borderRadius: 'var(--radius)',
+                        background: 'var(--accent)', color: '#000',
+                        fontWeight: 800, fontSize: 15, textDecoration: 'none', textAlign: 'center',
+                    }}>
+                        View My Bookings →
+                    </Link>
+                    <Link href={`/${citySlug}/activities/${activitySlug}`} style={{
+                        padding: '12px 28px', borderRadius: 'var(--radius)',
+                        background: 'var(--bg-card)', border: '1px solid var(--border)',
+                        color: 'var(--text-2)', fontWeight: 600, fontSize: 14, textDecoration: 'none', textAlign: 'center',
+                    }}>
+                        Back to Activity
+                    </Link>
+                </div>
             </main>
         )
     }

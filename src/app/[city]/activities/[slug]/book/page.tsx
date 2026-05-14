@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { ArrowLeft, Calendar, Clock, Users, Phone, User, Mail, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
 import BookingCalendar from '@/components/BookingCalendar'
 import { supabaseClient } from '@/lib/supabase-client'
+import { getSavedItems, SAVED_ITEMS_KEY } from '@/lib/saved-items'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -159,7 +160,20 @@ export default function BookingPage() {
 
             const verifiedUserId: string = verifyJson.userId
 
-            // 2b. Submit booking with user_id attached
+            // 2b. Merge anonymous localStorage saves into account (fire-and-forget)
+            const localSaves = getSavedItems()
+            if (localSaves.length > 0) {
+                fetch('/api/account/merge-saves', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: verifiedUserId, items: localSaves }),
+                }).then(() => {
+                    // Clear localStorage after merge — data now lives in the DB
+                    window.localStorage.removeItem(SAVED_ITEMS_KEY)
+                }).catch(err => console.error('[merge-saves] Failed:', err))
+            }
+
+            // 2c. Submit booking with user_id attached
             const bookingRes = await fetch('/api/bookings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

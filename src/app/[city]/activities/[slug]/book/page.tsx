@@ -118,11 +118,38 @@ export default function BookingPage() {
     const [otpSending, setOtpSending] = useState(false)
 
     const canSubmit =
-        selectedSlot &&
-        bookingDate &&
-        peopleCount >= 1 &&
         customerName.trim().length >= 2 &&
-        customerPhone.length >= 10
+        customerPhone.trim().length >= 10 &&
+        bookingDate &&
+        selectedSlot &&
+        peopleCount >= 1 &&
+        !isSlotTooSoon(bookingDate, selectedSlot)
+
+    // ── 2-hour lead time guard ────────────────────────────────────────────────
+    // Returns true if a slot on the given date is within 2 hours of now (IST).
+    // Only relevant when bookingDate === today. Future dates are always fine.
+    function isSlotTooSoon(date: string, slot: string): boolean {
+        const todayIST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date())
+        if (date !== todayIST) return false // future date — always ok
+
+        // Parse slot string like "10:00 AM" or "2:30 PM"
+        const match = slot.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
+        if (!match) return false
+
+        let hours = parseInt(match[1], 10)
+        const minutes = parseInt(match[2], 10)
+        const period = match[3].toUpperCase()
+        if (period === 'PM' && hours !== 12) hours += 12
+        if (period === 'AM' && hours === 12) hours = 0
+
+        // Current time in IST milliseconds-since-midnight
+        const nowIST = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
+        const nowMinutes = nowIST.getHours() * 60 + nowIST.getMinutes()
+        const slotMinutes = hours * 60 + minutes
+
+        // Slot must be at least 120 minutes ahead of now
+        return slotMinutes - nowMinutes < 120
+    }
 
     // Step 1: If already logged in → skip OTP and book directly.
     //         If not → send OTP first.
@@ -593,25 +620,44 @@ export default function BookingPage() {
                 <FormSection icon={<Clock size={16} />} label="Pick a Time Slot">
                     {activity.available_slots?.length > 0 ? (
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-                            {activity.available_slots.map(slot => (
-                                <button
-                                    key={slot}
-                                    type="button"
-                                    onClick={() => setSelectedSlot(slot)}
-                                    style={{
-                                        padding: '10px 18px', borderRadius: 'var(--radius-sm)',
-                                        border: selectedSlot === slot
-                                            ? '2px solid var(--accent)'
-                                            : '1.5px solid var(--border)',
-                                        background: selectedSlot === slot ? 'var(--accent-dim)' : 'var(--bg-card)',
-                                        color: selectedSlot === slot ? 'var(--accent)' : 'var(--text)',
-                                        fontSize: 14, fontWeight: 600, cursor: 'pointer',
-                                        transition: 'all 0.15s ease',
-                                    }}
-                                >
-                                    {slot}
-                                </button>
-                            ))}
+                            {activity.available_slots.map(slot => {
+                                const tooSoon = isSlotTooSoon(bookingDate, slot)
+                                const isSelected = selectedSlot === slot
+                                return (
+                                    <button
+                                        key={slot}
+                                        type="button"
+                                        onClick={() => !tooSoon && setSelectedSlot(slot)}
+                                        disabled={tooSoon}
+                                        title={tooSoon ? 'Less than 2 hours from now — choose a later slot' : undefined}
+                                        style={{
+                                            padding: '10px 18px', borderRadius: 'var(--radius-sm)',
+                                            border: isSelected
+                                                ? '2px solid var(--accent)'
+                                                : tooSoon
+                                                    ? '1.5px solid var(--border)'
+                                                    : '1.5px solid var(--border)',
+                                            background: isSelected
+                                                ? 'var(--accent-dim)'
+                                                : tooSoon
+                                                    ? 'transparent'
+                                                    : 'var(--bg-card)',
+                                            color: isSelected
+                                                ? 'var(--accent)'
+                                                : tooSoon
+                                                    ? 'var(--text-3)'
+                                                    : 'var(--text)',
+                                            fontSize: 14, fontWeight: 600,
+                                            cursor: tooSoon ? 'not-allowed' : 'pointer',
+                                            opacity: tooSoon ? 0.45 : 1,
+                                            transition: 'all 0.15s ease',
+                                            textDecoration: tooSoon ? 'line-through' : 'none',
+                                        }}
+                                    >
+                                        {slot}
+                                    </button>
+                                )
+                            })}
                         </div>
                     ) : (
                         <p style={{ fontSize: 13, color: 'var(--text-3)' }}>No slots configured yet.</p>

@@ -126,29 +126,40 @@ export default function BookingPage() {
         !isSlotTooSoon(bookingDate, selectedSlot)
 
     // ── 2-hour lead time guard ────────────────────────────────────────────────
-    // Returns true if a slot on the given date is within 2 hours of now (IST).
-    // Only relevant when bookingDate === today. Future dates are always fine.
     function isSlotTooSoon(date: string, slot: string): boolean {
-        const todayIST = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date())
-        if (date !== todayIST) return false // future date — always ok
+        // Get current IST date and time components
+        const istFormatter = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Asia/Kolkata',
+            year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: 'numeric', minute: 'numeric', hour12: false
+        })
+        
+        const parts = istFormatter.formatToParts(new Date())
+        const getPart = (type: string) => parts.find(p => p.type === type)?.value || ''
+        
+        const todayIST = `${getPart('year')}-${getPart('month')}-${getPart('day')}`
+        
+        // If booking for a future date, all slots are fine
+        if (date !== todayIST) return false
 
         // Parse slot string like "10:00 AM" or "2:30 PM"
         const match = slot.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
         if (!match) return false
 
-        let hours = parseInt(match[1], 10)
-        const minutes = parseInt(match[2], 10)
+        let slotHours = parseInt(match[1], 10)
+        const slotMinutes = parseInt(match[2], 10)
         const period = match[3].toUpperCase()
-        if (period === 'PM' && hours !== 12) hours += 12
-        if (period === 'AM' && hours === 12) hours = 0
+        if (period === 'PM' && slotHours !== 12) slotHours += 12
+        if (period === 'AM' && slotHours === 12) slotHours = 0
 
-        // Current time in IST milliseconds-since-midnight
-        const nowIST = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }))
-        const nowMinutes = nowIST.getHours() * 60 + nowIST.getMinutes()
-        const slotMinutes = hours * 60 + minutes
+        const currentHours = parseInt(getPart('hour'), 10)
+        const currentMinutes = parseInt(getPart('minute'), 10)
 
-        // Slot must be at least 120 minutes ahead of now
-        return slotMinutes - nowMinutes < 120
+        const nowTotalMinutes = currentHours * 60 + currentMinutes
+        const slotTotalMinutes = slotHours * 60 + slotMinutes
+
+        // Disable if slot is less than 120 minutes from now
+        return (slotTotalMinutes - nowTotalMinutes) < 120
     }
 
     // Step 1: If already logged in → skip OTP and book directly.

@@ -93,6 +93,23 @@ export default function BookingPage() {
     const [bookingRef, setBookingRef] = useState('')
     const [errorMsg, setErrorMsg] = useState('')
 
+    // ── Session state (check if already logged in) ────────────────────────────
+    const [loggedInUser, setLoggedInUser] = useState<{ userId: string; name?: string; phone: string } | null>(null)
+
+    useEffect(() => {
+        fetch('/api/auth/me')
+            .then(r => r.json())
+            .then(({ user }) => {
+                if (user) {
+                    setLoggedInUser({ userId: user.id, name: user.name, phone: user.phone_number })
+                    // Pre-fill name and phone from session
+                    if (user.name) setCustomerName(user.name)
+                    if (user.phone_number) setCustomerPhone(user.phone_number)
+                }
+            })
+            .catch(() => {}) // silently ignore — user just won't be pre-filled
+    }, [])
+
     // ── OTP state ────────────────────────────────────────────────────────────
     const [otpCode, setOtpCode] = useState('')
     const [otpError, setOtpError] = useState('')
@@ -105,11 +122,47 @@ export default function BookingPage() {
         customerName.trim().length >= 2 &&
         customerPhone.length >= 10
 
-    // Step 1: send OTP to the customer's WhatsApp
+    // Step 1: If already logged in → skip OTP and book directly.
+    //         If not → send OTP first.
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         if (!activity || !canSubmit) return
 
+        // ── Already authenticated — skip OTP ─────────────────────────────────
+        if (loggedInUser) {
+            setStep('submitting')
+            const phone = formatINPhone(customerPhone)
+            try {
+                const bookingRes = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        activity_id: activity.id,
+                        customer_name: customerName.trim(),
+                        customer_phone: phone,
+                        customer_email: customerEmail || undefined,
+                        booking_date: bookingDate,
+                        time_slot: selectedSlot,
+                        people_count: peopleCount,
+                        user_id: loggedInUser.userId,
+                    }),
+                })
+                const bookingJson = await bookingRes.json()
+                if (!bookingRes.ok) {
+                    setErrorMsg(bookingJson.error || 'Something went wrong. Please try again.')
+                    setStep('error')
+                } else {
+                    setBookingRef(bookingJson.booking_reference)
+                    setStep('success')
+                }
+            } catch {
+                setErrorMsg('Network error. Please check your connection and try again.')
+                setStep('error')
+            }
+            return
+        }
+
+        // ── Not authenticated — send OTP first ────────────────────────────────
         const phone = formatINPhone(customerPhone)
         setOtpSending(true)
 
@@ -636,7 +689,7 @@ export default function BookingPage() {
                 {/* ── Submit ── */}
                 <button
                     type="submit"
-                    disabled={!canSubmit || step === 'submitting'}
+                    disabled={!canSubmit || step === 'submitting' || otpSending}
                     style={{
                         width: '100%', padding: '18px 24px',
                         borderRadius: 'var(--radius)',
@@ -651,13 +704,15 @@ export default function BookingPage() {
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                     }}
                 >
-                    {step === 'submitting' ? (
+                    {(step === 'submitting' || otpSending) ? (
                         <>
                             <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
-                            Sending Request...
+                            {otpSending ? 'Sending code...' : 'Sending Request...'}
                         </>
-                    ) : (
+                    ) : loggedInUser ? (
                         '✉️ Send Booking Request'
+                    ) : (
+                        '🔐 Verify & Book'
                     )}
                 </button>
 

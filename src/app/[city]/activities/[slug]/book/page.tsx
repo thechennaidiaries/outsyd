@@ -132,6 +132,19 @@ export default function BookingPage() {
         if (loggedInUser) {
             setStep('submitting')
             const phone = formatINPhone(customerPhone)
+
+            // Merge any localStorage saves accumulated since last login (fire-and-forget)
+            const localSaves = getSavedItems()
+            if (localSaves.length > 0) {
+                fetch('/api/account/merge-saves', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: loggedInUser.userId, items: localSaves }),
+                }).then(() => {
+                    window.localStorage.removeItem(SAVED_ITEMS_KEY)
+                }).catch(err => console.error('[merge-saves] Failed:', err))
+            }
+
             try {
                 const bookingRes = await fetch('/api/bookings', {
                     method: 'POST',

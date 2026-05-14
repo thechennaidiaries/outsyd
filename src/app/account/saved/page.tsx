@@ -1,8 +1,9 @@
 'use client'
 
 /**
- * /account/saved — Saved items page for logged-in users.
- * Fetches saved items from DB, resolves full data, renders using proper card components.
+ * /account/saved — Fast version.
+ * Single API call to /api/account/saves which returns full card data.
+ * No more loading all activities/events/walks client-side.
  */
 
 import { useState, useEffect } from 'react'
@@ -14,8 +15,6 @@ import WalkCard from '@/components/WalkCard'
 import type { Activity } from '@/data/activities'
 import type { Event } from '@/data/events'
 import type { Walk } from '@/data/walks'
-import { fetchAllActivities, fetchAllEvents, fetchAllWalks } from '@/lib/supabase-data'
-import type { SavedItem } from '@/lib/saved-items'
 
 const TAB_NAV = [
     { label: '📋 Bookings', href: '/account/bookings' },
@@ -23,60 +22,30 @@ const TAB_NAV = [
     { label: '⚙️ Settings', href: '/account/settings' },
 ]
 
+type SavedItem = { type: string; citySlug: string; slug: string }
+
 type ResolvedItem =
     | { type: 'activity'; data: Activity; savedItem: SavedItem }
     | { type: 'walk';     data: Walk;     savedItem: SavedItem }
     | { type: 'event';    data: Event;    savedItem: SavedItem }
 
 export default function AccountSavedPage() {
-    const [savedItems, setSavedItems] = useState<SavedItem[]>([])
-    const [allActivities, setAllActivities] = useState<Activity[]>([])
-    const [allEvents, setAllEvents]         = useState<Event[]>([])
-    const [allWalks, setAllWalks]           = useState<Walk[]>([])
+    const [items, setItems]     = useState<ResolvedItem[]>([])
     const [loading, setLoading] = useState(true)
-    const [user, setUser] = useState<{ name?: string; phone_number: string } | null>(null)
+    const [userName, setUserName] = useState('')
 
     useEffect(() => {
-        async function load() {
-            // Parallel: fetch session + saved items from DB + all card data
-            const [meRes, savesRes, activities, events, walks] = await Promise.all([
-                fetch('/api/auth/me').then(r => r.json()),
-                fetch('/api/account/saves').then(r => r.json()),
-                fetchAllActivities(),
-                fetchAllEvents(),
-                fetchAllWalks(),
-            ])
-
-            if (meRes.user) setUser(meRes.user)
-
-            const dbItems: SavedItem[] = Array.isArray(savesRes.items) ? savesRes.items : []
-            setSavedItems(dbItems)
-            setAllActivities(activities)
-            setAllEvents(events)
-            setAllWalks(walks)
+        // Single call — API returns full mapped data, no need to fetch all
+        Promise.all([
+            fetch('/api/account/saves').then(r => r.json()),
+            fetch('/api/auth/me').then(r => r.json()),
+        ]).then(([savesJson, meJson]) => {
+            if (meJson.user?.name) setUserName(meJson.user.name)
+            const resolved = (savesJson.items ?? []).filter((i: any) => i.data !== null) as ResolvedItem[]
+            setItems(resolved)
             setLoading(false)
-        }
-        load()
+        }).catch(() => setLoading(false))
     }, [])
-
-    // Resolve saved items to full card data
-    const resolved: ResolvedItem[] = savedItems
-        .map(item => {
-            if (item.type === 'activity') {
-                const data = allActivities.find(a => a.slug === item.slug && a.cityId === item.citySlug)
-                if (!data) return null
-                return { type: 'activity' as const, data, savedItem: item }
-            }
-            if (item.type === 'walk') {
-                const data = allWalks.find(w => w.slug === item.slug && w.cityId === item.citySlug)
-                if (!data) return null
-                return { type: 'walk' as const, data, savedItem: item }
-            }
-            const data = allEvents.find(e => e.slug === item.slug && e.cityId === item.citySlug)
-            if (!data) return null
-            return { type: 'event' as const, data, savedItem: item }
-        })
-        .filter(Boolean) as ResolvedItem[]
 
     if (loading) {
         return (
@@ -100,7 +69,7 @@ export default function AccountSavedPage() {
                         My Saved
                     </h1>
                     <p style={{ fontSize: 14, color: 'var(--text-3)' }}>
-                        {user?.name ? `${user.name}'s collection · ` : ''}{savedItems.length} {savedItems.length === 1 ? 'item' : 'items'} saved
+                        {userName ? `${userName}'s collection · ` : ''}{items.length} {items.length === 1 ? 'item' : 'items'}
                     </p>
                 </div>
 
@@ -123,7 +92,7 @@ export default function AccountSavedPage() {
                 </div>
 
                 {/* Empty state */}
-                {savedItems.length === 0 && (
+                {items.length === 0 && (
                     <div style={{
                         border: '1px solid var(--border)', borderRadius: 'var(--radius)',
                         background: 'var(--bg-card)', padding: '48px 24px', textAlign: 'center',
@@ -143,10 +112,10 @@ export default function AccountSavedPage() {
                     </div>
                 )}
 
-                {/* Card grid — same layout as /saved */}
-                {resolved.length > 0 && (
+                {/* Card grid — identical design to /saved page */}
+                {items.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
-                        {resolved.map(item => (
+                        {items.map(item => (
                             <div key={`${item.type}-${item.data.slug}`} style={{ display: 'flex', flexDirection: 'column' }}>
                                 {item.type === 'activity' ? (
                                     <ActivityCard activity={item.data} citySlug={item.savedItem.citySlug} />
@@ -163,14 +132,12 @@ export default function AccountSavedPage() {
                                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                                         width: '100%', padding: '11px 16px', marginTop: 8,
                                         background: 'transparent',
-                                        border: '1.5px solid rgba(255,107,0,0.35)',
-                                        borderRadius: 12,
+                                        border: '1.5px solid rgba(255,107,0,0.35)', borderRadius: 12,
                                         color: 'var(--accent)', fontSize: 13, fontWeight: 700,
                                         cursor: 'pointer', transition: 'all 0.2s ease',
-                                        letterSpacing: '-0.01em',
                                     }}
-                                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,107,0,0.08)'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,107,0,0.55)' }}
-                                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,107,0,0.35)' }}
+                                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,107,0,0.08)' }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                                 >
                                     <CalendarPlus size={14} />
                                     Add to Plan
@@ -178,13 +145,6 @@ export default function AccountSavedPage() {
                             </div>
                         ))}
                     </div>
-                )}
-
-                {/* Items with no matching card data (slug not found) */}
-                {resolved.length < savedItems.length && (
-                    <p style={{ marginTop: 20, fontSize: 13, color: 'var(--text-3)' }}>
-                        {savedItems.length - resolved.length} saved item(s) could not be displayed — they may have been removed.
-                    </p>
                 )}
             </div>
 

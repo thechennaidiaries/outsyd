@@ -19,7 +19,7 @@ export async function GET() {
     }
 
     const { data: user } = await supabase
-        .from('users')
+        .from('outsyd_users')
         .select('id, phone_number, name, created_at')
         .eq('id', session.userId)
         .single()

@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     // ── 7. Upsert user ───────────────────────────────────────────────────────
     // Check if user already exists
     const { data: existingUser } = await supabase
-        .from('users')
+        .from('outsyd_users')
         .select('id, phone_number, name')
         .eq('phone_number', phone)
         .single()
@@ -96,14 +96,14 @@ export async function POST(req: NextRequest) {
         // Update name if provided and not yet set
         if (name && !existingUser.name) {
             await supabase
-                .from('users')
+                .from('outsyd_users')
                 .update({ name, updated_at: new Date().toISOString() })
                 .eq('id', existingUser.id)
         }
     } else {
         // Create new user
         const { data: newUser, error: createError } = await supabase
-            .from('users')
+            .from('outsyd_users')
             .insert({ phone_number: phone, name: name ?? null })
             .select('id, name')
             .single()

@@ -10,6 +10,28 @@ import {
   type SavedItem,
 } from '@/lib/saved-items'
 
+// ── Background DB sync helpers ─────────────────────────────────────────────────
+// Fire-and-forget. If user has a session cookie the API saves to DB.
+// If not logged in (401), silently ignored — item stays in localStorage.
+
+function syncSaveToDb(item: SavedItem) {
+  fetch('/api/account/save-item', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(item),
+  }).catch(() => {})
+}
+
+function syncRemoveFromDb(item: SavedItem) {
+  fetch('/api/account/save-item', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(item),
+  }).catch(() => {})
+}
+
+// ── Hook ──────────────────────────────────────────────────────────────────────
+
 export function useSavedItems() {
   const [savedItems, setSavedItems] = useState<SavedItem[]>([])
 
@@ -35,13 +57,19 @@ export function useSavedItems() {
   }, [])
 
   function saveItem(item: SavedItem) {
+    // 1. Optimistic localStorage update — instant UI, no flicker
     const nextSavedItems = saveStoredItem(item)
     setSavedItems(nextSavedItems)
+    // 2. Background DB sync — saves to DB if logged in, silently ignored if not
+    syncSaveToDb(item)
   }
 
   function removeItem(item: SavedItem) {
+    // 1. Optimistic localStorage update — instant UI, no flicker
     const nextSavedItems = removeStoredItem(item)
     setSavedItems(nextSavedItems)
+    // 2. Background DB sync — removes from DB if logged in, silently ignored if not
+    syncRemoveFromDb(item)
   }
 
   function isSaved(item: SavedItem) {

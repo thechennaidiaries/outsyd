@@ -62,15 +62,34 @@ export default async function SavedPage() {
 
             {/* Header */}
             <div style={{ marginBottom: 28 }}>
-                <Link href="/account/bookings" style={{ fontSize: 13, color: 'var(--text-3)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 20 }}>
-                    ← My Bookings
+                <Link href="/" style={{ fontSize: 13, color: 'var(--text-3)', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 20 }}>
+                    ← Back to Outsyd
                 </Link>
                 <h1 style={{ fontSize: 24, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.03em', marginBottom: 4 }}>
-                    Saved
+                    My Account
                 </h1>
                 <p style={{ fontSize: 13, color: 'var(--text-3)' }}>
                     {parsed.length} {parsed.length === 1 ? 'item' : 'items'} saved
                 </p>
+            </div>
+
+            {/* Tab nav */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+                {[
+                    { label: '📋 Bookings', href: '/account/bookings', active: false },
+                    { label: '❤️ Saved',   href: '/account/saved',    active: true  },
+                    { label: '⚙️ Settings', href: '/account/settings', active: false },
+                ].map(tab => (
+                    <Link key={tab.href} href={tab.href} style={{
+                        padding: '8px 16px', borderRadius: 20, fontSize: 13, fontWeight: 600,
+                        textDecoration: 'none',
+                        background: tab.active ? 'var(--accent)' : 'var(--bg-card)',
+                        color: tab.active ? '#000' : 'var(--text-3)',
+                        border: `1px solid ${tab.active ? 'var(--accent)' : 'var(--border)'}`,
+                    }}>
+                        {tab.label}
+                    </Link>
+                ))}
             </div>
 
             {/* Empty state */}

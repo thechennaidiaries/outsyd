@@ -64,8 +64,9 @@ export default async function BookingsPage() {
             {/* Tab nav */}
             <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
                 {[
-                    { label: '📋 Bookings', href: '/account/bookings', active: true },
+                    { label: '📋 Bookings', href: '/account/bookings', active: true  },
                     { label: '❤️ Saved',   href: '/account/saved',    active: false },
+                    { label: '⚙️ Settings', href: '/account/settings', active: false },
                 ].map(tab => (
                     <Link key={tab.href} href={tab.href} style={{
                         padding: '8px 16px', borderRadius: 20, fontSize: 13, fontWeight: 600,

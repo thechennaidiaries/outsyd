@@ -54,11 +54,29 @@ export default async function BookingsPage() {
                     ← Back to Outsyd
                 </Link>
                 <h1 style={{ fontSize: 24, fontWeight: 900, color: 'var(--text)', letterSpacing: '-0.03em', marginBottom: 4 }}>
-                    My Bookings
+                    My Account
                 </h1>
                 <p style={{ fontSize: 13, color: 'var(--text-3)' }}>
-                    {session.name ? `Hi ${session.name} · ` : ''}{session.phone}
+                    {session.name ? `${session.name} · ` : ''}{session.phone}
                 </p>
+            </div>
+
+            {/* Tab nav */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+                {[
+                    { label: '📋 Bookings', href: '/account/bookings', active: true },
+                    { label: '❤️ Saved',   href: '/account/saved',    active: false },
+                ].map(tab => (
+                    <Link key={tab.href} href={tab.href} style={{
+                        padding: '8px 16px', borderRadius: 20, fontSize: 13, fontWeight: 600,
+                        textDecoration: 'none',
+                        background: tab.active ? 'var(--accent)' : 'var(--bg-card)',
+                        color: tab.active ? '#000' : 'var(--text-3)',
+                        border: `1px solid ${tab.active ? 'var(--accent)' : 'var(--border)'}`,
+                    }}>
+                        {tab.label}
+                    </Link>
+                ))}
             </div>
 
             {/* Empty state */}

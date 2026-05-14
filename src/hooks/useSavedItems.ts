@@ -36,7 +36,34 @@ export function useSavedItems() {
   const [savedItems, setSavedItems] = useState<SavedItem[]>([])
 
   useEffect(() => {
-    setSavedItems(getSavedItems())
+    // 1. Load localStorage immediately — instant UI on same device
+    const localItems = getSavedItems()
+    setSavedItems(localItems)
+
+    // 2. Fetch from DB in background — hydrates new devices + catches any drift
+    fetch('/api/account/saves')
+      .then(r => r.json())
+      .then(({ items: dbItems }: { items: SavedItem[] }) => {
+        if (!Array.isArray(dbItems) || dbItems.length === 0) return
+
+        // Merge: DB items are source of truth, keep any local-only items too
+        const localSet = new Set(localItems.map(i => `${i.type}:${i.citySlug}:${i.slug}`))
+        const merged = [...localItems]
+
+        for (const dbItem of dbItems) {
+          const key = `${dbItem.type}:${dbItem.citySlug}:${dbItem.slug}`
+          if (!localSet.has(key)) {
+            merged.push(dbItem)
+          }
+        }
+
+        // Write merged back to localStorage so it stays in sync
+        if (merged.length !== localItems.length) {
+          window.localStorage.setItem('saved-items', JSON.stringify(merged))
+          setSavedItems(merged)
+        }
+      })
+      .catch(() => {}) // silently ignore — not logged in or network error
 
     function syncSavedItems() {
       setSavedItems(getSavedItems())

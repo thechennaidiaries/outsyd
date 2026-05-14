@@ -13,6 +13,7 @@ export default function Navbar() {
     const [scrolledPast30, setScrolledPast30] = useState(false)
     const [savedBannerLabel, setSavedBannerLabel] = useState<string | null>(null)
     const [isWeekend, setIsWeekend] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
 
     // Determine if it's a weekend day (Fri/Sat/Sun) in IST
     useEffect(() => {
@@ -27,6 +28,14 @@ export default function Navbar() {
 
     useEffect(() => {
         fetchCities().then(setCities)
+    }, [])
+
+    // Check if user is logged in — determines where saved items link goes
+    useEffect(() => {
+        fetch('/api/auth/me')
+            .then(r => r.json())
+            .then(({ user }) => setIsLoggedIn(!!user))
+            .catch(() => {})
     }, [])
 
     // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai").
@@ -80,13 +89,13 @@ export default function Navbar() {
         }
     }, [])
 
-    const homeHref = '/'
-    const eventsHref = `/${citySlug}/events`
+    const homeHref       = '/'
+    const eventsHref     = `/${citySlug}/events`
     const activitiesHref = `/${citySlug}/activities`
-    const dynamicHref = isWeekend ? eventsHref : activitiesHref
-    const surpriseHref = `/${citySlug}/surprise`
-    const savedHref = '/saved'
-    const planHref = `/${citySlug}/plan`
+    const dynamicHref    = isWeekend ? eventsHref : activitiesHref
+    const surpriseHref   = `/${citySlug}/surprise`
+    const savedHref      = isLoggedIn ? '/account/saved' : '/saved'
+    const planHref       = `/${citySlug}/plan`
 
     const isHomeActive = pathname === homeHref || pathname.startsWith(homeHref + '/')
     const isEventsActive = pathname === eventsHref || pathname.startsWith(eventsHref + '/')

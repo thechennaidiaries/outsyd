@@ -1,20 +1,25 @@
 'use client'
 
 /**
- * /account/saved — Fast version.
- * Single API call to /api/account/saves which returns full card data.
- * No more loading all activities/events/walks client-side.
+ * /account/saved — Optimistic fast loading version.
+ *
+ * Strategy:
+ * 1. Read localStorage immediately (zero wait) → show skeleton placeholders
+ * 2. Fetch /api/account/saves in background → swap in real cards when ready
+ *
+ * This makes the page feel as fast as /saved while still showing DB data.
  */
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Loader2, Bookmark, CalendarPlus } from 'lucide-react'
+import { Bookmark, CalendarPlus } from 'lucide-react'
 import ActivityCard from '@/components/ActivityCard'
 import EventCard from '@/components/EventCard'
 import WalkCard from '@/components/WalkCard'
 import type { Activity } from '@/data/activities'
 import type { Event } from '@/data/events'
 import type { Walk } from '@/data/walks'
+import { getSavedItems } from '@/lib/saved-items'
 
 const TAB_NAV = [
     { label: '📋 Bookings', href: '/account/bookings' },
@@ -29,32 +34,61 @@ type ResolvedItem =
     | { type: 'walk';     data: Walk;     savedItem: SavedItem }
     | { type: 'event';    data: Event;    savedItem: SavedItem }
 
+// ── Skeleton card ──────────────────────────────────────────────────────────────
+
+function SkeletonCard() {
+    return (
+        <div style={{
+            borderRadius: 'var(--radius)', overflow: 'hidden',
+            background: 'var(--bg-card)', border: '1px solid var(--border)',
+            animation: 'pulse 1.5s ease-in-out infinite',
+        }}>
+            <div style={{ height: 200, background: 'var(--bg-elevated)' }} />
+            <div style={{ padding: '14px 16px' }}>
+                <div style={{ height: 12, width: '60%', background: 'var(--bg-elevated)', borderRadius: 6, marginBottom: 10 }} />
+                <div style={{ height: 18, width: '85%', background: 'var(--bg-elevated)', borderRadius: 6, marginBottom: 8 }} />
+                <div style={{ height: 12, width: '40%', background: 'var(--bg-elevated)', borderRadius: 6 }} />
+            </div>
+        </div>
+    )
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
 export default function AccountSavedPage() {
-    const [items, setItems]     = useState<ResolvedItem[]>([])
-    const [loading, setLoading] = useState(true)
+    // Step 1: Read localStorage immediately — zero wait
+    const [localItems, setLocalItems] = useState<SavedItem[]>([])
+    const [resolvedItems, setResolvedItems] = useState<ResolvedItem[] | null>(null) // null = loading
     const [userName, setUserName] = useState('')
 
     useEffect(() => {
-        // Single call — API returns full mapped data, no need to fetch all
+        // Immediately show count from localStorage
+        const local = getSavedItems()
+        setLocalItems(local)
+
+        // Fetch full data from API in background
         Promise.all([
             fetch('/api/account/saves').then(r => r.json()),
             fetch('/api/auth/me').then(r => r.json()),
         ]).then(([savesJson, meJson]) => {
             if (meJson.user?.name) setUserName(meJson.user.name)
             const resolved = (savesJson.items ?? []).filter((i: any) => i.data !== null) as ResolvedItem[]
-            setItems(resolved)
-            setLoading(false)
-        }).catch(() => setLoading(false))
+            setResolvedItems(resolved)
+            // If DB has more items than localStorage (e.g. new device), update local count too
+            if (resolved.length > local.length) {
+                setLocalItems(resolved.map(r => r.savedItem))
+            }
+        }).catch(() => {
+            setResolvedItems([]) // show empty state on error
+        })
     }, [])
 
-    if (loading) {
-        return (
-            <main style={{ minHeight: '100vh', background: 'var(--bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Loader2 size={28} style={{ color: 'var(--accent)', animation: 'spin 1s linear infinite' }} />
-                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-            </main>
-        )
-    }
+    // How many skeletons to show while loading
+    const skeletonCount = localItems.length
+    const isLoading = resolvedItems === null
+
+    // Display count: use DB count if loaded, else localStorage count
+    const displayCount = resolvedItems !== null ? resolvedItems.length : localItems.length
 
     return (
         <main style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 100 }}>
@@ -69,7 +103,7 @@ export default function AccountSavedPage() {
                         My Saved
                     </h1>
                     <p style={{ fontSize: 14, color: 'var(--text-3)' }}>
-                        {userName ? `${userName}'s collection · ` : ''}{items.length} {items.length === 1 ? 'item' : 'items'}
+                        {userName ? `${userName}'s collection · ` : ''}{displayCount} {displayCount === 1 ? 'item' : 'items'}
                     </p>
                 </div>
 
@@ -91,8 +125,17 @@ export default function AccountSavedPage() {
                     })}
                 </div>
 
-                {/* Empty state */}
-                {items.length === 0 && (
+                {/* Skeleton grid — shows immediately using localStorage count */}
+                {isLoading && skeletonCount > 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
+                        {Array.from({ length: skeletonCount }).map((_, i) => (
+                            <SkeletonCard key={i} />
+                        ))}
+                    </div>
+                )}
+
+                {/* Empty state — only show once loaded and truly empty */}
+                {!isLoading && resolvedItems.length === 0 && (
                     <div style={{
                         border: '1px solid var(--border)', borderRadius: 'var(--radius)',
                         background: 'var(--bg-card)', padding: '48px 24px', textAlign: 'center',
@@ -112,10 +155,10 @@ export default function AccountSavedPage() {
                     </div>
                 )}
 
-                {/* Card grid — identical design to /saved page */}
-                {items.length > 0 && (
+                {/* Real card grid — swaps in when API responds */}
+                {!isLoading && resolvedItems.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
-                        {items.map(item => (
+                        {resolvedItems.map(item => (
                             <div key={`${item.type}-${item.data.slug}`} style={{ display: 'flex', flexDirection: 'column' }}>
                                 {item.type === 'activity' ? (
                                     <ActivityCard activity={item.data} citySlug={item.savedItem.citySlug} />
@@ -146,9 +189,21 @@ export default function AccountSavedPage() {
                         ))}
                     </div>
                 )}
+
+                {/* Empty localStorage but loading (new device) — generic skeleton */}
+                {isLoading && skeletonCount === 0 && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
+                        {[0, 1, 2].map(i => <SkeletonCard key={i} />)}
+                    </div>
+                )}
             </div>
 
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <style>{`
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.5; }
+                }
+            `}</style>
         </main>
     )
 }

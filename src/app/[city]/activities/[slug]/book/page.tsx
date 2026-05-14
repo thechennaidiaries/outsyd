@@ -15,6 +15,7 @@ import { ArrowLeft, Calendar, Clock, Users, Phone, User, Mail, CheckCircle, Aler
 import BookingCalendar from '@/components/BookingCalendar'
 import { supabaseClient } from '@/lib/supabase-client'
 import { getSavedItems, SAVED_ITEMS_KEY } from '@/lib/saved-items'
+import { markLoggedIn } from '@/lib/auth-client'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -105,6 +106,7 @@ export default function BookingPage() {
                     // Pre-fill name and phone from session
                     if (user.name) setCustomerName(user.name)
                     if (user.phone_number) setCustomerPhone(user.phone_number)
+                    markLoggedIn() // ensure flag is set
                 }
             })
             .catch(() => {}) // silently ignore — user just won't be pre-filled
@@ -225,6 +227,7 @@ export default function BookingPage() {
             }
 
             const verifiedUserId: string = verifyJson.userId
+            markLoggedIn() // set localStorage flag so Navbar knows instantly
 
             // 2b. Merge anonymous localStorage saves into account (fire-and-forget)
             const localSaves = getSavedItems()

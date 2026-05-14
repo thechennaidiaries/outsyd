@@ -6,6 +6,7 @@ import { Rocket, CalendarDays, Calendar, Compass, Bookmark } from 'lucide-react'
 import { fetchCities } from '@/lib/supabase-data'
 import type { City } from '@/data/cities'
 import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
+import { isClientLoggedIn } from '@/lib/auth-client'
 
 export default function Navbar() {
     const pathname = usePathname()
@@ -13,7 +14,7 @@ export default function Navbar() {
     const [scrolledPast30, setScrolledPast30] = useState(false)
     const [savedBannerLabel, setSavedBannerLabel] = useState<string | null>(null)
     const [isWeekend, setIsWeekend] = useState(false)
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState(() => isClientLoggedIn())
 
     // Determine if it's a weekend day (Fri/Sat/Sun) in IST
     useEffect(() => {
@@ -28,14 +29,8 @@ export default function Navbar() {
 
     useEffect(() => {
         fetchCities().then(setCities)
-    }, [])
-
-    // Check if user is logged in — determines where saved items link goes
-    useEffect(() => {
-        fetch('/api/auth/me')
-            .then(r => r.json())
-            .then(({ user }) => setIsLoggedIn(!!user))
-            .catch(() => {})
+        // Re-sync on mount in case session expired
+        setIsLoggedIn(isClientLoggedIn())
     }, [])
 
     // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai").

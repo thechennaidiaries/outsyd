@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2, Check, LogOut, Phone, User } from 'lucide-react'
+import { markLoggedOut } from '@/lib/auth-client'
 
 interface UserData {
     id: string
@@ -73,6 +74,7 @@ export default function SettingsPage() {
 
     async function handleLogout() {
         setLoggingOut(true)
+        markLoggedOut() // clear flag immediately — Navbar updates before redirect
         await fetch('/api/auth/logout', { method: 'POST' })
         router.replace('/')
     }

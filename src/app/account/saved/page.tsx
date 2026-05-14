@@ -1,25 +1,55 @@
-'use client'
-
 /**
- * /account/saved — Optimistic fast loading version.
- *
- * Strategy:
- * 1. Read localStorage immediately (zero wait) → show skeleton placeholders
- * 2. Fetch /api/account/saves in background → swap in real cards when ready
- *
- * This makes the page feel as fast as /saved while still showing DB data.
+ * /account/saved — Server component (same pattern as /account/bookings).
+ * Supabase queries run on the server before HTML is sent to the browser.
+ * Zero client-side loading waterfall.
  */
 
-import { useState, useEffect } from 'react'
+import { getSession } from '@/lib/session'
+import { supabase } from '@/lib/supabase'
+import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Bookmark, CalendarPlus } from 'lucide-react'
 import ActivityCard from '@/components/ActivityCard'
 import EventCard from '@/components/EventCard'
 import WalkCard from '@/components/WalkCard'
 import type { Activity } from '@/data/activities'
 import type { Event } from '@/data/events'
 import type { Walk } from '@/data/walks'
-import { getSavedItems } from '@/lib/saved-items'
+
+// ── Field mappers (mirror of supabase-data.ts private fns) ────────────────────
+
+function mapActivity(r: any): Activity {
+    return {
+        id: r.id, slug: r.slug, title: r.title, description: r.description,
+        location: r.location, area: r.area, image: r.image,
+        locationLink: r.location_link, address: r.address, timings: r.timings,
+        tags: r.tags || [], bookingLink: r.booking_link,
+        bookingEnabled: r.booking_enabled ?? false,
+        pricingType: r.pricing_type, pricing: r.pricing,
+        cityId: r.city_id, placeId: r.place_id, addedDate: r.added_date,
+    }
+}
+function mapEvent(r: any): Event {
+    return {
+        id: r.id, slug: r.slug, title: r.title, description: r.description,
+        cityId: r.city_id, venue: r.venue, address: r.address,
+        mapsLink: r.maps_link, bookingLink: r.booking_link, image: r.image,
+        date: r.date, time: r.time, categories: r.categories || [],
+        pricingType: r.pricing_type, pricing: r.pricing, status: r.status,
+    }
+}
+function mapWalk(r: any): Walk {
+    return {
+        id: r.id, slug: r.slug, title: r.title, cityId: r.city_id,
+        area: r.area, image: r.image, mapsLink: r.maps_link,
+        places: r.places || [],
+    }
+}
+
+type ParsedSave = { type: string; citySlug: string; slug: string }
+type ResolvedItem =
+    | { type: 'activity'; data: Activity; savedItem: ParsedSave }
+    | { type: 'walk';     data: Walk;     savedItem: ParsedSave }
+    | { type: 'event';    data: Event;    savedItem: ParsedSave }
 
 const TAB_NAV = [
     { label: '📋 Bookings', href: '/account/bookings' },
@@ -27,68 +57,58 @@ const TAB_NAV = [
     { label: '⚙️ Settings', href: '/account/settings' },
 ]
 
-type SavedItem = { type: string; citySlug: string; slug: string }
-
-type ResolvedItem =
-    | { type: 'activity'; data: Activity; savedItem: SavedItem }
-    | { type: 'walk';     data: Walk;     savedItem: SavedItem }
-    | { type: 'event';    data: Event;    savedItem: SavedItem }
-
-// ── Skeleton card ──────────────────────────────────────────────────────────────
-
-function SkeletonCard() {
-    return (
-        <div style={{
-            borderRadius: 'var(--radius)', overflow: 'hidden',
-            background: 'var(--bg-card)', border: '1px solid var(--border)',
-            animation: 'pulse 1.5s ease-in-out infinite',
-        }}>
-            <div style={{ height: 200, background: 'var(--bg-elevated)' }} />
-            <div style={{ padding: '14px 16px' }}>
-                <div style={{ height: 12, width: '60%', background: 'var(--bg-elevated)', borderRadius: 6, marginBottom: 10 }} />
-                <div style={{ height: 18, width: '85%', background: 'var(--bg-elevated)', borderRadius: 6, marginBottom: 8 }} />
-                <div style={{ height: 12, width: '40%', background: 'var(--bg-elevated)', borderRadius: 6 }} />
-            </div>
-        </div>
-    )
-}
-
 // ── Page ──────────────────────────────────────────────────────────────────────
 
-export default function AccountSavedPage() {
-    // Step 1: Read localStorage immediately — zero wait
-    const [localItems, setLocalItems] = useState<SavedItem[]>([])
-    const [resolvedItems, setResolvedItems] = useState<ResolvedItem[] | null>(null) // null = loading
-    const [userName, setUserName] = useState('')
+export default async function SavedPage() {
+    const session = await getSession()
+    if (!session) redirect('/')
 
-    useEffect(() => {
-        // Immediately show count from localStorage
-        const local = getSavedItems()
-        setLocalItems(local)
+    // 1. Fetch saved activity_ids
+    const { data: savedRows } = await supabase
+        .from('saved_activities')
+        .select('activity_id')
+        .eq('user_id', session.userId)
+        .order('created_at', { ascending: false })
 
-        // Fetch full data from API in background
-        Promise.all([
-            fetch('/api/account/saves').then(r => r.json()),
-            fetch('/api/auth/me').then(r => r.json()),
-        ]).then(([savesJson, meJson]) => {
-            if (meJson.user?.name) setUserName(meJson.user.name)
-            const resolved = (savesJson.items ?? []).filter((i: any) => i.data !== null) as ResolvedItem[]
-            setResolvedItems(resolved)
-            // If DB has more items than localStorage (e.g. new device), update local count too
-            if (resolved.length > local.length) {
-                setLocalItems(resolved.map(r => r.savedItem))
-            }
-        }).catch(() => {
-            setResolvedItems([]) // show empty state on error
+    const parsed: ParsedSave[] = (savedRows ?? [])
+        .map(row => {
+            const parts = row.activity_id.split(':')
+            if (parts.length !== 3) return null
+            const [type, citySlug, slug] = parts
+            return { type, citySlug, slug }
         })
-    }, [])
+        .filter(Boolean) as ParsedSave[]
 
-    // How many skeletons to show while loading
-    const skeletonCount = localItems.length
-    const isLoading = resolvedItems === null
+    // 2. Batch fetch only the needed slugs — parallel queries
+    const activitySlugs = parsed.filter(p => p.type === 'activity').map(p => p.slug)
+    const eventSlugs    = parsed.filter(p => p.type === 'event').map(p => p.slug)
+    const walkSlugs     = parsed.filter(p => p.type === 'walk').map(p => p.slug)
 
-    // Display count: use DB count if loaded, else localStorage count
-    const displayCount = resolvedItems !== null ? resolvedItems.length : localItems.length
+    const [activitiesRes, eventsRes, walksRes] = await Promise.all([
+        activitySlugs.length > 0 ? supabase.from('activities').select('*').in('slug', activitySlugs) : { data: [] },
+        eventSlugs.length    > 0 ? supabase.from('events').select('*').in('slug', eventSlugs)       : { data: [] },
+        walkSlugs.length     > 0 ? supabase.from('walks').select('*').in('slug', walkSlugs)         : { data: [] },
+    ])
+
+    const activitiesMap = new Map((activitiesRes.data ?? []).map((r: any) => [r.slug, mapActivity(r)]))
+    const eventsMap     = new Map((eventsRes.data    ?? []).map((r: any) => [r.slug, mapEvent(r)]))
+    const walksMap      = new Map((walksRes.data     ?? []).map((r: any) => [r.slug, mapWalk(r)]))
+
+    // 3. Resolve to typed items (filter out any missing)
+    const items: ResolvedItem[] = parsed
+        .map(p => {
+            if (p.type === 'activity') {
+                const data = activitiesMap.get(p.slug)
+                return data ? { type: 'activity' as const, data, savedItem: p } : null
+            }
+            if (p.type === 'event') {
+                const data = eventsMap.get(p.slug)
+                return data ? { type: 'event' as const, data, savedItem: p } : null
+            }
+            const data = walksMap.get(p.slug)
+            return data ? { type: 'walk' as const, data, savedItem: p } : null
+        })
+        .filter(Boolean) as ResolvedItem[]
 
     return (
         <main style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 100 }}>
@@ -103,7 +123,7 @@ export default function AccountSavedPage() {
                         My Saved
                     </h1>
                     <p style={{ fontSize: 14, color: 'var(--text-3)' }}>
-                        {userName ? `${userName}'s collection · ` : ''}{displayCount} {displayCount === 1 ? 'item' : 'items'}
+                        {session.name ? `${session.name}'s collection · ` : ''}{items.length} {items.length === 1 ? 'item' : 'items'}
                     </p>
                 </div>
 
@@ -125,22 +145,13 @@ export default function AccountSavedPage() {
                     })}
                 </div>
 
-                {/* Skeleton grid — shows immediately using localStorage count */}
-                {isLoading && skeletonCount > 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
-                        {Array.from({ length: skeletonCount }).map((_, i) => (
-                            <SkeletonCard key={i} />
-                        ))}
-                    </div>
-                )}
-
-                {/* Empty state — only show once loaded and truly empty */}
-                {!isLoading && resolvedItems.length === 0 && (
+                {/* Empty state */}
+                {items.length === 0 && (
                     <div style={{
                         border: '1px solid var(--border)', borderRadius: 'var(--radius)',
                         background: 'var(--bg-card)', padding: '48px 24px', textAlign: 'center',
                     }}>
-                        <Bookmark size={28} style={{ margin: '0 auto 14px', color: 'var(--accent)' }} />
+                        <div style={{ fontSize: 36, marginBottom: 14 }}>🤍</div>
                         <p style={{ margin: 0, color: 'var(--text)', fontWeight: 700 }}>Nothing saved yet</p>
                         <p style={{ margin: '8px 0 24px', color: 'var(--text-3)', fontSize: 14 }}>
                             Tap Save on any activity, event, or walk and it will appear here.
@@ -155,10 +166,10 @@ export default function AccountSavedPage() {
                     </div>
                 )}
 
-                {/* Real card grid — swaps in when API responds */}
-                {!isLoading && resolvedItems.length > 0 && (
+                {/* Card grid — client card components render fine from server pages */}
+                {items.length > 0 && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
-                        {resolvedItems.map(item => (
+                        {items.map(item => (
                             <div key={`${item.type}-${item.data.slug}`} style={{ display: 'flex', flexDirection: 'column' }}>
                                 {item.type === 'activity' ? (
                                     <ActivityCard activity={item.data} citySlug={item.savedItem.citySlug} />
@@ -167,43 +178,29 @@ export default function AccountSavedPage() {
                                 ) : (
                                     <EventCard event={item.data} citySlug={item.savedItem.citySlug} />
                                 )}
-                                <button
-                                    onClick={() => {
-                                        window.location.href = `/${item.savedItem.citySlug}/plan?add=${item.type}:${item.data.slug}`
-                                    }}
+                                <Link
+                                    href={`/${item.savedItem.citySlug}/plan?add=${item.type}:${item.data.slug}`}
                                     style={{
                                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                                         width: '100%', padding: '11px 16px', marginTop: 8,
-                                        background: 'transparent',
                                         border: '1.5px solid rgba(255,107,0,0.35)', borderRadius: 12,
                                         color: 'var(--accent)', fontSize: 13, fontWeight: 700,
-                                        cursor: 'pointer', transition: 'all 0.2s ease',
+                                        textDecoration: 'none',
                                     }}
-                                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,107,0,0.08)' }}
-                                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent' }}
                                 >
-                                    <CalendarPlus size={14} />
-                                    Add to Plan
-                                </button>
+                                    📅 Add to Plan
+                                </Link>
                             </div>
                         ))}
                     </div>
                 )}
-
-                {/* Empty localStorage but loading (new device) — generic skeleton */}
-                {isLoading && skeletonCount === 0 && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4" style={{ gap: 20 }}>
-                        {[0, 1, 2].map(i => <SkeletonCard key={i} />)}
-                    </div>
-                )}
             </div>
-
-            <style>{`
-                @keyframes pulse {
-                    0%, 100% { opacity: 1; }
-                    50% { opacity: 0.5; }
-                }
-            `}</style>
         </main>
     )
+}
+
+export const dynamic = 'force-dynamic'
+
+export const metadata = {
+    title: 'Saved — Outsyd',
 }

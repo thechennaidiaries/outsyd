@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import {
   getSavedItems,
+  writeSavedItems,
   isItemSaved as checkIsItemSaved,
   removeItem as removeStoredItem,
   saveItem as saveStoredItem,
@@ -57,9 +58,10 @@ export function useSavedItems() {
           }
         }
 
-        // Write merged back to localStorage so it stays in sync
+        // Write merged back via writeSavedItems — fires SAVED_ITEMS_EVENT
+        // so ALL hook instances (every SaveItemButton) update their tick state
         if (merged.length !== localItems.length) {
-          window.localStorage.setItem('saved-items', JSON.stringify(merged))
+          writeSavedItems(merged)
           setSavedItems(merged)
         }
       })

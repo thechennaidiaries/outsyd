@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { Share2, Check, Timer, Trophy, MapPin, ArrowLeft } from 'lucide-react'
-import { getPuzzleForToday, checkAnswer, formatTime, getTodayIST, type GamePuzzle } from '@/data/game'
+import { getPuzzleForToday, checkAnswer, formatTime, getTodayIST, PUZZLES, type GamePuzzle } from '@/data/game'
 
 type GameStatus = 'playing' | 'countdown' | 'won' | 'lost'
 const STORAGE_PREFIX = 'outsyd-game-'
@@ -158,12 +158,11 @@ export default function GamePage() {
       if (i < guesses.length) return '🟥'
       return '⬛'
     }).join('')
-    const dateStr = new Date().toLocaleDateString('en-IN', {
-      day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata',
-    })
+    const puzzleIndex = PUZZLES.findIndex(p => p.id === puzzle.id)
+    const puzzleNumber = puzzleIndex >= 0 ? puzzleIndex + 1 : '?'
     const text = status === 'won'
-      ? `📍 Route Thala — ${dateStr}\nI guessed today's mystery Chennai spot in ${guessCount}/3 chances! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nCan you beat my score? Play at: routethala.in`
-      : `📍 Route Thala — ${dateStr}\n\nI couldn't crack today's mystery Chennai spot 😔 Can you?\n\n🟥🟥🟥\n\nPlay at: routethala.in`
+      ? `📍 Route Thala #${puzzleNumber}\nI guessed today's mystery Chennai spot in ${guessCount}/3 chances! ⏱️ ${formatTime(finalElapsed)}\n\n${emojis}\n\nCan you beat my score? Play at: routethala.in`
+      : `📍 Route Thala #${puzzleNumber}\n\nI couldn't crack today's mystery Chennai spot 😔 Can you?\n\n🟥🟥🟥\n\nPlay at: routethala.in`
     if (navigator.share) { try { await navigator.share({ text }) } catch { /**/ } }
     else {
       await navigator.clipboard.writeText(text)
@@ -175,11 +174,11 @@ export default function GamePage() {
   if (!ready) return null
 
   const puzzle = puzzleRef.current
+  const puzzleIndex = puzzle ? PUZZLES.findIndex(p => p.id === puzzle.id) : -1
+  const puzzleNumber = puzzleIndex >= 0 ? puzzleIndex + 1 : '?'
+  const dateDisplay = `Route Thala #${puzzleNumber}`
   const displayTime = (status === 'won' || status === 'lost') ? finalElapsed : elapsed
   const today = getTodayIST()
-  const dateDisplay = new Date(today + 'T12:00:00+05:30').toLocaleDateString('en-IN', {
-    weekday: 'long', day: 'numeric', month: 'long', timeZone: 'Asia/Kolkata',
-  })
 
   // ── No Puzzle State ───────────────────────────────────────────
   if (!puzzle) {

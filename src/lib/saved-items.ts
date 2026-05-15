@@ -106,7 +106,7 @@ function notifySavedItemAdded(item: SavedItem) {
   )
 }
 
-function writeSavedItems(savedItems: SavedItem[]) {
+export function writeSavedItems(savedItems: SavedItem[]) {
   if (!canUseLocalStorage()) return
 
   const normalized = normalizeSavedItems(savedItems)

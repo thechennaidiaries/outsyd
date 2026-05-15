@@ -6,6 +6,7 @@ import { Rocket, CalendarDays, Calendar, Compass, Bookmark } from 'lucide-react'
 import { fetchCities } from '@/lib/supabase-data'
 import type { City } from '@/data/cities'
 import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
+import { isClientLoggedIn } from '@/lib/auth-client'
 
 export default function Navbar() {
     const pathname = usePathname()
@@ -13,20 +14,22 @@ export default function Navbar() {
     const [scrolledPast30, setScrolledPast30] = useState(false)
     const [savedBannerLabel, setSavedBannerLabel] = useState<string | null>(null)
     const [isWeekend, setIsWeekend] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState(() => isClientLoggedIn())
 
     // Determine if it's a weekend day (Fri/Sat/Sun) in IST
     useEffect(() => {
-        const now = new Date()
-        // Get current day in IST (UTC+5:30)
-        const istTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000 - now.getTimezoneOffset() * 60 * 1000))
-        const dayOfWeek = istTime.getUTCDay() // 0=Sun, 1=Mon, ..., 5=Fri, 6=Sat
-        setIsWeekend(dayOfWeek === 0 || dayOfWeek === 5 || dayOfWeek === 6)
+        // Get current day name in IST
+        const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'Asia/Kolkata' }).format(new Date())
+        // Weekend is Friday, Saturday, or Sunday
+        setIsWeekend(['Friday', 'Saturday', 'Sunday'].includes(dayName))
     }, [])
 
     const [cities, setCities] = useState<City[]>([])
 
     useEffect(() => {
         fetchCities().then(setCities)
+        // Re-sync on mount in case session expired
+        setIsLoggedIn(isClientLoggedIn())
     }, [])
 
     // Extract the city slug from the current pathname (e.g. /chennai/activities → "chennai").
@@ -80,13 +83,13 @@ export default function Navbar() {
         }
     }, [])
 
-    const homeHref = '/'
-    const eventsHref = `/${citySlug}/events`
+    const homeHref       = '/'
+    const eventsHref     = `/${citySlug}/events`
     const activitiesHref = `/${citySlug}/activities`
-    const dynamicHref = isWeekend ? eventsHref : activitiesHref
-    const surpriseHref = `/${citySlug}/surprise`
-    const savedHref = '/saved'
-    const planHref = `/${citySlug}/plan`
+    const dynamicHref    = isWeekend ? eventsHref : activitiesHref
+    const surpriseHref   = `/${citySlug}/surprise`
+    const savedHref      = isLoggedIn ? '/account/saved' : '/saved'
+    const planHref       = `/${citySlug}/plan`
 
     const isHomeActive = pathname === homeHref || pathname.startsWith(homeHref + '/')
     const isEventsActive = pathname === eventsHref || pathname.startsWith(eventsHref + '/')

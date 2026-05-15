@@ -227,26 +227,51 @@ export default async function SlugPage({ params }: Props) {
                         text={`Check out ${activity.location} on TBOC ${city.name}`} 
                         label="Share with Friends"
                     />
-                    <a
-                        href={activity.bookingLink || activity.locationLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                            width: '100%', padding: '18px 24px',
-                            borderRadius: 'var(--radius)',
-                            background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
-                            color: 'white', fontSize: 16, fontWeight: 700,
-                            textDecoration: 'none',
-                            boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
-                            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)', 
-                            letterSpacing: '-0.01em',
-                        }}
-                        className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
-                    >
-                        <Navigation size={18} fill="white" />
-                        {activity.bookingLink ? 'Book a Slot' : 'Take me to Maps'}
-                    </a>
+
+                    {/* ── Book a Slot (Outsyd booking system) ── */}
+                    {activity.bookingEnabled && activity.slug && (
+                        <Link
+                            href={`/${city.id}/activities/${activity.slug}/book`}
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                width: '100%', padding: '18px 24px',
+                                borderRadius: 'var(--radius)',
+                                background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
+                                color: 'white', fontSize: 16, fontWeight: 700,
+                                textDecoration: 'none',
+                                boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
+                                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                letterSpacing: '-0.01em',
+                            }}
+                            className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
+                        >
+                            📅 Book a Slot
+                        </Link>
+                    )}
+
+                    {/* ── External booking / maps (fallback) ── */}
+                    {!activity.bookingEnabled && (activity.bookingLink || activity.locationLink) && (
+                        <a
+                            href={activity.bookingLink || activity.locationLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                width: '100%', padding: '18px 24px',
+                                borderRadius: 'var(--radius)',
+                                background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
+                                color: 'white', fontSize: 16, fontWeight: 700,
+                                textDecoration: 'none',
+                                boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
+                                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                letterSpacing: '-0.01em',
+                            }}
+                            className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
+                        >
+                            <Navigation size={18} fill="white" />
+                            {activity.bookingLink ? 'Book a Slot' : 'Take me to Maps'}
+                        </a>
+                    )}
                 </div>
             </div>
 

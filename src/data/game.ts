@@ -100,9 +100,9 @@ export const PUZZLES: GamePuzzle[] = [
     area: 'Mylapore',
     placeType: 'Temple',
     images: [
-      'https://ik.imagekit.io/zxnq8x4yz/kapaleeswartemple1.png?updatedAt=1778568483876',
       'https://ik.imagekit.io/zxnq8x4yz/kapaleeswarartemple2.png?updatedAt=1778568484990',
       'https://ik.imagekit.io/zxnq8x4yz/kapaleeswarar%20temple3.png?updatedAt=1778568484107',
+      'https://ik.imagekit.io/zxnq8x4yz/temple3.png',
     ],
     acceptedPatterns: [
       'kapale[ei]?s[h]?warar',

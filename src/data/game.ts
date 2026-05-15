@@ -174,7 +174,7 @@ export const PUZZLES: GamePuzzle[] = [
   },
   {
     id: 'game-008',
-    date: '2026-05-16',
+    date: '2026-05-15',
     location: 'Pondy Bazaar',
     area: 'T Nagar',
     placeType: 'Area',
@@ -194,7 +194,7 @@ export const PUZZLES: GamePuzzle[] = [
   },
   {
     id: 'game-009',
-    date: '2026-05-15',
+    date: '2026-05-16',
     location: 'Kapaleeshwarar Temple',
     area: 'Mylapore',
     placeType: 'Temple',

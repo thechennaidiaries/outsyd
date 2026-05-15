@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import {
   getSavedItems,
+  writeSavedItems,
   isItemSaved as checkIsItemSaved,
   removeItem as removeStoredItem,
   saveItem as saveStoredItem,
@@ -10,11 +11,61 @@ import {
   type SavedItem,
 } from '@/lib/saved-items'
 
+// ── Background DB sync helpers ─────────────────────────────────────────────────
+// Fire-and-forget. If user has a session cookie the API saves to DB.
+// If not logged in (401), silently ignored — item stays in localStorage.
+
+function syncSaveToDb(item: SavedItem) {
+  fetch('/api/account/save-item', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(item),
+  }).catch(() => {})
+}
+
+function syncRemoveFromDb(item: SavedItem) {
+  fetch('/api/account/save-item', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(item),
+  }).catch(() => {})
+}
+
+// ── Hook ──────────────────────────────────────────────────────────────────────
+
 export function useSavedItems() {
   const [savedItems, setSavedItems] = useState<SavedItem[]>([])
 
   useEffect(() => {
-    setSavedItems(getSavedItems())
+    // 1. Load localStorage immediately — instant UI on same device
+    const localItems = getSavedItems()
+    setSavedItems(localItems)
+
+    // 2. Fetch from DB in background — hydrates new devices + catches any drift
+    fetch('/api/account/saves')
+      .then(r => r.json())
+      .then(({ items: dbItems }: { items: SavedItem[] }) => {
+        if (!Array.isArray(dbItems) || dbItems.length === 0) return
+
+        // Merge: DB items are source of truth, keep any local-only items too
+        const localSet = new Set(localItems.map(i => `${i.type}:${i.citySlug}:${i.slug}`))
+        const merged = [...localItems]
+
+        for (const dbItem of dbItems) {
+          const key = `${dbItem.type}:${dbItem.citySlug}:${dbItem.slug}`
+          if (!localSet.has(key)) {
+            merged.push(dbItem)
+          }
+        }
+
+        // Write merged back via writeSavedItems — fires SAVED_ITEMS_EVENT
+        // so ALL hook instances (every SaveItemButton) update their tick state
+        if (merged.length !== localItems.length) {
+          writeSavedItems(merged)
+          setSavedItems(merged)
+        }
+      })
+      .catch(() => {}) // silently ignore — not logged in or network error
 
     function syncSavedItems() {
       setSavedItems(getSavedItems())
@@ -35,13 +86,19 @@ export function useSavedItems() {
   }, [])
 
   function saveItem(item: SavedItem) {
+    // 1. Optimistic localStorage update — instant UI, no flicker
     const nextSavedItems = saveStoredItem(item)
     setSavedItems(nextSavedItems)
+    // 2. Background DB sync — saves to DB if logged in, silently ignored if not
+    syncSaveToDb(item)
   }
 
   function removeItem(item: SavedItem) {
+    // 1. Optimistic localStorage update — instant UI, no flicker
     const nextSavedItems = removeStoredItem(item)
     setSavedItems(nextSavedItems)
+    // 2. Background DB sync — removes from DB if logged in, silently ignored if not
+    syncRemoveFromDb(item)
   }
 
   function isSaved(item: SavedItem) {

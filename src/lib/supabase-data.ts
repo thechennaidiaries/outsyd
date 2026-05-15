@@ -30,6 +30,7 @@ function mapActivity(row: any): Activity {
         timings: row.timings,
         tags: row.tags || [],
         bookingLink: row.booking_link,
+        bookingEnabled: row.booking_enabled ?? false,
         pricingType: row.pricing_type,
         pricing: row.pricing,
         cityId: row.city_id,

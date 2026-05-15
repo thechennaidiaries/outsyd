@@ -238,7 +238,7 @@ export default function GamePage() {
                   Guess this {puzzle.placeType}
                 </span>
               </div>
-              <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>{dateDisplay}</p>
+              <p style={{ fontSize: 12, color: 'var(--text-2)', fontWeight: 500 }}>{dateDisplay}</p>
             </div>
             <span style={{ fontSize: 18, fontWeight: 900, color: 'var(--accent)', letterSpacing: '-0.02em' }}>
               Hint {imageIndex + 1}

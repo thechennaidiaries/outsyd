@@ -5,12 +5,12 @@ import { useParams } from 'next/navigation'
 import { MapPin, Camera, Share2, PlayCircle } from 'lucide-react'
 
 const HOW_TO_PLAY = [
-  { icon: <Camera size={18} />, text: 'A new Chennai spot to guess every day with hard to guess pictures' },
-  { icon: <MapPin size={18} />, text: 'Try to identify the area or landmark with as few tries as possible' },
+  { icon: <Camera size={18} />, text: 'Guess the spot in chennai from hard to guess pictures' },
+  { icon: <MapPin size={18} />, text: 'Try to identify the area or landmark with as few hints as possible' },
   { icon: <Share2 size={18} />, text: 'Share your results with friends' },
 ]
 
-export default function GameLandingPage() {
+export default function RouteThalaLandingPage() {
   const params = useParams()
   const city = params?.city ?? 'chennai'
 
@@ -75,19 +75,6 @@ export default function GameLandingPage() {
       }}>
         <div style={{ maxWidth: 520, width: '100%', padding: '0 20px' }}>
 
-          {/* ── Pin icon ── */}
-          <div className="rt-fade-1" style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
-            <div className="rt-pin" style={{
-              width: 64, height: 64, borderRadius: '50%',
-              background: 'var(--accent-dim)',
-              border: '1.5px solid var(--accent-border)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              animation: 'rt-pin-bob 2.8s ease-in-out infinite, rt-pulse-ring 2.5s ease-in-out infinite',
-            }}>
-              <MapPin size={28} color="var(--accent)" strokeWidth={2.2} />
-            </div>
-          </div>
-
           {/* ── Title ── */}
           <div className="rt-fade-2" style={{ textAlign: 'center', marginBottom: 10 }}>
             <h1 className="rt-title">
@@ -95,11 +82,11 @@ export default function GameLandingPage() {
             </h1>
             <p style={{
               fontSize: 16,
-              color: 'var(--text-2)',
+              color: 'var(--text)',
               fontWeight: 500,
               lineHeight: 1.5,
             }}>
-              Guess today&apos;s mystery Chennai spot in&nbsp;<strong style={{ color: 'var(--text)' }}>3 tries</strong>
+              Guess today&apos;s mystery Chennai spot in&nbsp;<strong>3 Chances</strong>
             </p>
           </div>
 
@@ -156,7 +143,7 @@ export default function GameLandingPage() {
           {/* ── Play Now CTA ── */}
           <div className="rt-fade-5">
             <Link
-              href={`/${city}/game/play`}
+              href={`/${city}/games/routethala/play`}
               className="rt-play-btn"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
@@ -170,7 +157,7 @@ export default function GameLandingPage() {
               }}
             >
               <PlayCircle size={20} strokeWidth={2.2} />
-              Play Today&apos;s Puzzle
+              Play Route Thala
             </Link>
             <p style={{
               textAlign: 'center', fontSize: 12,

@@ -121,6 +121,23 @@ export default function RootPage() {
   const [selectedPricing, setSelectedPricing] = useState<string>('all')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
+  const searchResults = useMemo(() => {
+    if (searchQuery.trim().length < 2) return []
+    const q = searchQuery.toLowerCase()
+
+    const pool = [
+      ...cityActivities.map(a => ({ ...a, type: 'activity' as const })),
+      ...cityEvents.map(e => ({ ...e, type: 'event' as const })),
+      ...cityWalks.map(w => ({ ...w, type: 'walk' as const })),
+    ]
+
+    return pool.filter(item => 
+      item.title.toLowerCase().includes(q) ||
+      (item.location?.toLowerCase().includes(q)) ||
+      (item.area?.toLowerCase().includes(q))
+    ).slice(0, 10)
+  }, [searchQuery, cityActivities, cityEvents, cityWalks])
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
@@ -130,17 +147,6 @@ export default function RootPage() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
-
-  const searchResults = searchQuery.trim().length >= 2
-    ? cityActivities.filter(a => {
-        const q = searchQuery.toLowerCase()
-        return (
-          a.title.toLowerCase().includes(q) ||
-          (a.location?.toLowerCase().includes(q)) ||
-          (a.area?.toLowerCase().includes(q))
-        )
-      }).slice(0, 8)
-    : []
 
   useEffect(() => {
     async function loadData() {
@@ -318,7 +324,7 @@ export default function RootPage() {
                     <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} />
                     <input
                       type="text"
-                      placeholder="Search boardgames, surfing, bowling..."
+                      placeholder="Search activities, events or city crawls..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onFocus={() => setIsSearchFocused(true)}
@@ -338,17 +344,30 @@ export default function RootPage() {
                       boxShadow: '0 16px 48px rgba(0,0,0,0.5)', maxHeight: 400, overflowY: 'auto'
                     }}>
                       {searchResults.length > 0 ? (
-                        searchResults.map(a => (
-                          <Link key={a.id} href={`/${citySlug}/activities/${a.slug}`} onClick={() => setIsSearchFocused(false)} style={{ display: 'flex', gap: 14, padding: '14px 18px', textDecoration: 'none', borderBottom: '1px solid var(--border)' }}>
-                            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                              <MapPin size={15} color="var(--accent)" />
-                            </div>
-                            <div>
-                              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{a.title}</p>
-                              <p style={{ fontSize: 12, color: 'var(--text-3)', margin: 0 }}>{a.location || a.area}</p>
-                            </div>
-                          </Link>
-                        ))
+                        searchResults.map(item => {
+                          const href = item.type === 'activity' 
+                            ? `/${citySlug}/activities/${item.slug}`
+                            : item.type === 'event'
+                              ? `/${citySlug}/events/${item.slug}`
+                              : `/${citySlug}/walks/${item.slug}`
+
+                          const typeLabel = item.type === 'activity' ? 'Activity' : item.type === 'event' ? 'Event' : 'Walk'
+
+                          return (
+                            <Link key={item.id} href={href} onClick={() => setIsSearchFocused(false)} style={{ display: 'flex', gap: 14, padding: '14px 18px', textDecoration: 'none', borderBottom: '1px solid var(--border)' }}>
+                              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                <MapPin size={15} color="var(--accent)" />
+                              </div>
+                              <div style={{ flex: 1 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                                  <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{item.title}</p>
+                                  <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent)', background: 'var(--accent-dim)', padding: '2px 6px', borderRadius: 4 }}>{typeLabel}</span>
+                                </div>
+                                <p style={{ fontSize: 12, color: 'var(--text-3)', margin: 0 }}>{item.location || item.area}</p>
+                              </div>
+                            </Link>
+                          )
+                        })
                       ) : (
                         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-3)' }}>No results found</div>
                       )}

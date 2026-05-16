@@ -1,6 +1,17 @@
 'use client'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Search, MapPin, X } from 'lucide-react'
+import Hero from '@/components/Hero'
+import ActivityCard from '@/components/ActivityCard'
+import WalkCard from '@/components/WalkCard'
+import EventCard from '@/components/EventCard'
 import CategoryStrip from '@/components/CategoryStrip'
+import HScrollSection from '@/components/HScrollSection'
+import SpotlightCarousel from '@/components/SpotlightCarousel'
+import BannerCarousel from '@/components/BannerCarousel'
+import BentoGrid from '@/components/BentoGrid'
 import { TAG_META } from '@/data/tags'
 import type { Activity } from '@/data/activities'
 import type { Walk } from '@/data/walks'
@@ -37,6 +48,9 @@ export default function RootPage() {
   const [cityActivities, setCityActivities] = useState<Activity[]>([])
   const [cityEvents, setCityEvents] = useState<Event[]>([])
   const [cityWalks, setCityWalks] = useState<Walk[]>([])
+
+  const [shuffledEvents, setShuffledEvents] = useState<Event[]>([])
+  const [shuffledWalks, setShuffledWalks] = useState<Walk[]>([])
 
   // ── Shuffled Activity sections ───────────────────────────────
   const [shuffledNewlyAdded, setShuffledNewlyAdded] = useState<Activity[]>([])
@@ -89,6 +103,8 @@ export default function RootPage() {
       setCityActivities(activities)
       setCityEvents(events)
       setCityWalks(walks)
+      setShuffledEvents(shuffleArray(events))
+      setShuffledWalks(shuffleArray(walks))
 
       setShuffledNewlyAdded(shuffleArray(newActivities))
       setShuffledSports(shuffleArray(activities.filter(a => a.tags?.includes('sports activities'))))
@@ -398,14 +414,6 @@ export default function RootPage() {
                 </HScrollSection>
               </div>
             )}
-          </div>
-        )}
-ctivities.filter(a => a.tags?.includes('adventure activities'))).slice(0, 8).map(a => (
-                <div key={a.id} style={cardStyle}>
-                  <ActivityCard activity={a} citySlug={citySlug} />
-                </div>
-              ))}
-            </HScrollSection>
           </div>
         )}
 

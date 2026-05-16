@@ -1,15 +1,7 @@
 'use client'
-import { useState, useEffect, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import Hero from '@/components/Hero'
-import ActivityCard from '@/components/ActivityCard'
-import WalkCard from '@/components/WalkCard'
-import EventCard from '@/components/EventCard'
-import SpotlightCarousel from '@/components/SpotlightCarousel'
-import BannerCarousel from '@/components/BannerCarousel'
-import BentoGrid from '@/components/BentoGrid'
-import HScrollSection from '@/components/HScrollSection'
+import { Search, MapPin, X } from 'lucide-react'
+import CategoryStrip from '@/components/CategoryStrip'
+import { TAG_META } from '@/data/tags'
 import type { Activity } from '@/data/activities'
 import type { Walk } from '@/data/walks'
 import type { Event } from '@/data/events'
@@ -39,14 +31,50 @@ export default function RootPage() {
 
   const [activeTab, setActiveTab] = useState<'activities' | 'events' | 'crawls' | 'games'>('activities')
   const [city, setCity] = useState<City | null>(null)
-  const [newlyAdded, setNewlyAdded] = useState<Activity[]>([])
-  const [shuffledEvents, setShuffledEvents] = useState<Event[]>([])
-  const [shuffledLowBudget, setShuffledLowBudget] = useState<Activity[]>([])
-  const [shuffledWalks, setShuffledWalks] = useState<Walk[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // ── Data states ────────────────────────────────────────────────
+  const [cityActivities, setCityActivities] = useState<Activity[]>([])
   const [cityEvents, setCityEvents] = useState<Event[]>([])
   const [cityWalks, setCityWalks] = useState<Walk[]>([])
-  const [cityActivities, setCityActivities] = useState<Activity[]>([])
-  const [loading, setLoading] = useState(true)
+
+  // ── Shuffled Activity sections ───────────────────────────────
+  const [shuffledNewlyAdded, setShuffledNewlyAdded] = useState<Activity[]>([])
+  const [shuffledSports, setShuffledSports] = useState<Activity[]>([])
+  const [shuffledGaming, setShuffledGaming] = useState<Activity[]>([])
+  const [shuffledAdventure, setShuffledAdventure] = useState<Activity[]>([])
+  const [shuffledArt, setShuffledArt] = useState<Activity[]>([])
+  const [shuffledWater, setShuffledWater] = useState<Activity[]>([])
+  const [shuffledCultural, setShuffledCultural] = useState<Activity[]>([])
+  const [shuffledLeisure, setShuffledLeisure] = useState<Activity[]>([])
+  const [shuffledGroup, setShuffledGroup] = useState<Activity[]>([])
+  const [shuffledNight, setShuffledNight] = useState<Activity[]>([])
+
+  // ── Search state ──────────────────────────────────────────────
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
+  const searchRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setIsSearchFocused(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const searchResults = searchQuery.trim().length >= 2
+    ? cityActivities.filter(a => {
+        const q = searchQuery.toLowerCase()
+        return (
+          a.title.toLowerCase().includes(q) ||
+          (a.location?.toLowerCase().includes(q)) ||
+          (a.area?.toLowerCase().includes(q))
+        )
+      }).slice(0, 8)
+    : []
 
   useEffect(() => {
     async function loadData() {
@@ -59,17 +87,54 @@ export default function RootPage() {
       ])
       if (cityData) setCity(cityData)
       setCityActivities(activities)
-      setNewlyAdded(newActivities)
-      const lowBudget = activities.filter(a => a.tags?.includes('low budget fun activities'))
-      setShuffledLowBudget(shuffleArray(lowBudget))
-      setShuffledWalks(shuffleArray(walks))
-      setShuffledEvents(shuffleArray(events))
       setCityEvents(events)
       setCityWalks(walks)
+
+      setShuffledNewlyAdded(shuffleArray(newActivities))
+      setShuffledSports(shuffleArray(activities.filter(a => a.tags?.includes('sports activities'))))
+      setShuffledGaming(shuffleArray(activities.filter(a => a.tags?.includes('gaming activities'))))
+      setShuffledAdventure(shuffleArray(activities.filter(a => a.tags?.includes('adventure activities'))))
+      setShuffledArt(shuffleArray(activities.filter(a => a.tags?.includes('art activities'))))
+      setShuffledWater(shuffleArray(activities.filter(a => a.tags?.includes('water activities'))))
+      setShuffledCultural(shuffleArray(activities.filter(a => a.tags?.includes('unique cultural experiences'))))
+      setShuffledLeisure(shuffleArray(activities.filter(a => a.tags?.includes('leisure activities'))))
+      setShuffledGroup(shuffleArray(activities.filter(a => a.tags?.includes('group activities'))))
+      setShuffledNight(shuffleArray(activities.filter(a => a.tags?.includes('night activities'))))
+
       setLoading(false)
     }
     loadData()
   }, [citySlug])
+
+  function handleTagChange(tagName: string | null) {
+    if (!tagName || !city) return
+    const idMap: Record<string, string> = {
+      'sports activities': 'sports',
+      'gaming activities': 'gaming',
+      'adventure activities': 'adventure',
+      'art activities': 'art',
+      'water activities': 'water',
+      'unique cultural experiences': 'cultural',
+      'leisure activities': 'leisure',
+      'group activities': 'group',
+      'night activities': 'night'
+    }
+
+    const sectionId = idMap[tagName]
+    if (sectionId) {
+      const el = document.getElementById(sectionId)
+      if (el) {
+        window.scrollTo({ top: el.offsetTop - 140, behavior: 'smooth' })
+      }
+      return
+    }
+
+    const tagMeta = TAG_META.find(t => t.name === tagName)
+    if (tagMeta) {
+      const tagSlug = tagMeta.slug.includes('activities') ? tagMeta.slug : `${tagMeta.slug}-activities`
+      router.push(`/${citySlug}/activities/${tagSlug}-in-${city.id}`)
+    }
+  }
 
   const cardStyle: React.CSSProperties = {
     minWidth: 220,
@@ -87,8 +152,7 @@ export default function RootPage() {
 
   const tabButtonStyle = (id: string): React.CSSProperties => ({
     padding: '12px 0',
-    marginRight: '32px',
-    fontSize: '16px',
+    fontSize: '15px',
     fontWeight: activeTab === id ? 600 : 400,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
@@ -97,8 +161,9 @@ export default function RootPage() {
     border: 'none',
     borderBottom: activeTab === id ? '2px solid var(--accent)' : '2px solid transparent',
     whiteSpace: 'nowrap',
-    flexShrink: 0,
-    marginBottom: '-1px', // Sit on the container border
+    flex: 1,
+    textAlign: 'center',
+    marginBottom: '-1px', 
   })
 
   return (
@@ -109,24 +174,21 @@ export default function RootPage() {
       <>
       <Hero city={city} />
 
-      {/* ─── Tab Navigation (Minimalist Underline Style) ─── */}
+      {/* ─── Tab Navigation (Justified Style) ─── */}
       <div style={{ 
         position: 'sticky', 
         top: 80, 
         zIndex: 40, 
         background: 'var(--bg)',
-        padding: '0',
+        padding: '0 16px',
         borderBottom: '1px solid var(--border)',
         marginTop: 0,
       }}>
         <div style={{ 
           maxWidth: 1400, 
           margin: '0 auto', 
-          padding: '0 28px',
           display: 'flex',
-          gap: 0,
-          overflowX: 'auto',
-          scrollbarWidth: 'none',
+          width: '100%',
         }}>
           <button onClick={() => setActiveTab('activities')} style={tabButtonStyle('activities')}>Activities</button>
           <button onClick={() => setActiveTab('events')} style={tabButtonStyle('events')}>Events</button>
@@ -135,107 +197,210 @@ export default function RootPage() {
         </div>
       </div>
 
-      <div style={{ minHeight: '60vh', paddingTop: 20 }}>
+      <div style={{ minHeight: '60vh', paddingTop: 0 }}>
         {/* ═══ ACTIVITIES TAB ════════════════════════════════════════ */}
         {activeTab === 'activities' && (
           <div className="tab-content animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {newlyAdded.length > 0 && (
-              <div id="spotlight" style={{ borderBottom: '1px solid var(--border)', paddingBottom: 48 }}>
-                <SpotlightCarousel
-                  activities={newlyAdded}
-                  citySlug={citySlug}
-                  heading="🔥 Trending in Chennai"
-                  subheading="Hot activities this week in chennai"
-                />
+            
+            {/* ═══ Mood Navigator & Search ═════════════════════════════ */}
+            <div id="mood-navigator" style={{ borderBottom: '1px solid var(--border)', padding: '40px 0 60px' }}>
+              <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px', marginBottom: 24 }}>
+                <h3 style={{
+                  fontSize: 22,
+                  fontWeight: 400,
+                  letterSpacing: '-0.01em',
+                  color: '#ffffff',
+                  fontFamily: '"PP Neue Montreal", sans-serif'
+                }}>
+                  What&apos;s your Mood?
+                </h3>
               </div>
+              <CategoryStrip activeTag={null} onTagChange={handleTagChange} cityId={city.id} featuredOnly={true} tags={Array.from(new Set(cityActivities.flatMap(a => a.tags ?? [])))} />
+
+              <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
+                <div ref={searchRef} style={{ position: 'relative', margin: '0 auto', paddingTop: 24 }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    background: 'var(--bg-card)',
+                    border: `1.5px solid ${isSearchFocused ? 'var(--accent)' : 'var(--border)'}`,
+                    borderRadius: 14,
+                    padding: '14px 18px',
+                    transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
+                    boxShadow: isSearchFocused ? '0 0 0 3px rgba(255,107,0,0.12)' : 'none',
+                  }}>
+                    <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} />
+                    <input
+                      type="text"
+                      placeholder="Search boardgames, surfing, bowling..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onFocus={() => setIsSearchFocused(true)}
+                      style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', color: 'var(--text)', fontSize: 15 }}
+                    />
+                    {searchQuery && (
+                      <button onClick={() => setSearchQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                        <X size={14} color="var(--text-3)" />
+                      </button>
+                    )}
+                  </div>
+
+                  {isSearchFocused && searchQuery.trim().length >= 2 && (
+                    <div style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 8, zIndex: 50,
+                      background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14,
+                      boxShadow: '0 16px 48px rgba(0,0,0,0.5)', maxHeight: 400, overflowY: 'auto'
+                    }}>
+                      {searchResults.length > 0 ? (
+                        searchResults.map(a => (
+                          <Link key={a.id} href={`/${citySlug}/activities/${a.slug}`} onClick={() => setIsSearchFocused(false)} style={{ display: 'flex', gap: 14, padding: '14px 18px', textDecoration: 'none', borderBottom: '1px solid var(--border)' }}>
+                            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <MapPin size={15} color="var(--accent)" />
+                            </div>
+                            <div>
+                              <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{a.title}</p>
+                              <p style={{ fontSize: 12, color: 'var(--text-3)', margin: 0 }}>{a.location || a.area}</p>
+                            </div>
+                          </Link>
+                        ))
+                      ) : (
+                        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-3)' }}>No results found</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ═══ 2. Newly Added ═════════════════════════════════════════ */}
+            {shuffledNewlyAdded.length > 0 && (
+              <HScrollSection emoji="🆕" heading="Newly Added" viewMoreHref={`/${citySlug}/activities`} hideViewMore={true}>
+                {shuffledNewlyAdded.map(a => (
+                  <div key={a.id} style={cardStyle}>
+                    <ActivityCard activity={a} citySlug={citySlug} />
+                  </div>
+                ))}
+              </HScrollSection>
             )}
 
-            <BannerCarousel
-              heading="Looking for something fun?"
-              subheading="Adventure, Gaming, water & night activities in Chennai"
-              items={[
-                {
-                  id: 'banner-a-1',
-                  image: 'https://ik.imagekit.io/zxnq8x4yz/Design_one_card_202604252228%201.png',
-                  link: `/${citySlug}/activities/gaming-activities-in-${citySlug}`,
-                },
-                {
-                  id: 'banner-a-2',
-                  image: 'https://ik.imagekit.io/zxnq8x4yz/Design_one_card_202604261026%201.png',
-                  link: `/${citySlug}/activities/sports-activities-in-${citySlug}`,
-                },
-                {
-                  id: 'banner-a-3',
-                  image: 'https://ik.imagekit.io/zxnq8x4yz/Design_one_card_202604252234%201.png',
-                  link: `/${citySlug}/activities/night-activities-in-${citySlug}`,
-                },
-                {
-                  id: 'banner-a-4',
-                  image: 'https://ik.imagekit.io/zxnq8x4yz/Design_one_card_202604261027%201.png',
-                  link: `/${citySlug}/activities/water-activities-in-${citySlug}`,
-                },
-                {
-                  id: 'banner-a-5',
-                  image: 'https://ik.imagekit.io/zxnq8x4yz/Design_one_card_202604261105%201.png',
-                  link: `/${citySlug}/activities/adventure-activities-in-${citySlug}`,
-                },
-              ]}
-            />
-
-            {shuffledLowBudget.length > 0 && (
-              <div id="pocket-friendly">
-                <HScrollSection
-                  emoji="💰"
-                  heading="If you're tight on budget"
-                  subheading="Find activities starting from ₹0"
-                  viewMoreHref={`/${citySlug}/activities/low-budget-fun-activities-in-${citySlug}`}
-                >
-                  {shuffledLowBudget.slice(0, 8).map((a, index) => (
+            {/* ═══ 3. Burn some calories ══════════════════════════════════ */}
+            {shuffledSports.length > 0 && (
+              <div id="sports">
+                <HScrollSection emoji="⚽" heading="Burn some calories" viewMoreHref={`/${citySlug}/activities/sports-activities-in-${city.id}`}>
+                  {shuffledSports.slice(0, 8).map(a => (
                     <div key={a.id} style={cardStyle}>
-                      <ActivityCard activity={a} citySlug={citySlug} eager={index < 3} />
+                      <ActivityCard activity={a} citySlug={citySlug} />
                     </div>
                   ))}
                 </HScrollSection>
               </div>
             )}
 
-            <BentoGrid 
-              citySlug={citySlug} 
-              heading="❤️ Activities based on your vibe"
-              subheading="Explore Art, Culture and Chennai's Heritage"
-            />
+            {/* ═══ 4. Have fun with your Gang ═════════════════════════════ */}
+            {shuffledGaming.length > 0 && (
+              <div id="gaming">
+                <HScrollSection emoji="🎮" heading="Have fun with your Gang" viewMoreHref={`/${citySlug}/activities/gaming-activities-in-${city.id}`}>
+                  {shuffledGaming.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
+            )}
 
-            {/* Additional Categories from Activities Page */}
-            <HScrollSection
-              emoji="⚽"
-              heading="Burn some calories"
-              viewMoreHref={`/${citySlug}/activities/sports-activities-in-${citySlug}`}
-            >
-              {shuffleArray(cityActivities.filter(a => a.tags?.includes('sports activities'))).slice(0, 8).map(a => (
-                <div key={a.id} style={cardStyle}>
-                  <ActivityCard activity={a} citySlug={citySlug} />
-                </div>
-              ))}
-            </HScrollSection>
+            {/* ═══ 5. Activities for Adrenaline Junkies ═══════════════════ */}
+            {shuffledAdventure.length > 0 && (
+              <div id="adventure">
+                <HScrollSection emoji="🚀" heading="Activities for Adrenaline Junkies" viewMoreHref={`/${citySlug}/activities/adventure-activities-in-${city.id}`}>
+                  {shuffledAdventure.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
+            )}
 
-            <HScrollSection
-              emoji="🎮"
-              heading="Have fun with your Gang"
-              viewMoreHref={`/${citySlug}/activities/gaming-activities-in-${citySlug}`}
-            >
-              {shuffleArray(cityActivities.filter(a => a.tags?.includes('gaming activities'))).slice(0, 8).map(a => (
-                <div key={a.id} style={cardStyle}>
-                  <ActivityCard activity={a} citySlug={citySlug} />
-                </div>
-              ))}
-            </HScrollSection>
+            {/* ═══ 6. Activities for Art lovers ═══════════════════════════ */}
+            {shuffledArt.length > 0 && (
+              <div id="art">
+                <HScrollSection emoji="🎨" heading="Activities for Art lovers" viewMoreHref={`/${citySlug}/activities/art-activities-in-${city.id}`}>
+                  {shuffledArt.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
+            )}
 
-            <HScrollSection
-              emoji="🚀"
-              heading="Activities for Adrenaline Junkies"
-              viewMoreHref={`/${citySlug}/activities/adventure-activities-in-${citySlug}`}
-            >
-              {shuffleArray(cityActivities.filter(a => a.tags?.includes('adventure activities'))).slice(0, 8).map(a => (
+            {/* ═══ 7. Water Activities ════════════════════════════════════ */}
+            {shuffledWater.length > 0 && (
+              <div id="water">
+                <HScrollSection emoji="🌊" heading="Water activities" viewMoreHref={`/${citySlug}/activities/water-activities-in-${city.id}`}>
+                  {shuffledWater.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
+            )}
+
+            {/* ═══ 8. Cultural Experiences ════════════════════════════════ */}
+            {shuffledCultural.length > 0 && (
+              <div id="cultural">
+                <HScrollSection emoji="🏛️" heading="Cultural Experiences" viewMoreHref={`/${citySlug}/activities/cultural-experiences-in-${city.id}`}>
+                  {shuffledCultural.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
+            )}
+
+            {/* ═══ 8. Leisure & Relaxation ════════════════════════════════ */}
+            {shuffledLeisure.length > 0 && (
+              <div id="leisure">
+                <HScrollSection emoji="🏖️" heading="Leisure & Relaxation" viewMoreHref={`/${citySlug}/activities/leisure-activities-in-${city.id}`}>
+                  {shuffledLeisure.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
+            )}
+
+            {/* ═══ 9. Fun with your Gang ══════════════════════════════════ */}
+            {shuffledGroup.length > 0 && (
+              <div id="group">
+                <HScrollSection emoji="👥" heading="Fun with your Gang" viewMoreHref={`/${citySlug}/activities/group-activities-in-${city.id}`}>
+                  {shuffledGroup.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
+            )}
+
+            {/* ═══ 10. Night activities ═══════════════════════════════════ */}
+            {shuffledNight.length > 0 && (
+              <div id="night">
+                <HScrollSection emoji="🌙" heading="Night activities" viewMoreHref={`/${citySlug}/activities/night-activities-in-${city.id}`}>
+                  {shuffledNight.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
+            )}
+          </div>
+        )}
+ctivities.filter(a => a.tags?.includes('adventure activities'))).slice(0, 8).map(a => (
                 <div key={a.id} style={cardStyle}>
                   <ActivityCard activity={a} citySlug={citySlug} />
                 </div>

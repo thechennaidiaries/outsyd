@@ -353,7 +353,6 @@ export default function RootPage() {
           <button onClick={() => setActiveTab('activities')} style={tabButtonStyle('activities')}>Activities</button>
           <button onClick={() => setActiveTab('events')} style={tabButtonStyle('events')}>Events</button>
           <button onClick={() => setActiveTab('crawls')} style={tabButtonStyle('crawls')}>Walks</button>
-          <button onClick={() => setActiveTab('games')} style={tabButtonStyle('games')}>Games</button>
         </div>
       </div>
 

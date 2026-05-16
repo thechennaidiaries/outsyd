@@ -111,6 +111,7 @@ export default function RootPage() {
   const [shuffledLeisure, setShuffledLeisure] = useState<Activity[]>([])
   const [shuffledGroup, setShuffledGroup] = useState<Activity[]>([])
   const [shuffledNight, setShuffledNight] = useState<Activity[]>([])
+  const [shuffledLowBudget, setShuffledLowBudget] = useState<Activity[]>([])
 
   // ── Search & Filter state ──────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState('')
@@ -176,6 +177,7 @@ export default function RootPage() {
       setShuffledLeisure(shuffleArray(activities.filter(a => a.tags?.includes('leisure activities'))))
       setShuffledGroup(shuffleArray(activities.filter(a => a.tags?.includes('group activities'))))
       setShuffledNight(shuffleArray(activities.filter(a => a.tags?.includes('night activities'))))
+      setShuffledLowBudget(shuffleArray(activities.filter(a => a.tags?.includes('low budget fun activities'))))
 
       setLoading(false)
     }
@@ -210,7 +212,8 @@ export default function RootPage() {
       'unique cultural experiences': 'cultural',
       'leisure activities': 'leisure',
       'group activities': 'group',
-      'night activities': 'night'
+      'night activities': 'night',
+      'low budget fun activities': 'low-budget'
     }
 
     const sectionId = idMap[tagName]
@@ -386,6 +389,24 @@ export default function RootPage() {
                   </div>
                 ))}
               </HScrollSection>
+            )}
+
+            {/* ═══ 2.5 If you're tight on budget ═════════════════════════ */}
+            {shuffledLowBudget.length > 0 && (
+              <div id="low-budget">
+                <HScrollSection 
+                  emoji="💰" 
+                  heading="If you're tight on budget" 
+                  subHeading="Find activities starting from ₹0"
+                  viewMoreHref={`/${citySlug}/activities/low-budget-fun-activities-in-${city.id}`}
+                >
+                  {shuffledLowBudget.slice(0, 8).map(a => (
+                    <div key={a.id} style={cardStyle}>
+                      <ActivityCard activity={a} citySlug={citySlug} />
+                    </div>
+                  ))}
+                </HScrollSection>
+              </div>
             )}
 
             {/* ═══ 3. Burn some calories ══════════════════════════════════ */}

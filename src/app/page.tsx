@@ -154,7 +154,7 @@ export default function RootPage() {
       const [cityData, activities, newActivities, walks, events, categories] = await Promise.all([
         fetchCityBySlug(citySlug),
         fetchActivitiesByCity(citySlug),
-        fetchNewlyAddedActivities(citySlug, 15),
+        fetchNewlyAddedActivities(citySlug, 10),
         fetchWalksByCity(citySlug),
         fetchEventsByCity(citySlug),
         fetchCategoriesByCity(citySlug),
@@ -377,12 +377,18 @@ export default function RootPage() {
                   What&apos;s your Mood?
                 </h3>
               </div>
-              <CategoryStrip activeTag={null} onTagChange={handleTagChange} cityId={city.id} featuredOnly={true} tags={Array.from(new Set(cityActivities.flatMap(a => a.tags ?? [])))} />
+              <CategoryStrip 
+                activeTag={null} 
+                onTagChange={handleTagChange} 
+                cityId={city.id} 
+                featuredOnly={true} 
+                tags={Array.from(new Set(cityActivities.flatMap(a => a.tags ?? []))).filter(t => t !== 'city crawls')} 
+              />
             </div>
 
-            {/* ═══ 2. Newly Added ═════════════════════════════════════════ */}
+            {/* ═══ 2. Trending in Chennai ══════════════════════════════════ */}
             {shuffledNewlyAdded.length > 0 && (
-              <HScrollSection emoji="🆕" heading="Newly Added" viewMoreHref={`/${citySlug}/activities`} hideViewMore={true}>
+              <HScrollSection emoji="🔥" heading={`Trending in ${city.name}`} viewMoreHref={`/${citySlug}/activities`} hideViewMore={true}>
                 {shuffledNewlyAdded.map(a => (
                   <div key={a.id} style={cardStyle}>
                     <ActivityCard activity={a} citySlug={citySlug} />

@@ -86,17 +86,19 @@ export default function RootPage() {
   }
 
   const tabButtonStyle = (id: string): React.CSSProperties => ({
-    padding: '12px 20px',
-    borderRadius: '100px',
-    fontSize: '14px',
-    fontWeight: activeTab === id ? 700 : 500,
+    padding: '12px 0',
+    marginRight: '32px',
+    fontSize: '16px',
+    fontWeight: activeTab === id ? 600 : 400,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
-    background: activeTab === id ? 'var(--accent)' : 'rgba(255,255,255,0.05)',
-    color: activeTab === id ? '#fff' : 'var(--text-3)',
+    background: 'none',
+    color: activeTab === id ? 'var(--text)' : 'var(--text-3)',
     border: 'none',
+    borderBottom: activeTab === id ? '2px solid var(--accent)' : '2px solid transparent',
     whiteSpace: 'nowrap',
     flexShrink: 0,
+    marginBottom: '-1px', // Sit on the container border
   })
 
   return (
@@ -107,29 +109,28 @@ export default function RootPage() {
       <>
       <Hero city={city} />
 
-      {/* ─── Tab Navigation ─── */}
+      {/* ─── Tab Navigation (Minimalist Underline Style) ─── */}
       <div style={{ 
         position: 'sticky', 
         top: 80, 
         zIndex: 40, 
-        background: 'rgba(10,10,14,0.85)',
-        backdropFilter: 'blur(12px)',
-        padding: '16px 0',
+        background: 'var(--bg)',
+        padding: '0',
         borderBottom: '1px solid var(--border)',
-        marginTop: -1, // overlap hero bottom
+        marginTop: 0,
       }}>
         <div style={{ 
           maxWidth: 1400, 
           margin: '0 auto', 
           padding: '0 28px',
           display: 'flex',
-          gap: 12,
+          gap: 0,
           overflowX: 'auto',
           scrollbarWidth: 'none',
         }}>
           <button onClick={() => setActiveTab('activities')} style={tabButtonStyle('activities')}>Activities</button>
           <button onClick={() => setActiveTab('events')} style={tabButtonStyle('events')}>Events</button>
-          <button onClick={() => setActiveTab('crawls')} style={tabButtonStyle('crawls')}>Crawls</button>
+          <button onClick={() => setActiveTab('crawls')} style={tabButtonStyle('crawls')}>Walks</button>
           <button onClick={() => setActiveTab('games')} style={tabButtonStyle('games')}>Games</button>
         </div>
       </div>

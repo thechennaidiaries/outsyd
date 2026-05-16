@@ -84,16 +84,19 @@ export default function Navbar() {
     const isSavedActive = pathname === savedHref || pathname.startsWith(savedHref + '/')
     const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
 
+    const isHomepage = pathname === '/'
+    
     return (
         <>
             {/* ── Top bar — logo only, centred ── */}
             <header style={{
-                position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+                position: isHomepage ? 'absolute' : 'fixed', 
+                top: 0, left: 0, right: 0, zIndex: 100,
                 height: 80,
-                background: scrolled ? 'rgba(10,10,14,0.92)' : 'rgba(0,0,0,0)',
-                backdropFilter: scrolled ? 'blur(28px) saturate(180%)' : 'none',
-                WebkitBackdropFilter: scrolled ? 'blur(28px) saturate(180%)' : 'none',
-                borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                background: scrolled && !isHomepage ? 'rgba(10,10,14,0.92)' : 'rgba(0,0,0,0)',
+                backdropFilter: scrolled && !isHomepage ? 'blur(28px) saturate(180%)' : 'none',
+                WebkitBackdropFilter: scrolled && !isHomepage ? 'blur(28px) saturate(180%)' : 'none',
+                borderBottom: scrolled && !isHomepage ? '1px solid rgba(255,255,255,0.08)' : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all 0.4s ease-out',
                 pointerEvents: 'none',

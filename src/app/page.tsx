@@ -267,10 +267,86 @@ export default function RootPage() {
       <>
       <Hero city={city} />
 
-      {/* ─── Tab Navigation (Justified Style) ─── */}
+      {/* ─── Global Sticky Search ─── */}
+      <div style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        background: 'var(--bg)',
+        padding: '16px 0',
+        borderBottom: '1px solid var(--border)',
+      }}>
+        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
+          <div ref={searchRef} style={{ position: 'relative', maxWidth: 800, margin: '0 auto' }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 12,
+              background: 'var(--bg-card)',
+              border: `1.5px solid ${isSearchFocused ? 'var(--accent)' : 'var(--border)'}`,
+              borderRadius: 14,
+              padding: '12px 18px',
+              transition: 'all 0.25s ease',
+              boxShadow: isSearchFocused ? '0 0 0 3px rgba(255,107,0,0.12)' : 'none',
+            }}>
+              <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} />
+              <input
+                type="text"
+                placeholder="Search activities, events or city crawls..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', color: 'var(--text)', fontSize: 15 }}
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                  <X size={14} color="var(--text-3)" />
+                </button>
+              )}
+            </div>
+
+            {isSearchFocused && searchQuery.trim().length >= 2 && (
+              <div style={{
+                position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 8, zIndex: 60,
+                background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14,
+                boxShadow: '0 16px 48px rgba(0,0,0,0.5)', maxHeight: 400, overflowY: 'auto'
+              }}>
+                {searchResults.length > 0 ? (
+                  searchResults.map(item => {
+                    const href = item.type === 'activity' 
+                      ? `/${citySlug}/activities/${item.slug}`
+                      : item.type === 'event'
+                        ? `/${citySlug}/events/${item.slug}`
+                        : `/${citySlug}/walks/${item.slug}`
+
+                    const typeLabel = item.type === 'activity' ? 'Activity' : item.type === 'event' ? 'Event' : 'Walk'
+
+                    return (
+                      <Link key={item.id} href={href} onClick={() => setIsSearchFocused(false)} style={{ display: 'flex', gap: 14, padding: '14px 18px', textDecoration: 'none', borderBottom: '1px solid var(--border)' }}>
+                        <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <MapPin size={15} color="var(--accent)" />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                            <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{item.title}</p>
+                            <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent)', background: 'var(--accent-dim)', padding: '2px 6px', borderRadius: 4 }}>{typeLabel}</span>
+                          </div>
+                          <p style={{ fontSize: 12, color: 'var(--text-3)', margin: 0 }}>{item.location || item.area}</p>
+                        </div>
+                      </Link>
+                    )
+                  })
+                ) : (
+                  <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-3)' }}>No results found</div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Tab Navigation (Sticky) ─── */}
       <div style={{ 
         position: 'sticky', 
-        top: 80, 
+        top: 88, // Sticks below the search bar
         zIndex: 40, 
         background: 'var(--bg)',
         padding: '0 16px',
@@ -295,7 +371,7 @@ export default function RootPage() {
         {activeTab === 'activities' && (
           <div className="tab-content animate-in fade-in slide-in-from-bottom-4 duration-500">
             
-            {/* ═══ Mood Navigator & Search ═════════════════════════════ */}
+            {/* ═══ Mood Navigator ═══════════════════════════════════════ */}
             <div id="mood-navigator" style={{ borderBottom: '1px solid var(--border)', padding: '40px 0 60px' }}>
               <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px', marginBottom: 24 }}>
                 <h3 style={{
@@ -309,72 +385,6 @@ export default function RootPage() {
                 </h3>
               </div>
               <CategoryStrip activeTag={null} onTagChange={handleTagChange} cityId={city.id} featuredOnly={true} tags={Array.from(new Set(cityActivities.flatMap(a => a.tags ?? [])))} />
-
-              <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
-                <div ref={searchRef} style={{ position: 'relative', margin: '0 auto', paddingTop: 24 }}>
-                  <div style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    background: 'var(--bg-card)',
-                    border: `1.5px solid ${isSearchFocused ? 'var(--accent)' : 'var(--border)'}`,
-                    borderRadius: 14,
-                    padding: '14px 18px',
-                    transition: 'border-color 0.25s ease, box-shadow 0.25s ease',
-                    boxShadow: isSearchFocused ? '0 0 0 3px rgba(255,107,0,0.12)' : 'none',
-                  }}>
-                    <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} />
-                    <input
-                      type="text"
-                      placeholder="Search activities, events or city crawls..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onFocus={() => setIsSearchFocused(true)}
-                      style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', color: 'var(--text)', fontSize: 15 }}
-                    />
-                    {searchQuery && (
-                      <button onClick={() => setSearchQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                        <X size={14} color="var(--text-3)" />
-                      </button>
-                    )}
-                  </div>
-
-                  {isSearchFocused && searchQuery.trim().length >= 2 && (
-                    <div style={{
-                      position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 8, zIndex: 50,
-                      background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 14,
-                      boxShadow: '0 16px 48px rgba(0,0,0,0.5)', maxHeight: 400, overflowY: 'auto'
-                    }}>
-                      {searchResults.length > 0 ? (
-                        searchResults.map(item => {
-                          const href = item.type === 'activity' 
-                            ? `/${citySlug}/activities/${item.slug}`
-                            : item.type === 'event'
-                              ? `/${citySlug}/events/${item.slug}`
-                              : `/${citySlug}/walks/${item.slug}`
-
-                          const typeLabel = item.type === 'activity' ? 'Activity' : item.type === 'event' ? 'Event' : 'Walk'
-
-                          return (
-                            <Link key={item.id} href={href} onClick={() => setIsSearchFocused(false)} style={{ display: 'flex', gap: 14, padding: '14px 18px', textDecoration: 'none', borderBottom: '1px solid var(--border)' }}>
-                              <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--accent-dim)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                                <MapPin size={15} color="var(--accent)" />
-                              </div>
-                              <div style={{ flex: 1 }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
-                                  <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{item.title}</p>
-                                  <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent)', background: 'var(--accent-dim)', padding: '2px 6px', borderRadius: 4 }}>{typeLabel}</span>
-                                </div>
-                                <p style={{ fontSize: 12, color: 'var(--text-3)', margin: 0 }}>{item.location || item.area}</p>
-                              </div>
-                            </Link>
-                          )
-                        })
-                      ) : (
-                        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--text-3)' }}>No results found</div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
 
             {/* ═══ 2. Newly Added ═════════════════════════════════════════ */}

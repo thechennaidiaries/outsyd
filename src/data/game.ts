@@ -38,106 +38,7 @@ export function getPuzzleForToday(): GamePuzzle {
 
 // ── Puzzle Schedule ───────────────────────────────────────────────
 export const PUZZLES: GamePuzzle[] = [
-  {
-    id: 'game-001',
-    date: '2026-04-30',
-    location: 'Pondy Bazaar',
-    area: 'T Nagar',
-    placeType: 'Area',
-    images: [
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
-    ],
-    acceptedPatterns: [
-      'pond[yi]\\s*baz?aa?r',
-      'pandy\\s*baz?aa?r',
-      'pondi\\s*bazaar',
-      '^pondy$',
-      'pondybazar',
-    ],
-    mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
-  },
-  {
-    id: 'game-002',
-    date: '2026-05-09',
-    location: 'Pondy Bazaar',
-    area: 'T Nagar',
-    placeType: 'Area',
-    images: [
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
-    ],
-    acceptedPatterns: [
-      'pond[yi]\\s*baz?aa?r',
-      'pandy\\s*baz?aa?r',
-      'pondi\\s*bazaar',
-      '^pondy$',
-      'pondybazar',
-    ],
-    mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
-  },
-  {
-    id: 'game-003',
-    date: '2026-05-10',
-    location: 'Pondy Bazaar',
-    area: 'T Nagar',
-    placeType: 'Area',
-    images: [
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
-    ],
-    acceptedPatterns: [
-      'pond[yi]\\s*baz?aa?r',
-      'pandy\\s*baz?aa?r',
-      'pondi\\s*bazaar',
-      '^pondy$',
-      'pondybazar',
-    ],
-    mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
-  },
-  {
-    id: 'game-004',
-    date: '2026-05-11',
-    location: 'Pondy Bazaar',
-    area: 'T Nagar',
-    placeType: 'Area',
-    images: [
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
-    ],
-    acceptedPatterns: [
-      'pond[yi]\\s*baz?aa?r',
-      'pandy\\s*baz?aa?r',
-      'pondi\\s*bazaar',
-      '^pondy$',
-      'pondybazar',
-    ],
-    mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
-  },
-  {
-    id: 'game-005',
-    date: '2026-05-12',
-    location: 'Pondy Bazaar',
-    area: 'T Nagar',
-    placeType: 'Area',
-    images: [
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue1.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondyclue2.png',
-      'https://ik.imagekit.io/zxnq8x4yz/pondy3.png',
-    ],
-    acceptedPatterns: [
-      'pond[yi]\\s*baz?aa?r',
-      'pandy\\s*baz?aa?r',
-      'pondi\\s*bazaar',
-      '^pondy$',
-      'pondybazar',
-    ],
-    mapsLink: 'https://maps.app.goo.gl/6bWVGiKM5C7dqfBP9',
-  },
+
   {
     id: 'game-006',
     date: '2026-05-13',
@@ -199,9 +100,9 @@ export const PUZZLES: GamePuzzle[] = [
     area: 'Mylapore',
     placeType: 'Temple',
     images: [
-      'https://ik.imagekit.io/zxnq8x4yz/kapaleeswartemple1.png?updatedAt=1778568483876',
       'https://ik.imagekit.io/zxnq8x4yz/kapaleeswarartemple2.png?updatedAt=1778568484990',
       'https://ik.imagekit.io/zxnq8x4yz/kapaleeswarar%20temple3.png?updatedAt=1778568484107',
+      'https://ik.imagekit.io/zxnq8x4yz/temple3.png',
     ],
     acceptedPatterns: [
       'kapale[ei]?s[h]?warar',

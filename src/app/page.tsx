@@ -102,23 +102,6 @@ export default function RootPage() {
         </div>
       )}
 
-      {/* ═══ 1.7. Events ═══════════════════════════════════════════ */}
-      {cityEvents.length > 0 && (
-        <div id="upcoming-events">
-          <HScrollSection
-            emoji="🎪"
-            heading="Events this Weekend"
-            subheading="Workshops, Mixers, Runs and much more"
-            viewMoreHref={`/${citySlug}/events`}
-          >
-            {shuffledEvents.slice(0, 7).map(e => (
-              <div key={e.id} style={cardStyle}>
-                <EventCard event={e} citySlug={citySlug} />
-              </div>
-            ))}
-          </HScrollSection>
-        </div>
-      )}
 
       {/* ═══ 1.44. Custom Banner Carousel ════════════════════════ */}
       <BannerCarousel

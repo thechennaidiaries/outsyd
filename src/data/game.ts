@@ -121,7 +121,7 @@ export const PUZZLES: GamePuzzle[] = [
     placeType: 'Area',
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/shollinganallur1.png?updatedAt=1778568484842',
-      'https://ik.imagekit.io/zxnq8x4yz/shollinganallur1.png?updatedAt=1778568484842',
+      'https://ik.imagekit.io/zxnq8x4yz/shollinganallur2.png?updatedAt=1778568484685',
       'https://ik.imagekit.io/zxnq8x4yz/shollinganallur3.png?updatedAt=1778568484330',
     ],
     acceptedPatterns: [

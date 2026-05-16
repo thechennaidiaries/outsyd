@@ -204,27 +204,30 @@ export default async function WalkDetailPage({ params }: Props) {
                 </div>
 
                 {/* Share + Maps buttons */}
-                <div style={{ display: 'flex', gap: 12, marginTop: 8, marginBottom: 56 }} className="flex-col md:flex-row">
-                    <SaveItemButton type="walk" slug={walk.slug} citySlug={city.id} />
-                    <ShareButton title={walk.title} text={`Check out ${walk.title} on TBOC ${city.name}`} />
-                    <a
-                        href={walk.mapsLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                            width: '100%', padding: '18px 24px',
-                            borderRadius: 'var(--radius)',
-                            background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
-                            color: 'white', fontSize: 16, fontWeight: 700,
-                            textDecoration: 'none',
-                            boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
-                            transition: 'all 0.2s ease', letterSpacing: '-0.01em',
-                        }}
-                    >
-                        <Navigation size={18} fill="white" />
-                        Take me to Maps
-                    </a>
+                <div style={{ display: 'flex', gap: 10, marginTop: 8, marginBottom: 56, alignItems: 'center' }}>
+                    <SaveItemButton type="walk" slug={walk.slug} citySlug={city.id} iconOnly={true} />
+                    <ShareButton title={walk.title} text={`Check out ${walk.title} on TBOC ${city.name}`} iconOnly={true} />
+                    <div style={{ flex: 1 }}>
+                        <a
+                            href={walk.mapsLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                width: '100%', padding: '16px 20px',
+                                borderRadius: 'var(--radius)',
+                                background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
+                                color: 'white', fontSize: 16, fontWeight: 700,
+                                textDecoration: 'none',
+                                boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
+                                transition: 'all 0.2s ease', letterSpacing: '-0.01em',
+                            }}
+                            className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
+                        >
+                            <Navigation size={18} fill="white" />
+                            Directions
+                        </a>
+                    </div>
                 </div>
             </div>
 

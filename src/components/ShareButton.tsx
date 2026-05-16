@@ -6,9 +6,10 @@ interface Props {
     title: string
     text?: string
     label?: string
+    iconOnly?: boolean
 }
 
-export default function ShareButton({ title, text, label = 'Share' }: Props) {
+export default function ShareButton({ title, text, label = 'Share', iconOnly = false }: Props) {
     const [state, setState] = useState<'idle' | 'copied'>('idle')
 
     async function handleShare() {
@@ -52,9 +53,10 @@ export default function ShareButton({ title, text, label = 'Share' }: Props) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 9,
-                width: '100%',
-                padding: '18px 24px',
+                gap: iconOnly ? 0 : 9,
+                width: iconOnly ? 54 : '100%',
+                height: iconOnly ? 54 : 'auto',
+                padding: iconOnly ? 0 : '18px 24px',
                 borderRadius: 'var(--radius)',
                 background: isCopied ? 'rgba(255,107,0,0.08)' : 'transparent',
                 color: isCopied ? 'var(--accent)' : 'var(--accent)',
@@ -68,10 +70,10 @@ export default function ShareButton({ title, text, label = 'Share' }: Props) {
             }}
         >
             {isCopied
-                ? <Check size={17} strokeWidth={2.5} />
-                : <Share2 size={17} strokeWidth={2} />
+                ? <Check size={18} strokeWidth={2.5} />
+                : <Share2 size={18} strokeWidth={2} />
             }
-            {isCopied ? 'Link Copied!' : label}
+            {!iconOnly && (isCopied ? 'Link Copied!' : label)}
         </button>
     )
 }

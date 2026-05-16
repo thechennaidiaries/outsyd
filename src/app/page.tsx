@@ -267,16 +267,16 @@ export default function RootPage() {
       <>
       <Hero city={city} />
 
-      {/* ─── Global Sticky Search ─── */}
+      {/* ─── Global Sticky Header (Search + Tabs) ─── */}
       <div style={{
         position: 'sticky',
         top: 0,
         zIndex: 50,
         background: 'var(--bg)',
-        padding: '20px 0 0', // Removed bottom padding
-        borderBottom: 'none', // Removed border so it flushes with tabs
+        borderBottom: '1px solid var(--border)',
       }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
+        {/* Search Bar */}
+        <div style={{ padding: '20px 28px 12px' }}>
           <div ref={searchRef} style={{ position: 'relative', maxWidth: 800, margin: '0 auto' }}>
             <div style={{
               display: 'flex', alignItems: 'center', gap: 12,
@@ -341,23 +341,14 @@ export default function RootPage() {
             )}
           </div>
         </div>
-      </div>
 
-      {/* ─── Tab Navigation (Sticky) ─── */}
-      <div style={{ 
-        position: 'sticky', 
-        top: 74, // Adjusted to sit flush (search padding 20 + search height approx 54)
-        zIndex: 40, 
-        background: 'var(--bg)',
-        padding: '0 16px',
-        borderBottom: '1px solid var(--border)',
-        marginTop: 0,
-      }}>
+        {/* Tab Navigation */}
         <div style={{ 
           maxWidth: 1400, 
           margin: '0 auto', 
           display: 'flex',
           width: '100%',
+          padding: '0 16px',
         }}>
           <button onClick={() => setActiveTab('activities')} style={tabButtonStyle('activities')}>Activities</button>
           <button onClick={() => setActiveTab('events')} style={tabButtonStyle('events')}>Events</button>

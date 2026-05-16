@@ -273,8 +273,8 @@ export default function RootPage() {
         top: 0,
         zIndex: 50,
         background: 'var(--bg)',
-        padding: '16px 0',
-        borderBottom: '1px solid var(--border)',
+        padding: '20px 0 0', // Removed bottom padding
+        borderBottom: 'none', // Removed border so it flushes with tabs
       }}>
         <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px' }}>
           <div ref={searchRef} style={{ position: 'relative', maxWidth: 800, margin: '0 auto' }}>
@@ -346,7 +346,7 @@ export default function RootPage() {
       {/* ─── Tab Navigation (Sticky) ─── */}
       <div style={{ 
         position: 'sticky', 
-        top: 88, // Sticks below the search bar
+        top: 74, // Adjusted to sit flush (search padding 20 + search height approx 54)
         zIndex: 40, 
         background: 'var(--bg)',
         padding: '0 16px',

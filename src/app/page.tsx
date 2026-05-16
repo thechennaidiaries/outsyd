@@ -350,10 +350,3 @@ export default function RootPage() {
     </main>
   )
 }
-
-      </>
-      )}
-
-    </main>
-  )
-}

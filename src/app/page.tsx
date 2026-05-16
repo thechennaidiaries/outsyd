@@ -632,23 +632,29 @@ export default function RootPage() {
           </div>
         )}
 
-        {/* ═══ CRAWLS TAB ════════════════════════════════════════════ */}
+        {/* ═══ WALKS TAB ════════════════════════════════════════════ */}
         {activeTab === 'crawls' && (
           <div className="tab-content animate-in fade-in slide-in-from-bottom-4 duration-500">
             {cityWalks.length > 0 ? (
-              <div id="city-walks" style={{ padding: '20px 0' }}>
-                <HScrollSection
-                  emoji="🚶"
-                  heading="City crawls to explore Chennai"
-                  subheading="Curated trails and hidden spots"
-                  viewMoreHref={`/${citySlug}/walks`}
-                >
-                  {shuffledWalks.slice(0, 10).map((walk, index) => (
-                    <div key={walk.id} style={walkCardStyle}>
-                      <WalkCard walk={walk} citySlug={citySlug} eager={index < 2} />
-                    </div>
+              <div id="city-walks" style={{ maxWidth: 1400, margin: '0 auto', padding: '40px 28px 100px' }}>
+                <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    fontSize: 13, fontWeight: 700, color: 'var(--text)',
+                  }}>
+                    <span>🚶</span>
+                    City Crawls
+                  </div>
+                  <span style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
+                    {cityWalks.length} {cityWalks.length === 1 ? 'walk' : 'walks'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 24 }}>
+                  {shuffledWalks.map((walk, index) => (
+                    <WalkCard key={walk.id} walk={walk} citySlug={citySlug} eager={index < 3} />
                   ))}
-                </HScrollSection>
+                </div>
               </div>
             ) : (
               <div style={{ textAlign: 'center', padding: '100px 20px', color: 'var(--text-3)' }}>

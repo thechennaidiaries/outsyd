@@ -110,8 +110,17 @@ export default async function SlugPage({ params }: Props) {
     if (!activity) notFound()
 
     const allCityActivities = await fetchActivitiesByCity(city.id)
+    const currentTags = activity.tags || []
+    
     const related = allCityActivities
-        .filter(a => a.id !== activity.id && (a.tags?.some(t => activity.tags?.includes(t)) ?? false))
+        .filter(a => a.id !== activity.id)
+        .map(a => {
+            const overlapCount = a.tags ? a.tags.filter(t => currentTags.includes(t)).length : 0;
+            return { activity: a, overlapCount };
+        })
+        .filter(item => item.overlapCount > 0)
+        .sort((a, b) => b.overlapCount - a.overlapCount)
+        .map(item => item.activity)
         .slice(0, 4)
 
     return (
@@ -138,26 +147,7 @@ export default async function SlugPage({ params }: Props) {
 
 
                     <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '28px 28px 32px' }}>
-                        {activity.tags && activity.tags.length > 0 && (
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 12 }}>
-                                {activity.tags.map(tag => {
-                                    const meta = TAG_META.find(t => t.name === tag);
-                                    return (
-                                        <span key={tag} style={{
-                                            fontSize: 10, fontWeight: 800, letterSpacing: '0.05em',
-                                            textTransform: 'uppercase', color: '#ffffff',
-                                            background: 'rgba(255, 255, 255, 0.15)',
-                                            backdropFilter: 'blur(8px)',
-                                            padding: '4px 10px', borderRadius: 6,
-                                            border: '1px solid rgba(255, 255, 255, 0.2)',
-                                            display: 'flex', alignItems: 'center', gap: 4
-                                        }}>
-                                            {meta?.emoji} {tag}
-                                        </span>
-                                    );
-                                })}
-                            </div>
-                        )}
+
                         <h1 style={{
                             fontSize: 'clamp(22px, 4vw, 38px)', fontWeight: 900,
                             letterSpacing: '-0.03em', color: '#ffffff', lineHeight: 1.15,
@@ -212,66 +202,67 @@ export default async function SlugPage({ params }: Props) {
                     </DetailCard>
                 )}
 
-                <div style={{ display: 'flex', gap: 12, marginTop: 12, marginBottom: 56 }} className="flex-col md:flex-row">
+                <div style={{ display: 'flex', gap: 10, marginTop: 12, marginBottom: 56, alignItems: 'center' }}>
                     {activity.slug && (
                         <SaveItemButton 
                             type="activity" 
                             slug={activity.slug} 
                             citySlug={city.id} 
-                            label="Save for Later" 
-                            savedLabel="Saved to Plan"
+                            iconOnly={true}
                         />
                     )}
                     <ShareButton 
                         title={activity.title} 
                         text={`Check out ${activity.location} on TBOC ${city.name}`} 
-                        label="Share with Friends"
+                        iconOnly={true}
                     />
+                    
+                    <div style={{ flex: 1 }}>
+                        {/* ── Book a Slot (Outsyd booking system) ── */}
+                        {activity.bookingEnabled && activity.slug && (
+                            <Link
+                                href={`/${city.id}/activities/${activity.slug}/book`}
+                                style={{
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                    width: '100%', padding: '16px 20px',
+                                    borderRadius: 'var(--radius)',
+                                    background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
+                                    color: 'white', fontSize: 16, fontWeight: 700,
+                                    textDecoration: 'none',
+                                    boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
+                                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    letterSpacing: '-0.01em',
+                                }}
+                                className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
+                            >
+                                📅 Book a Slot
+                            </Link>
+                        )}
 
-                    {/* ── Book a Slot (Outsyd booking system) ── */}
-                    {activity.bookingEnabled && activity.slug && (
-                        <Link
-                            href={`/${city.id}/activities/${activity.slug}/book`}
-                            style={{
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                                width: '100%', padding: '18px 24px',
-                                borderRadius: 'var(--radius)',
-                                background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
-                                color: 'white', fontSize: 16, fontWeight: 700,
-                                textDecoration: 'none',
-                                boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
-                                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                                letterSpacing: '-0.01em',
-                            }}
-                            className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
-                        >
-                            📅 Book a Slot
-                        </Link>
-                    )}
-
-                    {/* ── External booking / maps (fallback) ── */}
-                    {!activity.bookingEnabled && (activity.bookingLink || activity.locationLink) && (
-                        <a
-                            href={activity.bookingLink || activity.locationLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                                width: '100%', padding: '18px 24px',
-                                borderRadius: 'var(--radius)',
-                                background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
-                                color: 'white', fontSize: 16, fontWeight: 700,
-                                textDecoration: 'none',
-                                boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
-                                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                                letterSpacing: '-0.01em',
-                            }}
-                            className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
-                        >
-                            <Navigation size={18} fill="white" />
-                            {activity.bookingLink ? 'Book a Slot' : 'Take me to Maps'}
-                        </a>
-                    )}
+                        {/* ── External booking / maps (fallback) ── */}
+                        {!activity.bookingEnabled && (activity.bookingLink || activity.locationLink) && (
+                            <a
+                                href={activity.bookingLink || activity.locationLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                    width: '100%', padding: '16px 20px',
+                                    borderRadius: 'var(--radius)',
+                                    background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
+                                    color: 'white', fontSize: 16, fontWeight: 700,
+                                    textDecoration: 'none',
+                                    boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
+                                    transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    letterSpacing: '-0.01em',
+                                }}
+                                className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
+                            >
+                                <Navigation size={18} fill="white" />
+                                {activity.bookingLink ? 'Book a Slot' : 'Directions'}
+                            </a>
+                        )}
+                    </div>
                 </div>
             </div>
 

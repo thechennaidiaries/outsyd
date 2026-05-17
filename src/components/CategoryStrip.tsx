@@ -13,7 +13,6 @@ interface Props {
 const FEATURED_TAGS = [
     'low budget fun activities',
     'sports activities',
-    'walks',
     'gaming activities',
     'adventure activities',
     'art activities',
@@ -28,18 +27,16 @@ export default function CategoryStrip({ activeTag, onTagChange, tags: propTags, 
     let tags = propTags ?? []
 
     if (featuredOnly) {
-        tags = FEATURED_TAGS.filter(t => tags.includes(t) || t === 'walks')
+        tags = FEATURED_TAGS.filter(t => tags.includes(t))
     }
 
     const getDisplayName = (t: string) => {
-        if (t === 'walks') return 'City Crawls'
         let name = t.replace(/\s*activities\s*/gi, '').trim()
         if (name === 'unique cultural experiences') return 'Cultural'
         return name.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
     }
 
     const getEmoji = (t: string) => {
-        if (t === 'walks') return '🚶'
         const meta = TAG_META.find(m => m.name === t)
         return meta?.emoji ?? '🏷️'
     }

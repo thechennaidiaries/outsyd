@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { Rocket, CalendarDays, Calendar, Compass, Bookmark } from 'lucide-react'
+import { Rocket, CalendarDays, Calendar, Compass, Bookmark, Map, Gamepad2 } from 'lucide-react'
 import { fetchCities } from '@/lib/supabase-data'
 import type { City } from '@/data/cities'
 import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
@@ -13,16 +13,7 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false)
     const [scrolledPast30, setScrolledPast30] = useState(false)
     const [savedBannerLabel, setSavedBannerLabel] = useState<string | null>(null)
-    const [isWeekend, setIsWeekend] = useState(false)
     const [isLoggedIn, setIsLoggedIn] = useState(() => isClientLoggedIn())
-
-    // Determine if it's a weekend day (Fri/Sat/Sun) in IST
-    useEffect(() => {
-        // Get current day name in IST
-        const dayName = new Intl.DateTimeFormat('en-US', { weekday: 'long', timeZone: 'Asia/Kolkata' }).format(new Date())
-        // Weekend is Friday, Saturday, or Sunday
-        setIsWeekend(['Friday', 'Saturday', 'Sunday'].includes(dayName))
-    }, [])
 
     const [cities, setCities] = useState<City[]>([])
 
@@ -84,33 +75,29 @@ export default function Navbar() {
     }, [])
 
     const homeHref       = '/'
-    const eventsHref     = `/${citySlug}/events`
-    const activitiesHref = `/${citySlug}/activities`
-    const dynamicHref    = isWeekend ? eventsHref : activitiesHref
     const surpriseHref   = `/${citySlug}/surprise`
     const savedHref      = isLoggedIn ? '/account/saved' : '/saved'
     const planHref       = `/${citySlug}/plan`
 
     const isHomeActive = pathname === homeHref || pathname.startsWith(homeHref + '/')
-    const isEventsActive = pathname === eventsHref || pathname.startsWith(eventsHref + '/')
-    const isActivitiesActive = pathname === activitiesHref || pathname.startsWith(activitiesHref + '/')
-    const isDynamicActive = isWeekend ? isEventsActive : isActivitiesActive
+    const isGameActive = pathname.startsWith(`/${citySlug}/games`)
     const isSurpriseActive = pathname === surpriseHref || pathname.startsWith(surpriseHref + '/')
     const isSavedActive = pathname === savedHref || pathname.startsWith(savedHref + '/')
     const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
 
-    const isEventsPage = pathname.includes('/events-this-weekend') || pathname.includes('/best-shawarma') || pathname.includes('/best-icecreams')
-
+    const isHomepage = pathname === '/'
+    
     return (
         <>
             {/* ── Top bar — logo only, centred ── */}
             <header style={{
-                position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+                position: isHomepage ? 'absolute' : 'fixed', 
+                top: 0, left: 0, right: 0, zIndex: 100,
                 height: 80,
-                background: scrolled ? 'rgba(10,10,14,0.92)' : 'rgba(0,0,0,0)',
-                backdropFilter: scrolled ? 'blur(28px) saturate(180%)' : 'none',
-                WebkitBackdropFilter: scrolled ? 'blur(28px) saturate(180%)' : 'none',
-                borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
+                background: scrolled && !isHomepage ? 'rgba(10,10,14,0.92)' : 'rgba(0,0,0,0)',
+                backdropFilter: scrolled && !isHomepage ? 'blur(28px) saturate(180%)' : 'none',
+                WebkitBackdropFilter: scrolled && !isHomepage ? 'blur(28px) saturate(180%)' : 'none',
+                borderBottom: scrolled && !isHomepage ? '1px solid rgba(255,255,255,0.08)' : 'none',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 transition: 'all 0.4s ease-out',
                 pointerEvents: 'none',
@@ -170,27 +157,6 @@ export default function Navbar() {
                     </Link>
                 )}
 
-                {/* ── Events Page CTA Banner ── Sits flush on top of nav ── */}
-                {isEventsPage && scrolledPast30 && (
-                    <Link
-                        href={homeHref}
-                        style={{
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-                            width: '100%', padding: '14px 20px',
-                            background: 'linear-gradient(90deg, var(--accent) 0%, #FF8533 100%)',
-                            color: '#fff', textDecoration: 'none',
-                            fontSize: 14, fontWeight: 800, letterSpacing: '-0.01em',
-                            boxShadow: '0 -4px 16px rgba(0,0,0,0.2)',
-                            animation: 'fade-up 0.4s ease-out both',
-                        }}
-                    >
-                        <Rocket size={16} />
-                        {pathname.includes('/best-shawarma') || pathname.includes('/best-icecreams')
-                            ? `Find Cool Things to do in ${citySlug.charAt(0).toUpperCase() + citySlug.slice(1)}`
-                            : `More Activities in ${citySlug.charAt(0).toUpperCase() + citySlug.slice(1)} this Weekend`
-                        }
-                    </Link>
-                )}
 
                 <div style={{
                     display: 'flex', alignItems: 'flex-end',
@@ -234,45 +200,37 @@ export default function Navbar() {
                         </span>
                     </Link>
 
+                    {/* ── Game ── */}
                     <Link
-                        href={dynamicHref}
+                        href={`/${citySlug}/games/routethala`}
                         style={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                             textDecoration: 'none', flex: 1,
                             padding: '6px 12px',
                             borderRadius: 14,
-                            color: isDynamicActive ? 'var(--accent)' : 'var(--text-3)',
+                            color: isGameActive ? 'var(--accent)' : 'var(--text-3)',
                             transition: 'color 0.2s ease',
                         }}
                     >
                         <div style={{
                             width: 44, height: 30,
-                            borderRadius: isDynamicActive ? 20 : 10,
+                            borderRadius: isGameActive ? 20 : 10,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: isDynamicActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                            background: isGameActive ? 'rgba(255,107,0,0.16)' : 'transparent',
                             transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
                         }}>
-                            {isWeekend ? (
-                                <Calendar
-                                    size={20}
-                                    strokeWidth={isDynamicActive ? 2.5 : 1.75}
-                                    color={isDynamicActive ? 'var(--accent)' : 'var(--text-3)'}
-                                />
-                            ) : (
-                                <Compass
-                                    size={20}
-                                    strokeWidth={isDynamicActive ? 2.5 : 1.75}
-                                    color={isDynamicActive ? 'var(--accent)' : 'var(--text-3)'}
-                                />
-                            )}
+                            <Gamepad2
+                                size={20}
+                                strokeWidth={isGameActive ? 2.5 : 1.75}
+                                color={isGameActive ? 'var(--accent)' : 'var(--text-3)'}
+                            />
                         </div>
                         <span style={{
-                            fontSize: 10, fontWeight: isDynamicActive ? 700 : 500,
+                            fontSize: 10, fontWeight: isGameActive ? 700 : 500,
                             letterSpacing: '0.01em',
-                            transition: 'font-weight 0.2s',
                             whiteSpace: 'nowrap',
                         }}>
-                            {isWeekend ? 'Events' : 'Activities'}
+                            Game
                         </span>
                     </Link>
 

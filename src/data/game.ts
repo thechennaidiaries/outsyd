@@ -134,6 +134,36 @@ export const PUZZLES: GamePuzzle[] = [
   {
     id: 'game-011',
     date: '2026-05-18',
+    location: 'Chennai Central Railway Station',
+    area: 'Chennai Central',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/central1.png',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/central2.png',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/central3.png',
+    ],
+    acceptedPatterns: [
+      '^(chennai|chenai|madras)?\\s*cen?tr[ea]l\\s*(railway[s]?|rail)?\\s*(station|stn|staiton)?$',
+    ],
+  },
+  {
+    id: 'game-012',
+    date: '2026-05-19',
+    location: 'Loyola College',
+    area: 'Nungambakkam',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/loyola1.png',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/loyola2.png',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/loyola3.png',
+    ],
+    acceptedPatterns: [
+      '^l[oaiy]+l+[ao]\\s*(col+ege|college|clg|collge)?$',
+    ],
+  },
+  {
+    id: 'game-013',
+    date: '2026-05-20',
     location: 'Perumbakkam',
     area: 'Perumbakkam',
     placeType: 'Area',

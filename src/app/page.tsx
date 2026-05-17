@@ -689,9 +689,10 @@ export default function RootPage() {
                     fontSize: 13, fontWeight: 700, color: 'var(--text)',
                   }}>
                     <span>🚶</span>
-                    City Crawls
+                    Crawls to Explore Chennai
                   </div>
                   <span style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
+
                     {cityWalks.length} {cityWalks.length === 1 ? 'walk' : 'walks'}
                   </span>
                 </div>

@@ -5,6 +5,7 @@ import { MapPin, Clock, Calendar, Navigation, ArrowLeft, Home, FileText, Tag, Do
 import EventCard from '@/components/EventCard'
 import ShareButton from '@/components/ShareButton'
 import SaveItemButton from '@/components/SaveItemButton'
+import ReportButton from '@/components/ReportButton'
 
 interface Props {
     params: { city: string; slug: string }
@@ -157,6 +158,9 @@ export default async function EventDetailPage({ params }: Props) {
                         </div>
                     </DetailCard>
                 )}
+
+                {/* ── Report ── */}
+                <ReportButton itemTitle={event.title} itemType="event" />
 
                 {/* Action Buttons */}
                 <div style={{ display: 'flex', gap: 10, marginTop: 8, marginBottom: 56, alignItems: 'center' }}>

@@ -2,11 +2,12 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect, useMemo } from 'react'
-import { Rocket, CalendarDays, Calendar, Compass, Bookmark, Map, Gamepad2 } from 'lucide-react'
+import { Rocket, Calendar, Compass, Bookmark, Map, Gamepad2, Vote } from 'lucide-react'
 import { fetchCities } from '@/lib/supabase-data'
 import type { City } from '@/data/cities'
 import { SAVED_ITEM_ADDED_EVENT, type SavedItem } from '@/lib/saved-items'
 import { isClientLoggedIn } from '@/lib/auth-client'
+import VoteFeedbackModal from './VoteFeedbackModal'
 
 export default function Navbar() {
     const pathname = usePathname()
@@ -14,6 +15,7 @@ export default function Navbar() {
     const [scrolledPast30, setScrolledPast30] = useState(false)
     const [savedBannerLabel, setSavedBannerLabel] = useState<string | null>(null)
     const [isLoggedIn, setIsLoggedIn] = useState(() => isClientLoggedIn())
+    const [voteOpen, setVoteOpen] = useState(false)
 
     const [cities, setCities] = useState<City[]>([])
 
@@ -77,13 +79,11 @@ export default function Navbar() {
     const homeHref       = '/'
     const surpriseHref   = `/${citySlug}/surprise`
     const savedHref      = isLoggedIn ? '/account/saved' : '/saved'
-    const planHref       = `/${citySlug}/plan`
 
     const isHomeActive = pathname === homeHref || pathname.startsWith(homeHref + '/')
     const isGameActive = pathname.startsWith(`/${citySlug}/games`)
     const isSurpriseActive = pathname === surpriseHref || pathname.startsWith(surpriseHref + '/')
     const isSavedActive = pathname === savedHref || pathname.startsWith(savedHref + '/')
-    const isPlanActive = pathname === planHref || pathname.startsWith(planHref + '/')
 
     const isHomepage = pathname === '/'
     
@@ -300,42 +300,46 @@ export default function Navbar() {
                         </span>
                     </Link>
 
-                    {/* ── My Plan ── */}
-                    <Link
-                        href={planHref}
+                    {/* ── Vote ── */}
+                    <button
+                        onClick={() => setVoteOpen(true)}
                         style={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-                            textDecoration: 'none', flex: 1,
+                            background: 'none', border: 'none',
+                            flex: 1,
                             padding: '6px 12px',
                             borderRadius: 14,
-                            color: isPlanActive ? 'var(--accent)' : 'var(--text-3)',
+                            color: 'var(--text-3)',
+                            cursor: 'pointer',
                             transition: 'color 0.2s ease',
                         }}
                     >
                         <div style={{
                             width: 44, height: 30,
-                            borderRadius: isPlanActive ? 20 : 10,
+                            borderRadius: 10,
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            background: isPlanActive ? 'rgba(255,107,0,0.16)' : 'transparent',
+                            background: 'transparent',
                             transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
                         }}>
-                            <CalendarDays
+                            <Vote
                                 size={20}
-                                strokeWidth={isPlanActive ? 2.5 : 1.75}
-                                color={isPlanActive ? 'var(--accent)' : 'var(--text-3)'}
+                                strokeWidth={1.75}
+                                color={'var(--text-3)'}
                             />
                         </div>
                         <span style={{
-                            fontSize: 10, fontWeight: isPlanActive ? 700 : 500,
+                            fontSize: 10, fontWeight: 500,
                             letterSpacing: '0.01em',
-                            transition: 'font-weight 0.2s',
                             whiteSpace: 'nowrap',
                         }}>
-                            My Plan
+                            Vote
                         </span>
-                    </Link>
+                    </button>
                 </div>
             </nav>
+
+            {/* ── Vote Feedback Modal ── */}
+            <VoteFeedbackModal open={voteOpen} onClose={() => setVoteOpen(false)} />
         </>
     )
 }

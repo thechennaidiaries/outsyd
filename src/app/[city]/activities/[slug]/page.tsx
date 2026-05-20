@@ -11,6 +11,7 @@ import TimingsDisplay from '@/components/TimingsDisplay'
 import ActivityCard from '@/components/ActivityCard'
 import ShareButton from '@/components/ShareButton'
 import SaveItemButton from '@/components/SaveItemButton'
+import ReportButton from '@/components/ReportButton'
 
 interface Props {
     params: { city: string; slug: string }
@@ -201,6 +202,9 @@ export default async function SlugPage({ params }: Props) {
                         <p style={{ fontSize: 14, color: 'var(--text)', lineHeight: 1.6, margin: 0 }}>{activity.pricing}</p>
                     </DetailCard>
                 )}
+
+                {/* ── Report ── */}
+                <ReportButton itemTitle={activity.title} itemType="activity" />
 
                 <div style={{ display: 'flex', gap: 10, marginTop: 12, marginBottom: 56, alignItems: 'center' }}>
                     {activity.slug && (

@@ -49,22 +49,22 @@ export default function CategoryStrip({ activeTag, onTagChange, tags: propTags, 
                 onClick={() => onTagChange(isActive ? null : tag)}
                 style={{
                     display: 'flex', alignItems: 'center', gap: 8,
-                    padding: '10px 20px', borderRadius: 100, flexShrink: 0,
+                    padding: '8px 16px', borderRadius: 100, flexShrink: 0,
                     background: isActive ? '#FF6B00' : 'transparent',
-                    border: isActive ? '1.5px solid transparent' : '1.5px solid rgba(255,255,255,0.2)',
+                    border: isActive ? '1.5px solid transparent' : '1.5px solid rgba(255,255,255,0.12)',
                     cursor: 'pointer', transition: 'all 0.2s ease',
                 }}
                 className={`group ${isActive ? '' : 'hover:bg-[#FF6B00] hover:border-transparent'}`}
             >
                 <span style={{ 
-                    fontSize: 16, lineHeight: 1, transition: 'transform 0.2s ease',
+                    fontSize: 14, lineHeight: 1, transition: 'transform 0.2s ease',
                     filter: isActive ? 'brightness(2)' : 'none' 
                 }} className="group-hover:scale-110 group-hover:brightness-125">
                     {getEmoji(tag)}
                 </span>
                 <span style={{
-                    fontSize: 13, fontWeight: 700,
-                    color: '#ffffff',
+                    fontSize: 12, fontWeight: 600,
+                    color: isActive ? '#ffffff' : 'rgba(255,255,255,0.55)',
                     whiteSpace: 'nowrap',
                 }}>{getDisplayName(tag)}</span>
             </button>

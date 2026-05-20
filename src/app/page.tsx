@@ -114,9 +114,18 @@ export default function RootPage() {
   const [shuffledLowBudget, setShuffledLowBudget] = useState<Activity[]>([])
 
   // ── Search & Filter state ──────────────────────────────────────
+  const SEARCH_PLACEHOLDERS = [
+    'Search for activities, events, walks',
+    'Search "Board Games"',
+    'Search "Adventure"',
+    'Search "Art"',
+    'Search "Stranger Meetups"',
+    'Search "Night"',
+  ]
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const searchRef = useRef<HTMLDivElement>(null)
+  const [placeholderIdx, setPlaceholderIdx] = useState(0)
 
   const [selectedDate, setSelectedDate] = useState<string>('all')
   const [selectedPricing, setSelectedPricing] = useState<string>('all')
@@ -148,6 +157,15 @@ export default function RootPage() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
+
+  // Rotate search placeholder every 3s (pauses when focused or typing)
+  useEffect(() => {
+    if (isSearchFocused || searchQuery) return
+    const id = setInterval(() => {
+      setPlaceholderIdx(i => (i + 1) % SEARCH_PLACEHOLDERS.length)
+    }, 3000)
+    return () => clearInterval(id)
+  }, [isSearchFocused, searchQuery, SEARCH_PLACEHOLDERS.length])
 
   useEffect(() => {
     async function loadData() {
@@ -247,19 +265,20 @@ export default function RootPage() {
   }
 
   const tabButtonStyle = (id: string): React.CSSProperties => ({
-    padding: '12px 0',
-    fontSize: '15px',
-    fontWeight: activeTab === id ? 600 : 400,
+    padding: '14px 0',
+    fontSize: '16px',
+    fontWeight: activeTab === id ? 800 : 500,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     background: 'none',
-    color: activeTab === id ? 'var(--text)' : 'var(--text-3)',
+    color: activeTab === id ? '#fff' : 'rgba(255,255,255,0.55)',
     border: 'none',
-    borderBottom: activeTab === id ? '2px solid var(--accent)' : '2px solid transparent',
+    borderBottom: activeTab === id ? '2.5px solid var(--accent)' : '2.5px solid transparent',
     whiteSpace: 'nowrap',
     flex: 1,
     textAlign: 'center',
-    marginBottom: '-1px', 
+    marginBottom: '-1px',
+    letterSpacing: '-0.01em',
   })
 
   return (
@@ -290,15 +309,42 @@ export default function RootPage() {
               transition: 'all 0.25s ease',
               boxShadow: isSearchFocused ? '0 0 0 3px rgba(255,107,0,0.12)' : 'none',
             }}>
-              <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} />
-              <input
-                type="text"
-                placeholder="Search activities, events or city crawls..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                style={{ flex: 1, border: 'none', outline: 'none', background: 'transparent', color: 'var(--text)', fontSize: 15 }}
-              />
+              <Search size={18} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} style={{ flexShrink: 0 }} />
+              <div style={{ flex: 1, position: 'relative', overflow: 'hidden', height: 22 }}>
+                <input
+                  type="text"
+                  placeholder=""
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  style={{
+                    width: '100%', border: 'none', outline: 'none',
+                    background: 'transparent', color: 'var(--text)',
+                    fontSize: 15, position: 'relative', zIndex: 1,
+                  }}
+                />
+                {/* Animated placeholder overlay */}
+                {!searchQuery && !isSearchFocused && (
+                  <div
+                    key={placeholderIdx}
+                    style={{
+                      position: 'absolute',
+                      top: 0, left: 0, right: 0,
+                      height: '100%',
+                      display: 'flex', alignItems: 'center',
+                      fontSize: 15,
+                      color: 'rgba(255,255,255,0.4)',
+                      pointerEvents: 'none',
+                      animation: 'phSlideUp 0.35s cubic-bezier(0.16,1,0.3,1)',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {SEARCH_PLACEHOLDERS[placeholderIdx]}
+                  </div>
+                )}
+              </div>
               {searchQuery && (
                 <button onClick={() => setSearchQuery('')} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
                   <X size={14} color="var(--text-3)" />
@@ -353,9 +399,9 @@ export default function RootPage() {
           width: '100%',
           padding: '0 16px',
         }}>
-          <button onClick={() => setActiveTab('activities')} style={tabButtonStyle('activities')}>Activities</button>
-          <button onClick={() => setActiveTab('events')} style={tabButtonStyle('events')}>Events</button>
-          <button onClick={() => setActiveTab('crawls')} style={tabButtonStyle('crawls')}>Walks</button>
+          <button onClick={() => setActiveTab('activities')} style={tabButtonStyle('activities')}>🎯 Activities</button>
+          <button onClick={() => setActiveTab('events')} style={tabButtonStyle('events')}>🎪 Events</button>
+          <button onClick={() => setActiveTab('crawls')} style={tabButtonStyle('crawls')}>🚶 Walks</button>
         </div>
       </div>
 
@@ -365,14 +411,14 @@ export default function RootPage() {
           <div className="tab-content animate-in fade-in slide-in-from-bottom-4 duration-500">
             
             {/* ═══ Mood Navigator ═══════════════════════════════════════ */}
-            <div id="mood-navigator" style={{ borderBottom: '1px solid var(--border)', padding: '40px 0 60px' }}>
-              <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px', marginBottom: 24 }}>
+            <div id="mood-navigator" style={{ borderBottom: '1px solid var(--border)', padding: '28px 0 36px' }}>
+              <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 28px', marginBottom: 16 }}>
                 <h3 style={{
-                  fontSize: 22,
-                  fontWeight: 400,
-                  letterSpacing: '-0.01em',
-                  color: '#ffffff',
-                  fontFamily: '"PP Neue Montreal", sans-serif'
+                  fontSize: 14,
+                  fontWeight: 600,
+                  letterSpacing: '0.02em',
+                  color: 'rgba(255,255,255,0.45)',
+                  textTransform: 'uppercase',
                 }}>
                   What&apos;s your Mood?
                 </h3>

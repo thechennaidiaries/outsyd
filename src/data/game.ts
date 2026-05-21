@@ -204,6 +204,24 @@ export const PUZZLES: GamePuzzle[] = [
   {
     id: 'game-015',
     date: '2026-05-22',
+    location: 'VR Mall',
+    area: 'Anna Nagar',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/vr1_compressed.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/vr2_compressed.png',
+      'https://ik.imagekit.io/zxnq8x4yz/vr3_compressed.jpg',
+    ],
+    acceptedPatterns: [
+      'v\\s*r\\b',
+      'v\\s*r\\s*mall',
+      'v\\s*r\\s*chennai',
+      'virtuous\\s*retail',
+    ],
+  },
+  {
+    id: 'game-016',
+    date: '2026-05-23',
     location: 'Madras Christian College',
     area: 'Tambaram',
     placeType: 'Place',

@@ -9,8 +9,8 @@ const USAGE_OPTIONS = [
 ]
 
 const FEATURE_OPTIONS = [
+    'Discounts on Activities & Events',
     'Activity & Event booking',
-    'Get Discounts on Activities & Events',
     'Find more Stranger Meetups',
 ]
 

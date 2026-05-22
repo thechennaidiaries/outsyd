@@ -237,4 +237,53 @@ export const PUZZLES: GamePuzzle[] = [
       'mcc\\s*chennai',
     ],
   },
+  {
+    id: 'game-017',
+    date: '2026-05-24',
+    location: 'Thoraipakkam',
+    area: 'Thoraipakkam',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/THORAIPAKKAM1.png',
+      'https://ik.imagekit.io/zxnq8x4yz/THORAIPAKKAM2.png',
+      'https://ik.imagekit.io/zxnq8x4yz/thoraipakkam3.png',
+    ],
+    acceptedPatterns: [
+      'th[ou]raipakk?am',
+      'thorapakkam',
+      'thurapakkam',
+    ],
+  },
+  {
+    id: 'game-018',
+    date: '2026-05-25',
+    location: 'Broken Bridge',
+    area: 'Besant Nagar',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/brokenbridge1.png',
+      'https://ik.imagekit.io/zxnq8x4yz/brokenbridge2.png',
+      'https://ik.imagekit.io/zxnq8x4yz/brokenbridge3.png',
+    ],
+    acceptedPatterns: [
+      'broken\\s*bridge',
+      'brok+en\\s*bridge',
+    ],
+  },
+  {
+    id: 'game-019',
+    date: '2026-05-26',
+    location: 'Guru Nanak College',
+    area: 'Velachery',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/gurunanak1.png',
+      'https://ik.imagekit.io/zxnq8x4yz/gurunanak2.png',
+      'https://ik.imagekit.io/zxnq8x4yz/gurunanak3.png',
+    ],
+    acceptedPatterns: [
+      'guru\\s*nanak',
+      'gurunanak',
+    ],
+  },
 ]

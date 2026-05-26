@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { MapPin } from 'lucide-react'
+import { MapPin, Music } from 'lucide-react'
 
 const GAMES = [
   {
@@ -11,6 +11,15 @@ const GAMES = [
     description: 'Guess today\'s mystery Chennai spot in 3 tries.',
     badge: '📍 Daily',
     accent: '#ff6b00',
+    icon: 'map',
+  },
+  {
+    slug: 'paatify',
+    name: 'Paatify',
+    description: 'Guess today\'s Tamil song from 5 lyric hints.',
+    badge: '🎵 Daily',
+    accent: '#1DB954',
+    icon: 'music',
   },
 ]
 
@@ -47,10 +56,13 @@ export default function GamesHubPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
                   <div style={{
                     width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                    background: 'rgba(255,107,0,0.12)', border: '1px solid rgba(255,107,0,0.25)',
+                    background: `${game.accent}20`,
+                    border: `1px solid ${game.accent}40`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                   }}>
-                    <MapPin size={18} color={game.accent} />
+                    {game.icon === 'music'
+                      ? <Music size={18} color={game.accent} />
+                      : <MapPin size={18} color={game.accent} />}
                   </div>
                   <div>
                     <p style={{ fontSize: 17, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em' }}>
@@ -58,7 +70,7 @@ export default function GamesHubPage() {
                     </p>
                     <span style={{
                       fontSize: 10, fontWeight: 700, color: game.accent,
-                      background: 'rgba(255,107,0,0.1)', borderRadius: 20,
+                      background: `${game.accent}18`, borderRadius: 20,
                       padding: '2px 8px', letterSpacing: '0.06em', textTransform: 'uppercase',
                     }}>
                       {game.badge}

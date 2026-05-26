@@ -89,7 +89,7 @@ export default function PaatifyLandingPage() {
               fontWeight: 500,
               lineHeight: 1.5,
             }}>
-              Guess Today&apos;s Mystery Tamil Song in 3 Chances
+              Guess Today&apos;s Mystery Tamil Song in 5 Chances
             </p>
           </div>
 

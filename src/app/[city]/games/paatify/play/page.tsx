@@ -118,7 +118,7 @@ export default function PaatifyPlayPage() {
       if (count <= 0) {
         clearInterval(id)
         const g = guessesRef.current
-        if (g.length >= 3) {
+        if (g.length >= 5) {
           setFinalElapsed(Math.floor((Date.now() - startTsRef.current) / 1000))
           setStatus('lost')
         } else {
@@ -181,7 +181,7 @@ export default function PaatifyPlayPage() {
       const next = [...guesses, trimmed]
       setGuesses(next)
       setInput('')
-      if (next.length >= 3) {
+      if (next.length >= 5) {
         setFinalElapsed(Math.floor((Date.now() - startTsRef.current) / 1000))
         setStatus('lost')
       } else {
@@ -195,7 +195,7 @@ export default function PaatifyPlayPage() {
   async function handleShare() {
     const puzzle = puzzleRef.current
     if (!puzzle) return
-    const emojis = Array(3).fill('').map((_, i) => {
+    const emojis = Array(5).fill('').map((_, i) => {
       if (status === 'won' && i === guessCount - 1) return '🟩'
       if (i < guesses.length) return '🟥'
       return '⬛'
@@ -203,8 +203,8 @@ export default function PaatifyPlayPage() {
     const puzzleIndex = PAATIFY_PUZZLES.findIndex(p => p.id === puzzle.id)
     const puzzleNumber = puzzleIndex >= 0 ? puzzleIndex + 1 : '?'
     const text = status === 'won'
-      ? `🎵 Paatify #${puzzleNumber}\nI guessed today's Tamil song in ${guessCount}/3 hints! ⏱️ ${formatPaatifyTime(finalElapsed)}\n\n${emojis}\n\nCan you beat my score? outsyd.in/chennai/games/paatify`
-      : `🎵 Paatify #${puzzleNumber}\n\nI couldn't crack today's Tamil song 😔 Can you?\n\n🟥🟥🟥\n\noutsyd.in/chennai/games/paatify`
+      ? `🎵 Paatify #${puzzleNumber}\nI guessed today's Tamil song in ${guessCount}/5 hints! ⏱️ ${formatPaatifyTime(finalElapsed)}\n\n${emojis}\n\nCan you beat my score? outsyd.in/chennai/games/paatify`
+      : `🎵 Paatify #${puzzleNumber}\n\nI couldn't crack today's Tamil song 😔 Can you?\n\n🟥🟥🟥🟥🟥\n\noutsyd.in/chennai/games/paatify`
     if (navigator.share) { try { await navigator.share({ text }) } catch { /**/ } }
     else {
       await navigator.clipboard.writeText(text)
@@ -313,7 +313,7 @@ export default function PaatifyPlayPage() {
               alignItems: 'center', justifyContent: 'center',
             }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(139,92,246,0.6)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 18 }}>
-                Hint {hintIndex + 1} of 3
+                Hint {hintIndex + 1} of 5
               </div>
               <div style={{ fontSize: 48, color: 'rgba(139,92,246,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginBottom: 12 }}>❝</div>
               <p style={{
@@ -322,7 +322,9 @@ export default function PaatifyPlayPage() {
                 fontWeight: 500, letterSpacing: '0.01em',
                 maxWidth: 380,
               }}>
-                {puzzle.hints[hintIndex]}
+                {hintIndex === 4
+                  ? puzzle.hints.map(h => h.trim().replace(/\.+$/, '')).join('. ') + '.'
+                  : puzzle.hints[hintIndex]}
               </p>
               <div style={{ fontSize: 48, color: 'rgba(139,92,246,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginTop: 12 }}>❞</div>
             </div>
@@ -331,7 +333,7 @@ export default function PaatifyPlayPage() {
           {/* ── Hint Dots ── */}
           {(status === 'playing' || status === 'countdown') && (
             <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 14 }}>
-              {[0, 1, 2].map(i => (
+              {[0, 1, 2, 3, 4].map(i => (
                 <div key={i} style={{
                   width: i === hintIndex ? 20 : 8, height: 8,
                   borderRadius: 4, transition: 'all 0.3s ease',
@@ -414,7 +416,7 @@ export default function PaatifyPlayPage() {
                   <Timer size={11} />{formatPaatifyTime(displayTime)}
                 </span>
                 <span style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 600 }}>
-                  {3 - guesses.length} {3 - guesses.length === 1 ? 'Chance' : 'Chances'} Left
+                  {5 - guesses.length} {5 - guesses.length === 1 ? 'Chance' : 'Chances'} Left
                 </span>
               </div>
             </div>
@@ -493,7 +495,7 @@ function WonCard({
   puzzle: PaatifyPuzzle; guessCount: number; finalElapsed: number
   guesses: string[]; onShare: () => void; copied: boolean
 }) {
-  const emojis = Array(3).fill('').map((_, i) => {
+  const emojis = Array(5).fill('').map((_, i) => {
     if (i === guessCount - 1) return '🟩'
     if (i < guesses.length) return '🟥'
     return '⬛'
@@ -518,7 +520,7 @@ function WonCard({
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 20 }}>
         <div>
-          <p style={{ fontSize: 20, fontWeight: 900, color: '#a78bfa' }}>{guessCount}/3</p>
+          <p style={{ fontSize: 20, fontWeight: 900, color: '#a78bfa' }}>{guessCount}/5</p>
           <p style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Hints Used</p>
         </div>
         <div style={{ width: 1, background: 'var(--border)' }} />
@@ -529,16 +531,6 @@ function WonCard({
       </div>
 
       <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 8 }}>{emojis}</div>
-
-      {puzzle.funFact && (
-        <div style={{
-          background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)',
-          borderRadius: 12, padding: '12px 16px', marginBottom: 20, textAlign: 'left',
-        }}>
-          <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>🎵 Fun Fact</p>
-          <p style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>{puzzle.funFact}</p>
-        </div>
-      )}
 
       <button onClick={onShare} className="share-btn" style={{
         padding: '10px 20px', borderRadius: 10,
@@ -581,17 +573,7 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: PaatifyPuzzle; onShare:
         </p>
       </div>
 
-      {puzzle.funFact && (
-        <div style={{
-          background: 'var(--bg-elevated)', border: '1px solid var(--border)',
-          borderRadius: 12, padding: '12px 16px', marginBottom: 20, textAlign: 'left',
-        }}>
-          <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>🎵 Fun Fact</p>
-          <p style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>{puzzle.funFact}</p>
-        </div>
-      )}
-
-      <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>🟥🟥🟥</div>
+      <div style={{ fontSize: 28, letterSpacing: 6, marginBottom: 20 }}>🟥🟥🟥🟥🟥</div>
 
       <button onClick={onShare} className="share-btn" style={{
         padding: '10px 20px', borderRadius: 10,

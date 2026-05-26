@@ -4,9 +4,8 @@ export interface PaatifyPuzzle {
   song: string                        // Display song name
   movie: string                       // Movie the song is from
   year?: number                       // Release year
-  hints: [string, string, string]     // 3 lyric lines: hint 1 (hardest) → hint 3 (easiest)
+  hints: [string, string, string, string] // 4 lyric lines: hint 1 (hardest) → hint 4 (easiest)
   acceptedPatterns: string[]          // regex pattern strings for answer matching
-  funFact?: string                    // Optional trivia shown on result
 }
 
 export function getTodayISTPatify(): string {
@@ -41,20 +40,20 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   {
     id: 'paatify-001',
     date: '2026-05-26',
-    song: 'Kaadhal Rojave',
-    movie: 'Roja',
-    year: 1992,
+    song: 'Saachitale',
+    movie: 'Love Today',
+    year: 2022,
     hints: [
-      'O breeze, stay a while after crossing my doorstep...',
-      'Memories draw closer to my heart, and love whispers softly...',
-      'Rose of love... my rose of love...',
+      'The whole town looked at her, but she looked only at me...',
+      'She won\'t believe whatever anyone says; she\'s the one who asked for my number...',
+      'If boys try to show off in front of her, she wouldn\'t even notice them...',
+      'She started talking with me — am I really that smart?',
     ],
     acceptedPatterns: [
-      'ka+dhal?\\s*rojave?',
-      'kadhal\\s*roja',
-      'kaadhal\\s*roja',
+      'saachitale',
+      'sachitale',
+      'saachi\\s*tale',
     ],
-    funFact: 'Composed by A.R. Rahman for the 1992 film Roja. This was one of Rahman\'s earliest compositions and became an instant classic.',
   },
 
   {
@@ -65,6 +64,7 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
     year: 1992,
     hints: [
       'Come inside, O gentle breeze, carrying my flower\'s fragrance...',
+      'A desire to spread wings and fly away...',
       'The sky leans down and gently touches the moon...',
       'Little little wishes, little little wishes...',
     ],
@@ -76,7 +76,6 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
       'little\\s*little\\s*wish',
       'small\\s*small\\s*wish',
     ],
-    funFact: 'Sung by S.P. Balasubrahmanyam and Minmini for the film Roja, this song has enchanted Tamil audiences for over three decades.',
   },
 
   {
@@ -87,6 +86,7 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
     year: 1995,
     hints: [
       'Are two eyes even enough to express this love?',
+      'This entire love bloomed like a flower from a single drop of rain...',
       'O glowing lamp, you are the garland of all my love...',
       'My life, my life, my life, my very life...',
     ],
@@ -94,7 +94,6 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
       '^uyire?$',
       'uyir[ei]\\s*uyir[ei]',
     ],
-    funFact: 'From the 1995 Mani Ratnam masterpiece Bombay. Sung by Hariharan, this song remains one of AR Rahman\'s most celebrated compositions.',
   },
 
   {
@@ -104,6 +103,7 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
     hints: [
+      'A single drop of damp breeze brings your scent...',
       'O love, O love, please don\'t kill me...',
       'My love has dissolved into an illusion...',
       'Will you cross the skies to come to me?',
@@ -114,7 +114,6 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
       '\\bvtv\\b',
       'cross\\s*the\\s*sk(y|ies)',
     ],
-    funFact: 'The title track from Gautham Menon\'s 2010 cult classic. Sung by Karthik, this song defined a generation of Tamil romance.',
   },
 
   {
@@ -125,6 +124,7 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
     year: 2006,
     hints: [
       'I walked into a place where I didn\'t even know the way...',
+      'I will rent space from the moon and make you reside in my eyes...',
       'You came as a dream that my eyes had never seen...',
       'Come before me, my love, come to me...',
     ],
@@ -133,16 +133,16 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
       'munbe\\s*va',
       'en\\s*anbe\\s*vaa?',
     ],
-    funFact: 'Composed by A.R. Rahman for Sillunu Oru Kaadhal (2006). Sung by Naresh Iyer and Shreya Ghoshal, it won the Filmfare Award for Best Song.',
   },
 
   {
     id: 'paatify-006',
     date: '2026-05-31',
     song: 'Nenjukkul Peidhidum',
-    movie: 'Vinnaithaandi Varuvaayaa',
+    movie: 'Vaaranam Aayiram',
     year: 2010,
     hints: [
+      'Suddenly the weather changes completely, and the mistake is all yours, my girl...',
       'You left, forgetting me — and then came back searching for me...',
       'O rain, O rain, come along with me...',
       'The rain that keeps falling deep inside my heart...',
@@ -153,7 +153,6 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
       'nenjukul\\s*peidhidum',
       'nenjukkul',
     ],
-    funFact: 'Sung by Haricharan for Vinnaithaandi Varuvaayaa, this melancholic masterpiece by A.R. Rahman is considered one of the finest Tamil rain songs.',
   },
 
   {
@@ -165,6 +164,7 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
     hints: [
       'Who am I to you? And who are you to me?',
       'You touched and touched just to look; you asked and asked just to listen...',
+      'You threw a stone at my glass heart, breaking it into pieces...',
       'Apple of my eye, you are the dizziness behind my gaze...',
     ],
     acceptedPatterns: [
@@ -172,7 +172,6 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
       'kanana\\s*kaney',
       'kannaana\\s*kanne',
     ],
-    funFact: 'From the 2019 blockbuster Viswasam starring Ajith Kumar. Composed by D. Imman and sung by Sid Sriram, this father-daughter lullaby became a massive hit.',
   },
 
 ]

@@ -16,9 +16,9 @@ const GAMES = [
   {
     slug: 'paatify',
     name: 'Paatify',
-    description: 'Guess today\'s Tamil song from 3 lyric hints.',
+    description: 'Guess today\'s Tamil song from 5 lyric hints.',
     badge: '🎵 Daily',
-    accent: '#8b5cf6',
+    accent: '#1DB954',
     icon: 'music',
   },
 ]
@@ -70,7 +70,7 @@ export default function GamesHubPage() {
                     </p>
                     <span style={{
                       fontSize: 10, fontWeight: 700, color: game.accent,
-                      background: 'rgba(255,107,0,0.1)', borderRadius: 20,
+                      background: `${game.accent}18`, borderRadius: 20,
                       padding: '2px 8px', letterSpacing: '0.06em', textTransform: 'uppercase',
                     }}>
                       {game.badge}

@@ -38,7 +38,7 @@ export default function PaatifyLandingPage() {
           font-size: 52px;
           font-weight: 900;
           letter-spacing: -0.04em;
-          background: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 55%, #c4b5fd 100%);
+          background: linear-gradient(135deg, #1DB954 0%, #1ed760 55%, #4ade80 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           background-clip: text;
@@ -50,7 +50,7 @@ export default function PaatifyLandingPage() {
         }
         .pt-play-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 16px 48px rgba(139,92,246,0.45) !important;
+          box-shadow: 0 16px 48px rgba(29,185,84,0.45) !important;
         }
         .pt-play-btn:active { transform: translateY(0); }
         .pt-note { animation: pt-note-float 3.2s ease-in-out infinite; display: inline-block; }
@@ -58,8 +58,8 @@ export default function PaatifyLandingPage() {
           transition: background 0.2s, border-color 0.2s;
         }
         .pt-step-card:hover {
-          background: rgba(139,92,246,0.08) !important;
-          border-color: rgba(139,92,246,0.4) !important;
+          background: rgba(29,185,84,0.08) !important;
+          border-color: rgba(29,185,84,0.4) !important;
         }
 
       `}</style>
@@ -98,10 +98,10 @@ export default function PaatifyLandingPage() {
             <span style={{
               fontSize: 11, fontWeight: 700,
               padding: '4px 12px',
-              background: 'rgba(139,92,246,0.12)',
-              color: '#a78bfa',
+              background: 'rgba(29,185,84,0.12)',
+              color: '#1ed760',
               borderRadius: 20,
-              border: '1px solid rgba(139,92,246,0.3)',
+              border: '1px solid rgba(29,185,84,0.3)',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
             }}>
@@ -129,10 +129,10 @@ export default function PaatifyLandingPage() {
                 }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                    background: 'rgba(139,92,246,0.12)',
-                    border: '1px solid rgba(139,92,246,0.25)',
+                    background: 'rgba(29,185,84,0.12)',
+                    border: '1px solid rgba(29,185,84,0.25)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: '#a78bfa',
+                    color: '#1ed760',
                   }}>
                     {step.icon}
                   </div>
@@ -152,11 +152,11 @@ export default function PaatifyLandingPage() {
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
                 width: '100%', padding: '17px 24px',
-                background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                background: 'linear-gradient(135deg, #1DB954 0%, #17a349 100%)',
                 borderRadius: 16, border: 'none',
                 color: '#fff', fontSize: 16, fontWeight: 800,
                 textDecoration: 'none',
-                boxShadow: '0 8px 32px rgba(139,92,246,0.35)',
+                boxShadow: '0 8px 32px rgba(29,185,84,0.35)',
                 letterSpacing: '-0.01em',
               }}
             >

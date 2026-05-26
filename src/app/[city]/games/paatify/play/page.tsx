@@ -228,7 +228,7 @@ export default function PaatifyPlayPage() {
           <div style={{ fontSize: 48, marginBottom: 16 }}>🎵</div>
           <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--text)', marginBottom: 8 }}>No song today</h1>
           <p style={{ color: 'var(--text-3)', marginBottom: 24, fontSize: 14 }}>Come back tomorrow for a new Tamil song!</p>
-          <Link href="/" style={{ color: '#8b5cf6', fontWeight: 600, textDecoration: 'none', fontSize: 14 }}>← Back to Outsyd</Link>
+          <Link href="/" style={{ color: '#1DB954', fontWeight: 600, textDecoration: 'none', fontSize: 14 }}>← Back to Outsyd</Link>
         </div>
       </main>
     )
@@ -261,7 +261,7 @@ export default function PaatifyPlayPage() {
         }
         .won-card { animation: wonAppear 0.4s ease forwards; }
         .guess-btn { transition: all 0.2s ease; }
-        .guess-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,92,246,0.4); }
+        .guess-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(29,185,84,0.4); }
         .guess-btn:active { opacity: 0.75; transform: translateY(0); box-shadow: none; }
         .share-btn:hover { opacity: 0.85; }
         @keyframes suggestFade {
@@ -270,7 +270,7 @@ export default function PaatifyPlayPage() {
         }
         .suggestions-list { animation: suggestFade 0.15s ease; }
         .suggestion-item { transition: background 0.15s; cursor: pointer; }
-        .suggestion-item:hover { background: rgba(139,92,246,0.12) !important; }
+        .suggestion-item:hover { background: rgba(29,185,84,0.12) !important; }
       `}</style>
 
       <main style={{ minHeight: '100vh', background: 'var(--bg)', paddingTop: 80, paddingBottom: 60 }}>
@@ -281,14 +281,14 @@ export default function PaatifyPlayPage() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 0 20px' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                  <Music size={16} color="#8b5cf6" />
+                  <Music size={16} color="#1DB954" />
                   <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em' }}>
                     Guess this Song
                   </span>
                 </div>
                 <p style={{ fontSize: 12, color: 'var(--text-2)', fontWeight: 500 }}>{dateDisplay}</p>
               </div>
-              <span style={{ fontSize: 18, fontWeight: 900, color: '#8b5cf6', letterSpacing: '-0.02em' }}>
+              <span style={{ fontSize: 18, fontWeight: 900, color: '#1DB954', letterSpacing: '-0.02em' }}>
                 Hint {hintIndex + 1}
               </span>
             </div>
@@ -304,18 +304,18 @@ export default function PaatifyPlayPage() {
           ) : (
             <div className="hint-card" key={hintIndex} style={{
               borderRadius: 20,
-              background: 'linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(109,40,217,0.05) 100%)',
-              border: '1.5px solid rgba(139,92,246,0.25)',
+              background: 'linear-gradient(135deg, rgba(29,185,84,0.1) 0%, rgba(21,138,62,0.05) 100%)',
+              border: '1.5px solid rgba(29,185,84,0.25)',
               padding: '48px 32px',
               textAlign: 'center',
               minHeight: 220,
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
             }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(139,92,246,0.6)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 18 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(29,185,84,0.6)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 18 }}>
                 Hint {hintIndex + 1} of 5
               </div>
-              <div style={{ fontSize: 48, color: 'rgba(139,92,246,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginBottom: 12 }}>❝</div>
+              <div style={{ fontSize: 48, color: 'rgba(29,185,84,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginBottom: 12 }}>❝</div>
               <p style={{
                 fontSize: 20, fontStyle: 'italic',
                 color: 'var(--text)', lineHeight: 1.75,
@@ -326,7 +326,7 @@ export default function PaatifyPlayPage() {
                   ? puzzle.hints.map(h => h.trim().replace(/\.+$/, '')).join('. ') + '.'
                   : puzzle.hints[hintIndex]}
               </p>
-              <div style={{ fontSize: 48, color: 'rgba(139,92,246,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginTop: 12 }}>❞</div>
+              <div style={{ fontSize: 48, color: 'rgba(29,185,84,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginTop: 12 }}>❞</div>
             </div>
           )}
 
@@ -337,7 +337,7 @@ export default function PaatifyPlayPage() {
                 <div key={i} style={{
                   width: i === hintIndex ? 20 : 8, height: 8,
                   borderRadius: 4, transition: 'all 0.3s ease',
-                  background: i === hintIndex ? '#8b5cf6' : 'var(--border)',
+                  background: i === hintIndex ? '#1DB954' : 'var(--border)',
                 }} />
               ))}
             </div>
@@ -353,7 +353,7 @@ export default function PaatifyPlayPage() {
                     value={input}
                     onChange={e => handleInputChange(e.target.value)}
                     onKeyDown={e => e.key === 'Enter' && handleGuess()}
-                    placeholder="Yennamo Edho..."
+                    placeholder="Start typing a song or movie name…"
                     autoComplete="off"
                     style={{
                       flex: 1, padding: '14px 16px',
@@ -362,7 +362,7 @@ export default function PaatifyPlayPage() {
                       outline: 'none', fontFamily: 'inherit',
                     }}
                     onFocus={e => {
-                      e.currentTarget.style.borderColor = '#8b5cf6'
+                      e.currentTarget.style.borderColor = '#1DB954'
                       if (suggestions.length > 0) setShowSuggestions(true)
                     }}
                     onBlur={e => {
@@ -375,7 +375,7 @@ export default function PaatifyPlayPage() {
                     className="guess-btn"
                     style={{
                       padding: '14px 22px', borderRadius: 12,
-                      background: '#8b5cf6',
+                      background: '#1DB954',
                       border: 'none', color: '#fff', fontSize: 14, fontWeight: 700,
                       cursor: 'pointer', whiteSpace: 'nowrap',
                     }}
@@ -388,7 +388,7 @@ export default function PaatifyPlayPage() {
                   <div className="suggestions-list" style={{
                     position: 'absolute', top: '100%', left: 0, right: 0,
                     marginTop: 4, borderRadius: 12, overflow: 'hidden',
-                    border: '1.5px solid rgba(139,92,246,0.25)',
+                    border: '1.5px solid rgba(29,185,84,0.25)',
                     background: 'var(--bg-elevated)',
                     boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
                     zIndex: 50,
@@ -400,7 +400,7 @@ export default function PaatifyPlayPage() {
                         onMouseDown={() => selectSuggestion(s.trackName)}
                         style={{
                           padding: '11px 16px',
-                          borderBottom: i < suggestions.length - 1 ? '1px solid rgba(139,92,246,0.1)' : 'none',
+                          borderBottom: i < suggestions.length - 1 ? '1px solid rgba(29,185,84,0.1)' : 'none',
                           background: 'transparent',
                         }}
                       >
@@ -504,13 +504,13 @@ function WonCard({
   return (
     <div className="won-card" style={{
       borderRadius: 16,
-      background: 'rgba(139,92,246,0.07)',
-      border: '1.5px solid rgba(139,92,246,0.35)',
+      background: 'rgba(29,185,84,0.07)',
+      border: '1.5px solid rgba(29,185,84,0.35)',
       padding: '32px 24px', textAlign: 'center',
-      boxShadow: '0 0 40px rgba(139,92,246,0.15)',
+      boxShadow: '0 0 40px rgba(29,185,84,0.15)',
     }}>
       <div style={{ fontSize: 36, marginBottom: 10 }}>🎉</div>
-      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#a78bfa', marginBottom: 6, letterSpacing: '-0.02em' }}>
+      <h2 style={{ fontSize: 22, fontWeight: 900, color: '#1ed760', marginBottom: 6, letterSpacing: '-0.02em' }}>
         Correct! You&apos;re a Paatify Pro!
       </h2>
       <p style={{ fontSize: 15, color: 'var(--text-2)', fontWeight: 600, marginBottom: 24 }}>
@@ -520,12 +520,12 @@ function WonCard({
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: 24, marginBottom: 20 }}>
         <div>
-          <p style={{ fontSize: 20, fontWeight: 900, color: '#a78bfa' }}>{guessCount}/5</p>
+          <p style={{ fontSize: 20, fontWeight: 900, color: '#1ed760' }}>{guessCount}/5</p>
           <p style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Hints Used</p>
         </div>
         <div style={{ width: 1, background: 'var(--border)' }} />
         <div>
-          <p style={{ fontSize: 20, fontWeight: 900, color: '#a78bfa' }}>{formatPaatifyTime(finalElapsed)}</p>
+          <p style={{ fontSize: 20, fontWeight: 900, color: '#1ed760' }}>{formatPaatifyTime(finalElapsed)}</p>
           <p style={{ fontSize: 11, color: 'var(--text-3)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Time</p>
         </div>
       </div>
@@ -544,7 +544,7 @@ function WonCard({
 
       <Link href="/" style={{
         display: 'block', padding: '12px 16px',
-        background: '#8b5cf6', borderRadius: 12,
+        background: '#1DB954', borderRadius: 12,
         fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
         lineHeight: 1.4,
       }}>
@@ -564,8 +564,8 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: PaatifyPuzzle; onShare:
       <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text)', marginBottom: 4 }}>Game Over!</h2>
       <p style={{ fontSize: 14, color: 'var(--text-3)', marginBottom: 20 }}>The song was…</p>
 
-      <div style={{ background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.25)', borderRadius: 12, padding: '16px 20px', marginBottom: 8 }}>
-        <p style={{ fontSize: 24, fontWeight: 900, color: '#a78bfa', letterSpacing: '-0.02em' }}>
+      <div style={{ background: 'rgba(29,185,84,0.08)', border: '1px solid rgba(29,185,84,0.25)', borderRadius: 12, padding: '16px 20px', marginBottom: 8 }}>
+        <p style={{ fontSize: 24, fontWeight: 900, color: '#1ed760', letterSpacing: '-0.02em' }}>
           {puzzle.song}
         </p>
         <p style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 4 }}>
@@ -587,7 +587,7 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: PaatifyPuzzle; onShare:
 
       <Link href="/" style={{
         display: 'block', padding: '12px 16px',
-        background: '#8b5cf6', borderRadius: 12,
+        background: '#1DB954', borderRadius: 12,
         fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
         lineHeight: 1.4,
       }}>

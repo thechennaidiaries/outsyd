@@ -286,4 +286,95 @@ export const PUZZLES: GamePuzzle[] = [
       'gurunanak',
     ],
   },
+  {
+    id: 'game-020',
+    date: '2026-05-27',
+    location: 'Anna Centenary Library',
+    area: 'Kotturpuram',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/annalibrary1.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/annalibrary2.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/annalibrary3.jpg',
+    ],
+    acceptedPatterns: [
+      'anna\\s*cent[ae]n[ae]ry\\s*lib(rary)?',
+      'cent[ae]n[ae]ry\\s*lib(rary)?',
+      'anna\\s*lib(rary)?',
+      'anna\\s*lib',
+    ],
+  },
+
+  {
+    id: 'game-021',
+    date: '2026-05-28',
+    location: 'Bask by Coffee',
+    area: 'Teynampet',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/bask1.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/bask2.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/bask3.jpg',
+    ],
+    acceptedPatterns: [
+      'bask\\s*by\\s*cof+e+',
+      'bask\\s*(caf[eé]|cafe)',
+      'bask\\s*teyn[ae]mp[ae]t',
+      '\\bbask\\b',
+    ],
+  },
+
+  {
+    id: 'game-022',
+    date: '2026-05-29',
+    location: 'Vandalur Zoo',
+    area: 'Vandalur',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/vandalur1.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/vandalur22.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/vandalur3.jpg',
+    ],
+    acceptedPatterns: [
+      'van?dal[uo]r\\s*(zoo)?',
+      'arignar\\s*anna\\s*(zoo(logical)?\\s*(park)?)?',
+      'anna\\s*zoo(logical)?\\s*(park)?',
+      'anna\\s*park',
+    ],
+  },
+
+  {
+    id: 'game-023',
+    date: '2026-05-30',
+    location: 'Ciclo Cafe',
+    area: 'Nungambakkam',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/ciclo1.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/%20ciclo2.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/ciclo3.jpg',
+    ],
+    acceptedPatterns: [
+      'c[iy]cl[ao]\\s*(caf[eé]|cafe)?',
+      'siklo\\s*(caf[eé]|cafe)?',
+    ],
+  },
+
+  {
+    id: 'game-024',
+    date: '2026-05-31',
+    location: 'Kamala Cinemas',
+    area: 'Thousand Lights',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/kamala1.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/kamala2.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/kamala3.jpg',
+    ],
+    acceptedPatterns: [
+      'kamal+a\\s*(cinema[s]?|theatre|theater|t[h]?eatre)?',
+      '\\bkamala\\b',
+    ],
+  },
+
 ]

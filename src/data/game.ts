@@ -312,7 +312,7 @@ export const PUZZLES: GamePuzzle[] = [
     area: 'Teynampet',
     placeType: 'Place',
     images: [
-      'https://ik.imagekit.io/zxnq8x4yz/bask1.jpg',
+      'https://ik.imagekit.io/zxnq8x4yz/images%20of%20things%20to%20do/bask1.jpeg',
       'https://ik.imagekit.io/zxnq8x4yz/bask2.jpg',
       'https://ik.imagekit.io/zxnq8x4yz/bask3.jpg',
     ],

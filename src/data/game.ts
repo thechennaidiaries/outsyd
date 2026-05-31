@@ -6,6 +6,7 @@ export interface GamePuzzle {
   placeType: string                   // e.g. 'Area', 'Landmark', 'Temple'
   images: [string, string, string]    // clue 1 (hardest) → clue 3 (easiest)
   acceptedPatterns: string[]          // regex pattern strings
+  aliases?: string[]                  // optional plain text aliases for fuzzy matching/typo tolerance
   funFact?: string
   mapsLink?: string
 }
@@ -17,11 +18,72 @@ export function getTodayIST(): string {
   }).format(new Date())
 }
 
+export function normalizeString(str: string): string {
+  return str.trim().toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ')
+}
+
+export function levenshteinDistance(s1: string, s2: string): number {
+  const m = s1.length
+  const n = s2.length
+  const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0))
+
+  for (let i = 0; i <= m; i++) dp[i][0] = i
+  for (let j = 0; j <= n; j++) dp[0][j] = j
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (s1[i - 1] === s2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1]
+      } else {
+        dp[i][j] = Math.min(
+          dp[i - 1][j] + 1,    // deletion
+          dp[i][j - 1] + 1,    // insertion
+          dp[i - 1][j - 1] + 1 // substitution
+        )
+      }
+    }
+  }
+  return dp[m][n]
+}
+
+export function isFuzzyMatch(inputNorm: string, targetNorm: string): boolean {
+  if (!inputNorm || !targetNorm) return false
+  const dist = levenshteinDistance(inputNorm, targetNorm)
+  const len = targetNorm.length
+
+  if (len <= 4) {
+    return dist === 0 // exact match only for very short targets (e.g. "au")
+  } else if (len <= 8) {
+    return dist <= 1  // 1 typo allowed for medium targets
+  } else {
+    return dist <= 2  // 2 typos allowed for long targets
+  }
+}
+
 export function checkAnswer(input: string, puzzle: GamePuzzle): boolean {
-  const norm = input.trim().toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, ' ')
-  return puzzle.acceptedPatterns.some(p => {
-    try { return new RegExp(p, 'i').test(norm) } catch { return false }
+  const normInput = normalizeString(input)
+  if (!normInput) return false
+
+  // 1. Regular Expression / Exact Matching (First priority, ensures backwards compatibility)
+  const matchedRegex = puzzle.acceptedPatterns.some(p => {
+    try { return new RegExp(p, 'i').test(normInput) } catch { return false }
   })
+  if (matchedRegex) return true
+
+  // 2. Fuzzy Matching & Typo Tolerance (Fallback)
+  const targets = new Set<string>()
+  targets.add(normalizeString(puzzle.location))
+  if (puzzle.aliases) {
+    puzzle.aliases.forEach(a => targets.add(normalizeString(a)))
+  }
+
+  for (const target of targets) {
+    if (isFuzzyMatch(normInput, target)) {
+      return true
+    }
+  }
+
+  return false
 }
 
 export function formatTime(seconds: number): string {
@@ -374,6 +436,28 @@ export const PUZZLES: GamePuzzle[] = [
     acceptedPatterns: [
       'kamal+a\\s*(cinema[s]?|theatre|theater|t[h]?eatre)?',
       '\\bkamala\\b',
+    ],
+  },
+  {
+    id: 'game-025',
+    date: '2026-06-01',
+    location: 'Anna University',
+    area: 'Guindy',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/annauniv1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/anna2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/annauniv3.webp',
+    ],
+    acceptedPatterns: [
+      'anna\\s*university',
+      'anna\\s*univ',
+      '\\ba\\s*u\\b',
+    ],
+    aliases: [
+      'anna university',
+      'anna univ',
+      'au',
     ],
   },
 

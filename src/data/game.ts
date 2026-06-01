@@ -460,5 +460,27 @@ export const PUZZLES: GamePuzzle[] = [
       'au',
     ],
   },
+  {
+    id: 'game-026',
+    date: '2026-06-02',
+    location: 'Chennai Trade Centre',
+    area: 'Nandambakkam',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/tradecentreone.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/tradecentre2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/tradecentre3.webp',
+    ],
+    acceptedPatterns: [
+      'chennai\\s*trade\\s*cen?tr[ea]',
+      'trade\\s*cen?tr[ea]',
+      '\\bc\\s*t\\s*c\\b',
+    ],
+    aliases: [
+      'chennai trade centre',
+      'trade centre',
+      'ctc',
+    ],
+  },
 
 ]

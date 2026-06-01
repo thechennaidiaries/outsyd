@@ -1,23 +1,23 @@
 import { checkAnswer, PUZZLES } from '../src/data/game';
 
-const puzzle = PUZZLES.find(p => p.id === 'game-025');
+const puzzle = PUZZLES.find(p => p.id === 'game-026');
 if (!puzzle) {
-  console.error("Error: Could not find game-025 in PUZZLES!");
+  console.error("Error: Could not find game-026 in PUZZLES!");
   process.exit(1);
 }
 
 const testCases = [
-  { input: 'Anna University', expected: true, desc: 'Exact match' },
-  { input: 'anna university', expected: true, desc: 'Case insensitive' },
-  { input: 'Ana University', expected: true, desc: '1 typo (Anna -> Ana)' },
-  { input: 'Anna Univesrity', expected: true, desc: '2 typos (University -> Univesrity)' },
-  { input: 'Anna Univ', expected: true, desc: 'Alternate form regex/alias' },
-  { input: 'Ana Univ', expected: true, desc: '1 typo on alternate form' },
-  { input: 'au', expected: true, desc: 'Exact abbreviation' },
-  { input: 'a.u.', expected: true, desc: 'Abbreviation with punctuation' },
-  { input: 'Annamalai University', expected: false, desc: 'Too many typos' },
+  { input: 'Chennai Trade Centre', expected: true, desc: 'Exact match' },
+  { input: 'chennai trade center', expected: true, desc: 'Case/spelling variation' },
+  { input: 'Trade Centre', expected: true, desc: 'Alternate form alias' },
+  { input: 'Trade Center', expected: true, desc: 'Alternate form variation' },
+  { input: 'Chenai Trade Centre', expected: true, desc: '1 typo (Chennai -> Chenai)' },
+  { input: 'Chennai Trdae Centre', expected: true, desc: 'Single transposition / 2 edits (Trdae)' },
+  { input: 'ctc', expected: true, desc: 'Exact abbreviation' },
+  { input: 'c.t.c.', expected: true, desc: 'Abbreviation with punctuation' },
+  { input: 'c t c', expected: true, desc: 'Abbreviation with space' },
+  { input: 'Chennai Central', expected: false, desc: 'Completely different place' },
   { input: 'Loyola College', expected: false, desc: 'Completely different place' },
-  { input: 'a u', expected: true, desc: 'Abbreviation with space' },
 ];
 
 let failed = 0;

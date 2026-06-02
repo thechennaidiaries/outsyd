@@ -202,7 +202,7 @@ export default function Navbar() {
 
                     {/* ── Game ── */}
                     <Link
-                        href={`/${citySlug}/games/routethala`}
+                        href={`/${citySlug}/games`}
                         style={{
                             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
                             textDecoration: 'none', flex: 1,

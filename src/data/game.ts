@@ -71,14 +71,21 @@ export function checkAnswer(input: string, puzzle: GamePuzzle): boolean {
   if (matchedRegex) return true
 
   // 2. Fuzzy Matching & Typo Tolerance (Fallback)
-  const targets = new Set<string>()
-  targets.add(normalizeString(puzzle.location))
-  if (puzzle.aliases) {
-    puzzle.aliases.forEach(a => targets.add(normalizeString(a)))
+  const targets: string[] = []
+  const addTarget = (val: string) => {
+    const norm = normalizeString(val)
+    if (norm && targets.indexOf(norm) === -1) {
+      targets.push(norm)
+    }
   }
 
-  for (const target of targets) {
-    if (isFuzzyMatch(normInput, target)) {
+  addTarget(puzzle.location)
+  if (puzzle.aliases) {
+    puzzle.aliases.forEach(addTarget)
+  }
+
+  for (let i = 0; i < targets.length; i++) {
+    if (isFuzzyMatch(normInput, targets[i])) {
       return true
     }
   }

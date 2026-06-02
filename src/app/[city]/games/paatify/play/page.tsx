@@ -218,7 +218,6 @@ export default function PaatifyPlayPage() {
   const puzzle = puzzleRef.current
   const puzzleIndex = puzzle ? PAATIFY_PUZZLES.findIndex(p => p.id === puzzle.id) : -1
   const puzzleNumber = puzzleIndex >= 0 ? puzzleIndex + 1 : '?'
-  const dateDisplay = `Paatify #${puzzleNumber}`
   const displayTime = (status === 'won' || status === 'lost') ? finalElapsed : elapsed
 
   if (!puzzle) {
@@ -283,14 +282,11 @@ export default function PaatifyPlayPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                   <Music size={16} color="#1DB954" />
                   <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em' }}>
-                    Guess this Song
+                    Paatify Game
                   </span>
                 </div>
-                <p style={{ fontSize: 12, color: 'var(--text-2)', fontWeight: 500 }}>{dateDisplay}</p>
+                <p style={{ fontSize: 12, color: 'var(--text-2)', fontWeight: 500 }}>Guess the Tamil Song from Google Translated Lyrics</p>
               </div>
-              <span style={{ fontSize: 18, fontWeight: 900, color: '#1DB954', letterSpacing: '-0.02em' }}>
-                Hint {hintIndex + 1}
-              </span>
             </div>
           )}
 
@@ -312,12 +308,11 @@ export default function PaatifyPlayPage() {
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
             }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(29,185,84,0.6)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 18 }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em', marginBottom: 20 }}>
                 Hint {hintIndex + 1} of 5
               </div>
-              <div style={{ fontSize: 48, color: 'rgba(29,185,84,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginBottom: 12 }}>❝</div>
               <p style={{
-                fontSize: 20, fontStyle: 'italic',
+                fontSize: 16, fontStyle: 'italic',
                 color: 'var(--text)', lineHeight: 1.75,
                 fontWeight: 500, letterSpacing: '0.01em',
                 maxWidth: 380,
@@ -326,7 +321,6 @@ export default function PaatifyPlayPage() {
                   ? puzzle.hints.map(h => h.trim().replace(/\.+$/, '')).join('. ') + '.'
                   : puzzle.hints[hintIndex]}
               </p>
-              <div style={{ fontSize: 48, color: 'rgba(29,185,84,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginTop: 12 }}>❞</div>
             </div>
           )}
 

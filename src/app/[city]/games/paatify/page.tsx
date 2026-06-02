@@ -3,6 +3,9 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { Music, Mic2, Share2, PlayCircle } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { fetchPaatifyWins } from '@/lib/supabase-data'
+import { getTodayISTPatify } from '@/data/paatify'
 
 const HOW_TO_PLAY = [
   { icon: <Music size={18} />, text: 'Guess the Tamil song from Google Translated English lyrics.' },
@@ -13,6 +16,11 @@ const HOW_TO_PLAY = [
 export default function PaatifyLandingPage() {
   const params = useParams()
   const city = params?.city ?? 'chennai'
+  const [winCount, setWinCount] = useState<number | null>(null)
+
+  useEffect(() => {
+    fetchPaatifyWins(getTodayISTPatify()).then(setWinCount)
+  }, [])
 
   return (
     <>
@@ -169,6 +177,14 @@ export default function PaatifyLandingPage() {
             }}>
               Free · No signup required · Resets daily at midnight IST
             </p>
+            {winCount !== null && winCount > 0 && (
+              <p style={{
+                textAlign: 'center', fontSize: 13,
+                color: '#1ed760', marginTop: 10, fontWeight: 600,
+              }}>
+                🏆 {winCount.toLocaleString()} {winCount === 1 ? 'person has' : 'people have'} won today!
+              </p>
+            )}
           </div>
 
         </div>

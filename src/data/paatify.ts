@@ -39,15 +39,34 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
 
   {
     id: 'paatify-001',
-    date: '2026-05-26',
+    date: '2026-06-02',
+    song: 'Mutta Kalakki',
+    movie: 'Youth',
+    year: 2026,
+    hints: [
+      'When night comes, come into my dreams, my love\nI keep thinking brightly about you',
+      'Nothing I study stays inside my head\nThere is no one who can beat you in beauty',
+      'Shining girl, you make my heart tremble',
+      'Come here, you sassy girl, my egg scrambler!'
+    ],
+    acceptedPatterns: [
+      'mutta\\s*kalakki',
+      'muttai\\s*kalakki',
+      'kalakki',
+    ],
+  },
+
+  {
+    id: 'paatify-002',
+    date: '2026-06-03',
     song: 'Saachitale',
     movie: 'Love Today',
     year: 2022,
     hints: [
-      'The whole town looked at her, but she looked only at me...',
-      'She won\'t believe whatever anyone says; she\'s the one who asked for my number...',
-      'If boys try to show off in front of her, she wouldn\'t even notice them...',
-      'She started talking with me — am I really that smart?',
+      'The whole town looked at her\nBut she looked only at me',
+      'She won’t believe whatever anyone says\nShe’s the one who asked for my number',
+      'If boys try to show off infront of her\nshe wouldn’t even notice them',
+      'She started talking with me\nAm I really that smart?'
     ],
     acceptedPatterns: [
       'saachitale',
@@ -57,8 +76,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-002',
-    date: '2026-05-27',
+    id: 'paatify-003',
+    date: '2026-06-04',
     song: 'Chinna Chinna Aasai',
     movie: 'Roja',
     year: 1992,
@@ -79,8 +98,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-003',
-    date: '2026-05-28',
+    id: 'paatify-004',
+    date: '2026-06-05',
     song: 'Uyire',
     movie: 'Bombay',
     year: 1995,
@@ -97,8 +116,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-004',
-    date: '2026-05-29',
+    id: 'paatify-005',
+    date: '2026-06-06',
     song: 'Vinnaithaandi Varuvaayaa',
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
@@ -117,8 +136,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-005',
-    date: '2026-05-30',
+    id: 'paatify-006',
+    date: '2026-06-07',
     song: 'Munbe Vaa',
     movie: 'Sillunu Oru Kaadhal',
     year: 2006,
@@ -136,8 +155,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-006',
-    date: '2026-05-31',
+    id: 'paatify-007',
+    date: '2026-06-08',
     song: 'Nenjukkul Peidhidum',
     movie: 'Vaaranam Aayiram',
     year: 2010,
@@ -156,8 +175,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-007',
-    date: '2026-06-01',
+    id: 'paatify-008',
+    date: '2026-06-09',
     song: 'Kannaana Kanney',
     movie: 'Viswasam',
     year: 2019,

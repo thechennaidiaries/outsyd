@@ -203,8 +203,8 @@ export default function PaatifyPlayPage() {
     const puzzleIndex = PAATIFY_PUZZLES.findIndex(p => p.id === puzzle.id)
     const puzzleNumber = puzzleIndex >= 0 ? puzzleIndex + 1 : '?'
     const text = status === 'won'
-      ? `🎵 Paatify #${puzzleNumber}\nI guessed today's Tamil song in ${guessCount}/5 hints! ⏱️ ${formatPaatifyTime(finalElapsed)}\n\n${emojis}\n\nCan you beat my score? outsyd.in/chennai/games/paatify`
-      : `🎵 Paatify #${puzzleNumber}\n\nI couldn't crack today's Tamil song 😔 Can you?\n\n🟥🟥🟥🟥🟥\n\noutsyd.in/chennai/games/paatify`
+      ? `🎵 Paatify #${puzzleNumber}\nI guessed today's Tamil song in ${guessCount}/5 hints! ⏱️ ${formatPaatifyTime(finalElapsed)}\n\n${emojis}\n\nCan you beat my score? Play at: paatify.in`
+      : `🎵 Paatify #${puzzleNumber}\n\nI couldn't crack today's Tamil song 😔 Can you?\n\n🟥🟥🟥🟥🟥\n\nPlay at: paatify.in`
     if (navigator.share) { try { await navigator.share({ text }) } catch { /**/ } }
     else {
       await navigator.clipboard.writeText(text)
@@ -447,7 +447,7 @@ export default function PaatifyPlayPage() {
                 </span>
               </p>
               <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
-                Go to <span style={{ color: 'var(--text-2)', fontWeight: 700 }}>outsyd.in/chennai/games/paatify</span>
+                Go to <span style={{ color: 'var(--text-2)', fontWeight: 700 }}>paatify.in</span>
               </p>
             </div>
           )}

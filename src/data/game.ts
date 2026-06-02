@@ -489,5 +489,27 @@ export const PUZZLES: GamePuzzle[] = [
       'ctc',
     ],
   },
+  {
+    id: 'game-027',
+    date: '2026-06-03',
+    location: 'Tambaram Railway Station',
+    area: 'Tambaram',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/tambaram1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/tambaram2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/tam3blur.webp',
+    ],
+    acceptedPatterns: [
+      'tambaram\\s*railway\\s*station',
+      'tambaram\\s*station',
+      'tambaram',
+    ],
+    aliases: [
+      'tambaram railway station',
+      'tambaram station',
+      'tambaram',
+    ],
+  },
 
 ]

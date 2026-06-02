@@ -182,7 +182,7 @@ export default function PaatifyLandingPage() {
                 textAlign: 'center', fontSize: 13,
                 color: '#1ed760', marginTop: 10, fontWeight: 600,
               }}>
-                🏆 {winCount.toLocaleString()} {winCount === 1 ? 'person has' : 'people have'} won today!
+                🏆 {winCount.toLocaleString()} {winCount === 1 ? 'person' : 'people'} won paatify today
               </p>
             )}
           </div>

@@ -3,6 +3,9 @@
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { Music, Mic2, Share2, PlayCircle } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { fetchPaatifyWins } from '@/lib/supabase-data'
+import { getTodayISTPatify } from '@/data/paatify'
 
 const HOW_TO_PLAY = [
   { icon: <Music size={18} />, text: 'Guess the Tamil song from Google Translated English lyrics.' },
@@ -13,6 +16,33 @@ const HOW_TO_PLAY = [
 export default function PaatifyLandingPage() {
   const params = useParams()
   const city = params?.city ?? 'chennai'
+  const [winCount, setWinCount] = useState<number | null>(null)
+  const [displayCount, setDisplayCount] = useState(0)
+
+  // Fetch real count
+  useEffect(() => {
+    fetchPaatifyWins(getTodayISTPatify()).then(setWinCount)
+  }, [])
+
+  // Count-up animation when winCount arrives
+  useEffect(() => {
+    if (winCount === null || winCount === 0) return
+    const duration = 800 // ms
+    const steps = Math.min(winCount, 40) // max 40 increments for smoothness
+    const stepValue = winCount / steps
+    const stepMs = duration / steps
+    let current = 0
+    const id = setInterval(() => {
+      current += stepValue
+      if (current >= winCount) {
+        setDisplayCount(winCount)
+        clearInterval(id)
+      } else {
+        setDisplayCount(Math.floor(current))
+      }
+    }, stepMs)
+    return () => clearInterval(id)
+  }, [winCount])
 
   return (
     <>
@@ -169,6 +199,14 @@ export default function PaatifyLandingPage() {
             }}>
               Free · No signup required · Resets daily at midnight IST
             </p>
+            {winCount !== null && winCount > 0 && (
+              <p style={{
+                textAlign: 'center', fontSize: 13,
+                color: 'var(--text-3)', marginTop: 10, fontWeight: 500,
+              }}>
+                🏆 {displayCount.toLocaleString()} {displayCount === 1 ? 'person' : 'people'} won paatify today
+              </p>
+            )}
           </div>
 
         </div>

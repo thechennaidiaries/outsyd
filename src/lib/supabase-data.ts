@@ -473,3 +473,32 @@ export async function fetchClubTagsByCity(cityId: string): Promise<string[]> {
     clubs.forEach(c => c.tags.forEach(t => tagSet.add(t)))
     return Array.from(tagSet)
 }
+
+
+// ═══════════════════════════════════════════════════════════════════
+// PAATIFY STATS
+// ═══════════════════════════════════════════════════════════════════
+
+/** Fetch the win count for a given puzzle date (YYYY-MM-DD) */
+export async function fetchPaatifyWins(puzzleDate: string): Promise<number> {
+    if (!supabaseClient) return 0
+    const { data, error } = await supabaseClient
+        .from('paatify_stats')
+        .select('wins')
+        .eq('puzzle_date', puzzleDate)
+        .single()
+    if (error || !data) return 0
+    return data.wins ?? 0
+}
+
+/** Atomically increment the win counter for a puzzle date */
+export async function recordPaatifyWin(puzzleDate: string): Promise<void> {
+    if (!supabaseClient) return
+    await supabaseClient.rpc('increment_paatify_wins', { p_date: puzzleDate })
+}
+
+/** Atomically increment the loss counter for a puzzle date */
+export async function recordPaatifyLoss(puzzleDate: string): Promise<void> {
+    if (!supabaseClient) return
+    await supabaseClient.rpc('increment_paatify_losses', { p_date: puzzleDate })
+}

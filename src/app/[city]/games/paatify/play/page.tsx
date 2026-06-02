@@ -7,6 +7,7 @@ import {
   getPaatifyPuzzleForToday, checkPaatifyAnswer, formatPaatifyTime,
   getTodayISTPatify, PAATIFY_PUZZLES, type PaatifyPuzzle
 } from '@/data/paatify'
+import { recordPaatifyWin, recordPaatifyLoss } from '@/lib/supabase-data'
 
 type GameStatus = 'playing' | 'countdown' | 'won' | 'lost'
 const STORAGE_PREFIX = 'outsyd-paatify-'
@@ -168,6 +169,16 @@ export default function PaatifyPlayPage() {
     setShowSuggestions(false)
   }
 
+  // ── Stat submission (one-shot per device per day) ────────────────
+  function submitStatOnce(outcome: 'win' | 'loss') {
+    const today = getTodayISTPatify()
+    const key = `outsyd-paatify-submitted-${today}`
+    if (localStorage.getItem(key)) return
+    localStorage.setItem(key, '1')
+    if (outcome === 'win') recordPaatifyWin(today)
+    else recordPaatifyLoss(today)
+  }
+
   // ── Guess Handler ─────────────────────────────────────────────
   function handleGuess() {
     if (!puzzleRef.current || !input.trim() || status !== 'playing') return
@@ -177,6 +188,7 @@ export default function PaatifyPlayPage() {
       setGuessCount(hintIndex + 1)
       setStatus('won')
       setInput('')
+      submitStatOnce('win')
     } else {
       const next = [...guesses, trimmed]
       setGuesses(next)
@@ -184,6 +196,7 @@ export default function PaatifyPlayPage() {
       if (next.length >= 5) {
         setFinalElapsed(Math.floor((Date.now() - startTsRef.current) / 1000))
         setStatus('lost')
+        submitStatOnce('loss')
       } else {
         setLastWrong(trimmed)
         setStatus('countdown')

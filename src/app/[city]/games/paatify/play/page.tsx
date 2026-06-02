@@ -218,7 +218,6 @@ export default function PaatifyPlayPage() {
   const puzzle = puzzleRef.current
   const puzzleIndex = puzzle ? PAATIFY_PUZZLES.findIndex(p => p.id === puzzle.id) : -1
   const puzzleNumber = puzzleIndex >= 0 ? puzzleIndex + 1 : '?'
-  const dateDisplay = `Paatify #${puzzleNumber}`
   const displayTime = (status === 'won' || status === 'lost') ? finalElapsed : elapsed
 
   if (!puzzle) {
@@ -283,14 +282,11 @@ export default function PaatifyPlayPage() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                   <Music size={16} color="#1DB954" />
                   <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em' }}>
-                    Guess this Song
+                    Paatify Game
                   </span>
                 </div>
-                <p style={{ fontSize: 12, color: 'var(--text-2)', fontWeight: 500 }}>{dateDisplay}</p>
+                <p style={{ fontSize: 12, color: 'var(--text-2)', fontWeight: 500 }}>Guess the Tamil Song from Google Translated Lyrics</p>
               </div>
-              <span style={{ fontSize: 18, fontWeight: 900, color: '#1DB954', letterSpacing: '-0.02em' }}>
-                Hint {hintIndex + 1}
-              </span>
             </div>
           )}
 

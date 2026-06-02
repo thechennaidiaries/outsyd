@@ -308,10 +308,9 @@ export default function PaatifyPlayPage() {
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
             }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(29,185,84,0.6)', textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 18 }}>
+              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--text)', letterSpacing: '-0.02em', marginBottom: 20 }}>
                 Hint {hintIndex + 1} of 5
               </div>
-              <div style={{ fontSize: 48, color: 'rgba(29,185,84,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginBottom: 12 }}>❝</div>
               <p style={{
                 fontSize: 20, fontStyle: 'italic',
                 color: 'var(--text)', lineHeight: 1.75,
@@ -322,7 +321,6 @@ export default function PaatifyPlayPage() {
                   ? puzzle.hints.map(h => h.trim().replace(/\.+$/, '')).join('. ') + '.'
                   : puzzle.hints[hintIndex]}
               </p>
-              <div style={{ fontSize: 48, color: 'rgba(29,185,84,0.25)', lineHeight: 0.7, fontFamily: 'Georgia, serif', fontWeight: 700, marginTop: 12 }}>❞</div>
             </div>
           )}
 

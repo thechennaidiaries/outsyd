@@ -312,7 +312,7 @@ export default function PaatifyPlayPage() {
                 Hint {hintIndex + 1} of 5
               </div>
               <p style={{
-                fontSize: 20, fontStyle: 'italic',
+                fontSize: 16, fontStyle: 'italic',
                 color: 'var(--text)', lineHeight: 1.75,
                 fontWeight: 500, letterSpacing: '0.01em',
                 maxWidth: 380,

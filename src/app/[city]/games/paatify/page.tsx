@@ -17,10 +17,32 @@ export default function PaatifyLandingPage() {
   const params = useParams()
   const city = params?.city ?? 'chennai'
   const [winCount, setWinCount] = useState<number | null>(null)
+  const [displayCount, setDisplayCount] = useState(0)
 
+  // Fetch real count
   useEffect(() => {
     fetchPaatifyWins(getTodayISTPatify()).then(setWinCount)
   }, [])
+
+  // Count-up animation when winCount arrives
+  useEffect(() => {
+    if (winCount === null || winCount === 0) return
+    const duration = 800 // ms
+    const steps = Math.min(winCount, 40) // max 40 increments for smoothness
+    const stepValue = winCount / steps
+    const stepMs = duration / steps
+    let current = 0
+    const id = setInterval(() => {
+      current += stepValue
+      if (current >= winCount) {
+        setDisplayCount(winCount)
+        clearInterval(id)
+      } else {
+        setDisplayCount(Math.floor(current))
+      }
+    }, stepMs)
+    return () => clearInterval(id)
+  }, [winCount])
 
   return (
     <>
@@ -180,9 +202,9 @@ export default function PaatifyLandingPage() {
             {winCount !== null && winCount > 0 && (
               <p style={{
                 textAlign: 'center', fontSize: 13,
-                color: '#1ed760', marginTop: 10, fontWeight: 600,
+                color: 'var(--text-3)', marginTop: 10, fontWeight: 500,
               }}>
-                🏆 {winCount.toLocaleString()} {winCount === 1 ? 'person' : 'people'} won paatify today
+                🏆 {displayCount.toLocaleString()} {displayCount === 1 ? 'person' : 'people'} won paatify today
               </p>
             )}
           </div>

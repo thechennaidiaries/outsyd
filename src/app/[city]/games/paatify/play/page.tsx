@@ -447,7 +447,7 @@ export default function PaatifyPlayPage() {
                 </span>
               </p>
               <p style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 500 }}>
-                Go to <span style={{ color: 'var(--text-2)', fontWeight: 700 }}>paatify.in</span>
+                Just type <span style={{ color: 'var(--text-2)', fontWeight: 700 }}>paatify.in</span> on your browser
               </p>
             </div>
           )}

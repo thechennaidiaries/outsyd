@@ -16,6 +16,26 @@ export default function ContactUsPage() {
       position: 'relative', 
       overflow: 'hidden' 
     }}>
+      <style>{`
+        .contact-card-link {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          text-decoration: none;
+          color: var(--text-2);
+          transition: all 0.2s ease;
+          padding: 12px 16px;
+          border-radius: var(--radius);
+          background: rgba(255,255,255,0.02);
+          border: 1px solid rgba(255,255,255,0.03);
+        }
+        .contact-card-link:hover {
+          color: var(--text) !important;
+          border-color: rgba(255, 107, 0, 0.3) !important;
+          background: rgba(255, 107, 0, 0.04) !important;
+        }
+      `}</style>
+
       {/* Ambient background glows */}
       <div style={{ 
         position: 'absolute', 
@@ -100,28 +120,7 @@ export default function ContactUsPage() {
                 <a 
                   href="tel:+918096813884" 
                   id="contact-phone-link"
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 16, 
-                    textDecoration: 'none', 
-                    color: 'var(--text-2)',
-                    transition: 'all 0.2s ease',
-                    padding: '12px 16px',
-                    borderRadius: 'var(--radius)',
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.03)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = 'var(--text)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 107, 0, 0.3)';
-                    e.currentTarget.style.background = 'rgba(255, 107, 0, 0.04)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'var(--text-2)';
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.03)';
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-                  }}
+                  className="contact-card-link"
                 >
                   <div style={{ 
                     background: 'rgba(255, 107, 0, 0.1)', 
@@ -142,28 +141,7 @@ export default function ContactUsPage() {
                 <a 
                   href="mailto:thechennaidiaries@gmail.com" 
                   id="contact-email-link"
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: 16, 
-                    textDecoration: 'none', 
-                    color: 'var(--text-2)',
-                    transition: 'all 0.2s ease',
-                    padding: '12px 16px',
-                    borderRadius: 'var(--radius)',
-                    background: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(255,255,255,0.03)'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = 'var(--text)';
-                    e.currentTarget.style.borderColor = 'rgba(255, 107, 0, 0.3)';
-                    e.currentTarget.style.background = 'rgba(255, 107, 0, 0.04)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'var(--text-2)';
-                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.03)';
-                    e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
-                  }}
+                  className="contact-card-link"
                 >
                   <div style={{ 
                     background: 'rgba(255, 107, 0, 0.1)', 

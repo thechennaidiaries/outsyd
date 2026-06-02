@@ -16,7 +16,7 @@ const GAMES = [
   {
     slug: 'paatify',
     name: 'Paatify',
-    description: 'Guess today\'s Tamil song from 5 lyric hints.',
+    description: 'Guess today\'s mystery Tamil song in 5 chances',
     badge: '🎵 Daily',
     accent: '#1DB954',
     icon: 'music',

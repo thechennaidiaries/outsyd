@@ -512,4 +512,54 @@ export const PUZZLES: GamePuzzle[] = [
     ],
   },
 
+  {
+    id: 'game-028',
+    date: '2026-06-04',
+    location: 'CMBT Bus Stand',
+    area: 'Koyambedu',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/koyambedu1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/cmbt2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/cmbt3.jpg',
+    ],
+    acceptedPatterns: [
+      'cmbt\\s*(bus\\s*stand)?',
+      'koyambedu\\s*(bus\\s*stand)?',
+    ],
+    aliases: [
+      'cmbt',
+      'koyambedu',
+      'koyambedu bus stand',
+      'cmbt bus stand',
+    ],
+  },
+
+  {
+    id: 'game-029',
+    date: '2026-06-05',
+    location: 'Valluvar Kottam',
+    area: 'Nungambakkam',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/vlv1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/vlv2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/vlv3.webp',
+    ],
+    acceptedPatterns: [
+      'valluvar\\s*kottam',
+      'valluvar',
+      'kural\\s*mandapam',
+      'thiruvalluvar',
+      'thiruvalluvar\\s*memorial',
+    ],
+    aliases: [
+      'valluvar kottam',
+      'valluvar',
+      'kural mandapam',
+      'thiruvalluvar',
+      'thiruvalluvar memorial',
+    ],
+  },
+
 ]

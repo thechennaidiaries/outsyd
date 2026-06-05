@@ -44,6 +44,8 @@ export default function NewEventPage() {
     const [mapsLink, setMapsLink]       = useState('')
     const [description, setDescription] = useState('')
     const [image, setImage]             = useState('')
+    const [imageUploading, setImageUploading] = useState(false)
+    const [imageUploadErr, setImageUploadErr] = useState('')
     const [categories, setCategories]   = useState('')
     const [pricingType, setPricingType] = useState<'free'|'paid'>('paid')
     const [pricing, setPricing]         = useState('')
@@ -66,6 +68,25 @@ export default function NewEventPage() {
 
     function updateTier(key: number, field: keyof TierDraft, value: string) {
         setTiers(t => t.map(x => x.key === key ? { ...x, [field]: value } : x))
+    }
+
+    // ── Image upload ──────────────────────────────────────────────────────────
+    async function handleImageUpload(file: File) {
+        setImageUploadErr('')
+        setImageUploading(true)
+        try {
+            const fd = new FormData()
+            fd.append('file', file)
+            fd.append('folder', '/vendor-events')
+            const res = await fetch('/api/vendor/upload-image', { method: 'POST', body: fd })
+            const data = await res.json()
+            if (!res.ok) throw new Error(data.error || 'Upload failed')
+            setImage(data.url)
+        } catch (err: any) {
+            setImageUploadErr(err.message)
+        } finally {
+            setImageUploading(false)
+        }
     }
 
     // ── Submit ────────────────────────────────────────────────────────────────
@@ -174,20 +195,56 @@ export default function NewEventPage() {
                     </Field>
                 </Section>
 
-                {/* ── Section 2: Description & Image ───────────────────── */}
                 <Section title="Description & Image">
                     <Field label="Description">
                         <textarea style={{ ...styles.input, height: 90, resize: 'vertical' }}
                             value={description} onChange={e => setDescription(e.target.value)}
                             placeholder="One-liner or short description of the event" />
                     </Field>
-                    <Field label="Cover image URL (3:4 portrait — ImageKit)">
-                        <input style={styles.input} value={image} onChange={e => setImage(e.target.value)}
-                            placeholder="https://ik.imagekit.io/..." type="url" />
+                    <Field label="Cover image (3:4 portrait, max 5 MB)">
+                        <div
+                            style={{
+                                border: `2px dashed ${imageUploading ? '#555' : image ? '#4ade80' : '#2a2a2a'}`,
+                                borderRadius: 10, padding: '20px 16px', textAlign: 'center',
+                                cursor: imageUploading ? 'wait' : 'pointer',
+                                backgroundColor: '#1a1a1a', transition: 'border-color 0.2s',
+                            }}
+                            onClick={() => !imageUploading && document.getElementById('img-upload')?.click()}
+                            onDragOver={e => e.preventDefault()}
+                            onDrop={e => {
+                                e.preventDefault()
+                                const file = e.dataTransfer.files[0]
+                                if (file) handleImageUpload(file)
+                            }}
+                        >
+                            <input
+                                id="img-upload" type="file" accept="image/*"
+                                style={{ display: 'none' }}
+                                onChange={e => { const f = e.target.files?.[0]; if (f) handleImageUpload(f) }}
+                            />
+                            {imageUploading ? (
+                                <p style={{ color: '#888', fontSize: 13, margin: 0 }}>Uploading…</p>
+                            ) : image ? (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 14, justifyContent: 'center' }}>
+                                    <img src={image} alt="preview" style={styles.imagePreview} />
+                                    <div style={{ textAlign: 'left' }}>
+                                        <p style={{ color: '#4ade80', fontSize: 13, fontWeight: 600, margin: '0 0 4px' }}>✓ Uploaded</p>
+                                        <button type="button" onClick={e => { e.stopPropagation(); setImage('') }}
+                                            style={{ fontSize: 12, color: '#666', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <p style={{ fontSize: 22, margin: '0 0 8px' }}>🖼</p>
+                                    <p style={{ color: '#888', fontSize: 13, margin: '0 0 4px' }}>Drag & drop or click to upload</p>
+                                    <p style={{ color: '#555', fontSize: 11, margin: 0 }}>JPG, PNG, WEBP — 3:4 portrait recommended</p>
+                                </>
+                            )}
+                        </div>
+                        {imageUploadErr && <p style={{ color: '#f87171', fontSize: 12, margin: '6px 0 0' }}>{imageUploadErr}</p>}
                     </Field>
-                    {image && (
-                        <img src={image} alt="preview" style={styles.imagePreview} onError={e => (e.currentTarget.style.display = 'none')} />
-                    )}
                 </Section>
 
                 {/* ── Section 3: Categories & Pricing label ────────────── */}

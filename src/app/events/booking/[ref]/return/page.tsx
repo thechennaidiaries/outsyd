@@ -24,7 +24,7 @@ export default function BookingReturnPage({
     const [booking, setBooking] = useState<any>(null)
 
     useEffect(() => {
-        // Poll for a few seconds to allow webhook to process
+        // Poll every 3s for up to 36s — Cashfree sandbox can be slow
         let attempts = 0
         const interval = setInterval(async () => {
             attempts++
@@ -38,16 +38,16 @@ export default function BookingReturnPage({
                 } else if (data.paymentStatus === 'failed') {
                     setStatus('failed')
                     clearInterval(interval)
-                } else if (attempts >= 6) {
+                } else if (attempts >= 12) {
                     setStatus('pending')
                     setBooking(data)
                     clearInterval(interval)
                 }
-            } else if (attempts >= 6) {
+            } else if (attempts >= 12) {
                 setStatus('pending')
                 clearInterval(interval)
             }
-        }, 2000)
+        }, 3000)
         return () => clearInterval(interval)
     }, [ref])
 

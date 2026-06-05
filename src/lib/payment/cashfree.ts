@@ -90,26 +90,49 @@ export async function createCashfreeOrder(input: CashfreeOrderInput): Promise<Ca
 }
 
 // ── Verify Order Status (webhook fallback) ────────────────────────────────────
+// Uses GET /orders/{orderId} — simpler and more reliable than the payments list endpoint
 
 export async function verifyCashfreeOrder(
     orderId: string,
 ): Promise<{ status: string; cfPaymentId?: string } | null> {
     try {
-        const res = await fetch(`${CF_BASE}/orders/${orderId}/payments`, {
+        // First try the order status endpoint
+        const orderRes = await fetch(`${CF_BASE}/orders/${orderId}`, {
             method:  'GET',
             headers: cfHeaders(),
         })
-        if (!res.ok) return null
-        const payments = await res.json()
-        // payments is an array; find the successful one
-        const paid = Array.isArray(payments)
-            ? payments.find((p: any) => p.payment_status === 'SUCCESS')
-            : null
-        if (paid) {
-            return { status: 'PAID', cfPaymentId: paid.cf_payment_id?.toString() }
+        const orderData = await orderRes.json()
+        console.log(`[cashfree/verifyOrder] ${orderId} → status:${orderData.order_status}`, JSON.stringify(orderData).slice(0, 200))
+
+        if (!orderRes.ok) {
+            console.error('[cashfree/verifyOrder] Order fetch failed:', orderData)
+            return null
         }
-        return { status: 'PENDING' }
-    } catch {
+
+        // order_status: PAID means money received
+        if (orderData.order_status === 'PAID') {
+            // Now fetch payments to get cf_payment_id
+            const payRes = await fetch(`${CF_BASE}/orders/${orderId}/payments`, {
+                method:  'GET',
+                headers: cfHeaders(),
+            })
+            if (payRes.ok) {
+                const payments = await payRes.json()
+                const paid = Array.isArray(payments)
+                    ? payments.find((p: any) => p.payment_status === 'SUCCESS')
+                    : null
+                return {
+                    status:      'PAID',
+                    cfPaymentId: paid?.cf_payment_id?.toString() ?? `cf-${Date.now()}`,
+                }
+            }
+            // If payments fetch fails, still confirm with a fallback ID
+            return { status: 'PAID', cfPaymentId: `cf-${Date.now()}` }
+        }
+
+        return { status: orderData.order_status ?? 'PENDING' }
+    } catch (err) {
+        console.error('[cashfree/verifyOrder] Error:', err)
         return null
     }
 }

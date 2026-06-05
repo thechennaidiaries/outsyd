@@ -1,6 +1,6 @@
 /**
- * /account/bookings — Booking history page (server component).
- * Primary destination after completing a booking.
+ * /account/bookings — Unified booking history (activity bookings + event bookings)
+ * Server component.
  */
 
 import { getSession } from '@/lib/session'
@@ -8,23 +8,9 @@ import { supabase } from '@/lib/supabase'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ── Status configs ────────────────────────────────────────────────────────────
 
-interface Booking {
-    id: string
-    booking_reference: string
-    status: string
-    booking_date: string
-    time_slot: string
-    people_count: number
-    place_name: string
-    created_at: string
-    activity_id: string
-}
-
-// ── Status display helpers ─────────────────────────────────────────────────────
-
-const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string }> = {
+const ACTIVITY_STATUS: Record<string, { label: string; color: string; icon: string }> = {
     pending_vendor:  { label: 'Awaiting confirmation', color: '#f59e0b', icon: '⏳' },
     confirmed:       { label: 'Confirmed',             color: '#22c55e', icon: '✅' },
     rejected:        { label: 'Unavailable',           color: '#ef4444', icon: '❌' },
@@ -32,21 +18,45 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: string
     cancelled:       { label: 'Cancelled',             color: '#6b7280', icon: '✖️'  },
 }
 
+const EVENT_PAYMENT: Record<string, { label: string; color: string; icon: string }> = {
+    pending:  { label: 'Payment pending', color: '#f59e0b', icon: '⏳' },
+    paid:     { label: 'Confirmed',       color: '#22c55e', icon: '🎟' },
+    failed:   { label: 'Payment failed',  color: '#ef4444', icon: '❌' },
+    refunded: { label: 'Refunded',        color: '#6b7280', icon: '↩️' },
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function fmtDate(iso: string, timeOnly = false) {
+    const d = new Date(iso)
+    if (timeOnly) return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+    return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function BookingsPage() {
     const session = await getSession()
-    if (!session) redirect('/')
+    if (!session) redirect('/account/login?next=/account/bookings')
 
-    // Fetch user's bookings
-    const { data: bookings } = await supabase
+    // Fetch activity bookings
+    const { data: activityBookings } = await supabase
         .from('bookings')
         .select('id, booking_reference, status, booking_date, time_slot, people_count, place_name, created_at, activity_id')
         .eq('user_id', session.userId)
         .order('created_at', { ascending: false })
 
+    // Fetch event bookings
+    const { data: eventBookings } = await supabase
+        .from('event_bookings')
+        .select('id, booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status, created_at')
+        .eq('user_id', session.userId)
+        .order('created_at', { ascending: false })
+
+    const hasAny = (activityBookings?.length ?? 0) + (eventBookings?.length ?? 0) > 0
+
     return (
-        <main style={{ minHeight: '100vh', background: 'var(--bg)', padding: '24px 20px', maxWidth: 480, margin: '0 auto' }}>
+        <main style={{ minHeight: '100vh', background: 'var(--bg)', padding: '24px 20px', maxWidth: 520, margin: '0 auto' }}>
 
             {/* Header */}
             <div style={{ marginBottom: 28 }}>
@@ -62,7 +72,7 @@ export default async function BookingsPage() {
             </div>
 
             {/* Tab nav */}
-            <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 28 }}>
                 {[
                     { label: '📋 Bookings', href: '/account/bookings', active: true  },
                     { label: '❤️ Saved',   href: '/account/saved',    active: false },
@@ -81,7 +91,7 @@ export default async function BookingsPage() {
             </div>
 
             {/* Empty state */}
-            {(!bookings || bookings.length === 0) && (
+            {!hasAny && (
                 <div style={{
                     background: 'var(--bg-card)', border: '1px solid var(--border)',
                     borderRadius: 'var(--radius)', padding: '48px 24px', textAlign: 'center',
@@ -91,7 +101,7 @@ export default async function BookingsPage() {
                         No bookings yet
                     </div>
                     <div style={{ fontSize: 13, color: 'var(--text-3)', marginBottom: 24, lineHeight: 1.6 }}>
-                        Your booking requests will appear here after you submit them.
+                        Your bookings will appear here after you book an activity or event.
                     </div>
                     <Link href="/chennai/activities" style={{
                         padding: '12px 24px', borderRadius: 'var(--radius)',
@@ -103,49 +113,98 @@ export default async function BookingsPage() {
                 </div>
             )}
 
-            {/* Bookings list */}
-            {bookings && bookings.length > 0 && (
+            {hasAny && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                    {bookings.map((booking) => {
-                        const cfg = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG.pending_vendor
-                        const formattedDate = new Date(booking.booking_date + 'T00:00:00').toLocaleDateString('en-IN', {
-                            weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
-                        })
 
-                        return (
-                            <div key={booking.id} style={{
-                                background: 'var(--bg-card)', border: '1px solid var(--border)',
-                                borderRadius: 'var(--radius)', padding: '16px 18px',
-                            }}>
-                                {/* Status row */}
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                                    <span style={{
-                                        fontSize: 12, fontWeight: 700, color: cfg.color,
-                                        background: `${cfg.color}18`, borderRadius: 20, padding: '3px 10px',
-                                    }}>
-                                        {cfg.icon} {cfg.label}
-                                    </span>
-                                    <span style={{ fontSize: 11, color: 'var(--text-3)', fontFamily: 'monospace' }}>
-                                        {booking.booking_reference}
-                                    </span>
-                                </div>
+                    {/* ── Event Bookings ───────────────────────────── */}
+                    {eventBookings && eventBookings.length > 0 && (
+                        <>
+                            <SectionLabel>🎟 Event Tickets</SectionLabel>
+                            {eventBookings.map(b => {
+                                const cfg = EVENT_PAYMENT[b.payment_status] ?? EVENT_PAYMENT.pending
+                                const amount = `₹${(b.amount_paid / 100).toLocaleString('en-IN')}`
+                                return (
+                                    <div key={b.id} style={card}>
+                                        <div style={statusRow}>
+                                            <span style={{ ...badge, color: cfg.color, background: `${cfg.color}18` }}>
+                                                {cfg.icon} {cfg.label}
+                                            </span>
+                                            <span style={refStyle}>{b.booking_reference}</span>
+                                        </div>
+                                        <div style={title}>{b.event_title}</div>
+                                        <div style={metaRow}>
+                                            <span>📅 {fmtDate(b.event_date, true)}</span>
+                                            {b.event_venue && <span>📍 {b.event_venue}</span>}
+                                        </div>
+                                        <div style={metaRow}>
+                                            <span>🎫 {b.tier_title} × {b.quantity}</span>
+                                            <span style={{ fontWeight: 600, color: 'var(--text)' }}>{amount}</span>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </>
+                    )}
 
-                                {/* Details */}
-                                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 6 }}>
-                                    {booking.place_name}
-                                </div>
-                                <div style={{ display: 'flex', gap: 12, fontSize: 12, color: 'var(--text-3)' }}>
-                                    <span>📅 {formattedDate}</span>
-                                    <span>🕐 {booking.time_slot}</span>
-                                    <span>👥 {booking.people_count}</span>
-                                </div>
-                            </div>
-                        )
-                    })}
+                    {/* ── Activity Bookings ─────────────────────────── */}
+                    {activityBookings && activityBookings.length > 0 && (
+                        <>
+                            <SectionLabel>🏄 Activity Bookings</SectionLabel>
+                            {activityBookings.map(b => {
+                                const cfg = ACTIVITY_STATUS[b.status] ?? ACTIVITY_STATUS.pending_vendor
+                                return (
+                                    <div key={b.id} style={card}>
+                                        <div style={statusRow}>
+                                            <span style={{ ...badge, color: cfg.color, background: `${cfg.color}18` }}>
+                                                {cfg.icon} {cfg.label}
+                                            </span>
+                                            <span style={refStyle}>{b.booking_reference}</span>
+                                        </div>
+                                        <div style={title}>{b.place_name}</div>
+                                        <div style={metaRow}>
+                                            <span>📅 {fmtDate(b.booking_date)}</span>
+                                            <span>🕐 {b.time_slot}</span>
+                                            <span>👥 {b.people_count}</span>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </>
+                    )}
                 </div>
             )}
         </main>
     )
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+    return (
+        <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '8px 0 2px' }}>
+            {children}
+        </p>
+    )
+}
+
+// ── Shared styles ─────────────────────────────────────────────────────────────
+
+const card: React.CSSProperties = {
+    background: 'var(--bg-card)', border: '1px solid var(--border)',
+    borderRadius: 'var(--radius)', padding: '16px 18px',
+}
+const statusRow: React.CSSProperties = {
+    display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10,
+}
+const badge: React.CSSProperties = {
+    fontSize: 12, fontWeight: 700, borderRadius: 20, padding: '3px 10px',
+}
+const refStyle: React.CSSProperties = {
+    fontSize: 11, color: 'var(--text-3)', fontFamily: 'monospace',
+}
+const title: React.CSSProperties = {
+    fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 6,
+}
+const metaRow: React.CSSProperties = {
+    display: 'flex', gap: 12, fontSize: 12, color: 'var(--text-3)', flexWrap: 'wrap', marginBottom: 4,
 }
 
 export const dynamic = 'force-dynamic'

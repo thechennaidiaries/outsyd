@@ -31,6 +31,36 @@ function syncRemoveFromDb(item: SavedItem) {
   }).catch(() => {})
 }
 
+// ── Module-level fetch deduplication ─────────────────────────────────────────
+// Many SaveItemButtons can exist on one page — we only want ONE API call,
+// not one per button. This singleton ensures that.
+
+let _fetchPromise:  Promise<SavedItem[]> | null = null
+let _lastFetchedAt: number = 0
+const FETCH_COOLDOWN_MS = 30_000   // re-fetch at most once every 30 s
+
+function fetchDbItems(): Promise<SavedItem[]> {
+  const now = Date.now()
+  // Return cached promise if a fetch is already in-flight or recently done
+  if (_fetchPromise && now - _lastFetchedAt < FETCH_COOLDOWN_MS) {
+    return _fetchPromise
+  }
+  _lastFetchedAt = now
+  _fetchPromise = fetch('/api/account/saves')
+    .then(r => {
+      if (!r.ok) return []          // 401 / 403 → not logged in, skip silently
+      return r.json().then(({ items }: { items: SavedItem[] }) =>
+        Array.isArray(items) ? items : []
+      )
+    })
+    .catch(() => [])
+    .finally(() => {
+      // Allow a fresh fetch after cooldown
+      setTimeout(() => { _fetchPromise = null }, FETCH_COOLDOWN_MS)
+    })
+  return _fetchPromise
+}
+
 // ── Hook ──────────────────────────────────────────────────────────────────────
 
 export function useSavedItems() {
@@ -41,36 +71,26 @@ export function useSavedItems() {
     const localItems = getSavedItems()
     setSavedItems(localItems)
 
-    // 2. Fetch from DB in background — hydrates new devices + catches any drift
-    fetch('/api/account/saves')
-      .then(r => r.json())
-      .then(({ items: dbItems }: { items: SavedItem[] }) => {
-        if (!Array.isArray(dbItems) || dbItems.length === 0) return
+    // 2. Fetch from DB once (deduplicated) — hydrates new devices
+    fetchDbItems().then(dbItems => {
+      if (dbItems.length === 0) return
 
-        // Merge: DB items are source of truth, keep any local-only items too
-        const localSet = new Set(localItems.map(i => `${i.type}:${i.citySlug}:${i.slug}`))
-        const merged = [...localItems]
+      // Merge: DB items are source of truth, keep any local-only items too
+      const localSet = new Set(localItems.map(i => `${i.type}:${i.citySlug}:${i.slug}`))
+      const merged = [...localItems]
 
-        for (const dbItem of dbItems) {
-          const key = `${dbItem.type}:${dbItem.citySlug}:${dbItem.slug}`
-          if (!localSet.has(key)) {
-            merged.push(dbItem)
-          }
-        }
+      for (const dbItem of dbItems) {
+        const key = `${dbItem.type}:${dbItem.citySlug}:${dbItem.slug}`
+        if (!localSet.has(key)) merged.push(dbItem)
+      }
 
-        // Write merged back via writeSavedItems — fires SAVED_ITEMS_EVENT
-        // so ALL hook instances (every SaveItemButton) update their tick state
-        if (merged.length !== localItems.length) {
-          writeSavedItems(merged)
-          setSavedItems(merged)
-        }
-      })
-      .catch(() => {}) // silently ignore — not logged in or network error
+      if (merged.length !== localItems.length) {
+        writeSavedItems(merged)
+        setSavedItems(merged)
+      }
+    })
 
-    function syncSavedItems() {
-      setSavedItems(getSavedItems())
-    }
-
+    function syncSavedItems() { setSavedItems(getSavedItems()) }
     function handleStorage(event: StorageEvent) {
       if (event.key && event.key !== 'saved-items') return
       syncSavedItems()
@@ -78,7 +98,6 @@ export function useSavedItems() {
 
     window.addEventListener('storage', handleStorage)
     window.addEventListener(SAVED_ITEMS_EVENT, syncSavedItems)
-
     return () => {
       window.removeEventListener('storage', handleStorage)
       window.removeEventListener(SAVED_ITEMS_EVENT, syncSavedItems)

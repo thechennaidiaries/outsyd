@@ -105,13 +105,30 @@ export async function GET(
 
                 if (updateError) {
                     if (updateError.code === '23505') {
-                        // Duplicate paid booking for same event+tier+customer
-                        // Force-mark this one as confirmed (Cashfree charged them)
-                        console.log(`[status] Duplicate constraint for ${ref} — forcing confirmed`)
-                        await supabase
+                        // There is already a paid booking for this customer/event/tier.
+                        // Find and return that booking so the user sees "You're in!"
+                        console.log(`[status] 23505 for ${ref} — returning existing paid booking`)
+                        const { data: existingPaid } = await supabase
                             .from('event_bookings')
-                            .update({ payment_status: 'paid', booking_status: 'confirmed', updated_at: new Date().toISOString() })
-                            .eq('id', data.id)
+                            .select('booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status')
+                            .eq('tier_id', data.tier_id)
+                            .eq('customer_phone', data.customer_phone)
+                            .eq('payment_status', 'paid')
+                            .single()
+
+                        if (existingPaid) {
+                            return NextResponse.json({
+                                bookingRef:    existingPaid.booking_reference,
+                                eventTitle:    existingPaid.event_title,
+                                eventDate:     existingPaid.event_date,
+                                eventVenue:    existingPaid.event_venue,
+                                tierTitle:     existingPaid.tier_title,
+                                quantity:      existingPaid.quantity,
+                                amountPaid:    existingPaid.amount_paid,
+                                paymentStatus: 'paid',
+                                bookingStatus: 'confirmed',
+                            })
+                        }
                     } else {
                         console.error('[status] Update error:', JSON.stringify(updateError))
                     }

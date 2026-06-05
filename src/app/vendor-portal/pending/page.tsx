@@ -2,10 +2,35 @@
  * Vendor Portal — Pending Approval Page
  * vendors.outsyd.in/pending
  *
- * Shown after signup while Outsyd reviews the vendor application.
+ * Checks vendor status on every load.
+ * If approved → redirect to dashboard.
+ * If still pending → show waiting screen.
  */
 
-export default function VendorPendingPage() {
+import { redirect } from 'next/navigation'
+import { getSession } from '@/lib/session'
+import { supabase } from '@/lib/supabase'
+
+export default async function VendorPendingPage() {
+    const session = await getSession()
+    if (!session) redirect('/vendor-portal/login')
+
+    const { data: vendor } = await supabase
+        .from('vendors')
+        .select('status')
+        .eq('owner_user_id', session.userId)
+        .single()
+
+    // Already approved — go to dashboard
+    if (vendor?.status === 'active') {
+        redirect('/vendor-portal/dashboard')
+    }
+
+    // Suspended
+    if (vendor?.status === 'suspended') {
+        redirect('/vendor-portal/login')
+    }
+
     return (
         <div style={styles.page}>
             <div style={styles.card}>
@@ -31,10 +56,20 @@ export default function VendorPendingPage() {
                         📲 WhatsApp us
                     </a>
                 </div>
+
+                {/* Refresh hint */}
+                <p style={styles.refreshHint}>
+                    Already approved?{' '}
+                    <a href="/vendor-portal/pending" style={{ color: '#aaa', textDecoration: 'underline' }}>
+                        Refresh
+                    </a>
+                </p>
             </div>
         </div>
     )
 }
+
+export const dynamic = 'force-dynamic'
 
 const styles: Record<string, React.CSSProperties> = {
     page: {
@@ -80,4 +115,5 @@ const styles: Record<string, React.CSSProperties> = {
         color: '#4ade80',
         textDecoration: 'none',
     },
+    refreshHint: { fontSize: 12, color: '#555', marginTop: 20 },
 }

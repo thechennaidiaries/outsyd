@@ -76,7 +76,7 @@ export async function GET(
 
     const { data, error } = await supabase
         .from('event_bookings')
-        .select('id, booking_reference, event_title, event_date, event_venue, event_phone, tier_title, quantity, amount_paid, payment_status, booking_status, customer_name, customer_phone, tier_id')
+        .select('id, booking_reference, event_id, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status, customer_name, customer_phone, tier_id')
         .eq('booking_reference', ref)
         .single()
 
@@ -161,7 +161,13 @@ export async function GET(
                     }
 
                     // Ops — per-event phone
-                    const eventPhone = data.event_phone ?? null
+                    const { data: eventData } = await supabase
+                        .from('events')
+                        .select('event_phone')
+                        .eq('id', data.event_id)
+                        .single()
+                    
+                    const eventPhone = eventData?.event_phone ?? null
                     if (eventPhone && eventPhone !== opsPhone) {
                         sendWhatsApp(eventPhone, opsEventNotification(msgData)).catch(() => {})
                     }

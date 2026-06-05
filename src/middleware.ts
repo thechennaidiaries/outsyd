@@ -26,11 +26,12 @@ export async function middleware(req: NextRequest) {
     // ── 1. Vendor subdomain routing ──────────────────────────────────────────
     if (isVendorSubdomain(req)) {
         // Rewrite: vendors.outsyd.in/dashboard → /vendor-portal/dashboard
-        // Don't rewrite: API routes, Next.js internals, or already-prefixed paths
+        // Don't rewrite: API routes, Next.js internals, customer-facing event pages, or already-prefixed paths
         if (
             !pathname.startsWith('/vendor-portal') &&
             !pathname.startsWith('/api/') &&
-            !pathname.startsWith('/_next/')
+            !pathname.startsWith('/_next/') &&
+            !pathname.startsWith('/events/')   // booking return page lives here
         ) {
             const rewrittenUrl = req.nextUrl.clone()
             rewrittenUrl.pathname = `/vendor-portal${pathname === '/' ? '/dashboard' : pathname}`

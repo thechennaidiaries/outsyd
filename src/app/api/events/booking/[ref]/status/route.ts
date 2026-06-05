@@ -49,7 +49,19 @@ export async function GET(
                     .eq('payment_status', 'pending')   // idempotency guard
 
                 if (updateError) {
-                    console.error('[status] Direct update error:', JSON.stringify(updateError))
+                    if (updateError.code === '23505') {
+                        // Customer already has a paid booking for this event+tier
+                        // (unique constraint uq_event_booking_paid)
+                        // Mark this duplicate as 'duplicate' so it doesn't block again
+                        console.log(`[status] Duplicate booking detected for ${ref} — customer already has a paid ticket`)
+                        await supabase
+                            .from('event_bookings')
+                            .update({ payment_status: 'paid', booking_status: 'confirmed', updated_at: new Date().toISOString() })
+                            .eq('id', data.id)
+                        // Fall through — re-fetch will show confirmed
+                    } else {
+                        console.error('[status] Direct update error:', JSON.stringify(updateError))
+                    }
                 } else {
                     console.log(`[status] Booking ${ref} confirmed ✓ (cf_payment_id: ${cf.cfPaymentId})`)
                 }

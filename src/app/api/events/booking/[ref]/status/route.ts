@@ -151,13 +151,21 @@ export async function GET(
 
                     // Customer confirmation
                     if (data.customer_phone) {
-                        sendWhatsApp(data.customer_phone, customerEventConfirmation(msgData)).catch(() => {})
+                        console.log(`[status] Sending WhatsApp to customer: ${data.customer_phone}, key set: ${!!process.env.WASENDER_API_KEY}`)
+                        sendWhatsApp(data.customer_phone, customerEventConfirmation(msgData))
+                            .then(r => console.log('[status] Customer WhatsApp result:', r))
+                            .catch(e => console.error('[status] Customer WhatsApp error:', e))
                     }
 
                     // Ops — fixed number
                     const opsPhone = process.env.OUTSYD_OPS_PHONE
                     if (opsPhone) {
-                        sendWhatsApp(opsPhone, opsEventNotification(msgData)).catch(() => {})
+                        console.log(`[status] Sending WhatsApp to ops: ${opsPhone}`)
+                        sendWhatsApp(opsPhone, opsEventNotification(msgData))
+                            .then(r => console.log('[status] Ops WhatsApp result:', r))
+                            .catch(e => console.error('[status] Ops WhatsApp error:', e))
+                    } else {
+                        console.warn('[status] OUTSYD_OPS_PHONE not set — skipping ops WhatsApp')
                     }
 
                     // Ops — per-event phone

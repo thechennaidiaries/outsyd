@@ -166,7 +166,7 @@ export default async function EventDetailPage({ params }: Props) {
                 <div style={{ display: 'flex', gap: 10, marginTop: 8, marginBottom: 56, alignItems: 'center' }}>
                     <SaveItemButton type="event" slug={event.slug} citySlug={city.id} iconOnly={true} />
                     <ShareButton title={event.title} text={`Check out ${event.title} at ${event.venue} on TBOC ${city.name}`} iconOnly={true} />
-                    
+
                     <div style={{ flex: 1 }}>
                         {event.status === 'expired' ? (
                             <div
@@ -184,9 +184,29 @@ export default async function EventDetailPage({ params }: Props) {
                                 <Clock size={18} />
                                 Event is Over
                             </div>
-                        ) : (
+                        ) : event.bookingEnabled ? (
+                            // Native Outsyd checkout
                             <a
-                                href={event.bookingLink || event.mapsLink}
+                                href={`/${city.id}/events/${event.slug}/book`}
+                                style={{
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                    width: '100%', padding: '16px 20px',
+                                    borderRadius: 'var(--radius)',
+                                    background: 'linear-gradient(135deg, #FF6B00 0%, #FF8533 100%)',
+                                    color: 'white', fontSize: 16, fontWeight: 700,
+                                    textDecoration: 'none',
+                                    boxShadow: '0 4px 24px rgba(255,107,0,0.35)',
+                                    transition: 'all 0.2s ease', letterSpacing: '-0.01em',
+                                }}
+                                className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
+                            >
+                                <Navigation size={18} fill="white" />
+                                Book Tickets
+                            </a>
+                        ) : event.bookingLink ? (
+                            // Fallback: external booking link
+                            <a
+                                href={event.bookingLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 style={{
@@ -202,9 +222,28 @@ export default async function EventDetailPage({ params }: Props) {
                                 className="hover:scale-[1.02] active:scale-[0.98] hover:shadow-[0_8px_32px_rgba(255,107,0,0.45)]"
                             >
                                 <Navigation size={18} fill="white" />
-                                {event.bookingLink ? 'Book Tickets' : 'Directions'}
+                                Book Tickets
                             </a>
-                        )}
+                        ) : event.mapsLink ? (
+                            <a
+                                href={event.mapsLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                style={{
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
+                                    width: '100%', padding: '16px 20px',
+                                    borderRadius: 'var(--radius)',
+                                    background: 'rgba(255,255,255,0.08)',
+                                    color: 'white', fontSize: 16, fontWeight: 700,
+                                    textDecoration: 'none',
+                                    transition: 'all 0.2s ease', letterSpacing: '-0.01em',
+                                    border: '1px solid rgba(255,255,255,0.1)',
+                                }}
+                            >
+                                <Navigation size={18} />
+                                Directions
+                            </a>
+                        ) : null}
                     </div>
                 </div>
             </div>

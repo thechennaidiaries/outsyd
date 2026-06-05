@@ -12,6 +12,7 @@ import type { Walk, WalkPlace } from '@/data/walks'
 import type { City } from '@/data/cities'
 import type { Place } from '@/data/places'
 import type { Club } from '@/data/clubs'
+import type { Vendor, EventTier, EventBooking, EventCoupon, VendorSettlement } from '@/data/vendors'
 
 // ── Row → TypeScript mappers ─────────────────────────────────────
 
@@ -42,22 +43,30 @@ function mapActivity(row: any): Activity {
 /** Map a Supabase row to an Event object */
 function mapEvent(row: any): Event {
     return {
-        id: row.id,
-        slug: row.slug,
-        title: row.title,
-        description: row.description,
-        cityId: row.city_id,
-        venue: row.venue,
-        address: row.address,
-        mapsLink: row.maps_link,
-        bookingLink: row.booking_link,
-        image: row.image,
-        date: row.date,
-        time: row.time,
-        categories: row.categories || [],
-        pricingType: row.pricing_type,
-        pricing: row.pricing,
-        status: row.status,
+        id:                   row.id,
+        slug:                 row.slug,
+        title:                row.title,
+        description:          row.description,
+        cityId:               row.city_id,
+        venue:                row.venue,
+        address:              row.address,
+        mapsLink:             row.maps_link,
+        bookingLink:          row.booking_link,
+        image:                row.image,
+        date:                 row.date,
+        time:                 row.time,
+        categories:           row.categories || [],
+        pricingType:          row.pricing_type,
+        pricing:              row.pricing,
+        status:               row.status,
+        // Marketplace fields
+        vendorId:             row.vendor_id ?? undefined,
+        approvalStatus:       row.approval_status ?? undefined,
+        bookingEnabled:       row.booking_enabled ?? false,
+        eventPhone:           row.event_phone ?? undefined,
+        serviceFeePercent:    row.service_fee_pct ?? 5,
+        feeAbsorbedByVendor:  row.fee_absorbed_by_vendor ?? false,
+        refundPolicy:         row.refund_policy ?? undefined,
     }
 }
 
@@ -472,6 +481,236 @@ export async function fetchClubTagsByCity(cityId: string): Promise<string[]> {
     const tagSet = new Set<string>()
     clubs.forEach(c => c.tags.forEach(t => tagSet.add(t)))
     return Array.from(tagSet)
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// VENDORS
+// ═══════════════════════════════════════════════════════════════════
+
+function mapVendor(row: any): Vendor {
+    return {
+        id:               row.id,
+        ownerUserId:      row.owner_user_id,
+        name:             row.name,
+        email:            row.email ?? undefined,
+        phone:            row.phone ?? undefined,
+        brandName:        row.brand_name ?? undefined,
+        logoUrl:          row.logo_url ?? undefined,
+        status:           row.status,
+        settlementNotes:  row.settlement_notes ?? undefined,
+        createdAt:        row.created_at,
+        updatedAt:        row.updated_at,
+    }
+}
+
+/** Get vendor profile by the logged-in user's ID */
+export async function fetchVendorByUserId(userId: string): Promise<Vendor | undefined> {
+    if (!supabaseClient) return undefined
+    const { data, error } = await supabaseClient
+        .from('vendors')
+        .select('*')
+        .eq('owner_user_id', userId)
+        .single()
+    if (error || !data) return undefined
+    return mapVendor(data)
+}
+
+/** Get vendor by their vendor ID */
+export async function fetchVendorById(vendorId: string): Promise<Vendor | undefined> {
+    if (!supabaseClient) return undefined
+    const { data, error } = await supabaseClient
+        .from('vendors')
+        .select('*')
+        .eq('id', vendorId)
+        .single()
+    if (error || !data) return undefined
+    return mapVendor(data)
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// EVENT TIERS
+// ═══════════════════════════════════════════════════════════════════
+
+function mapTier(row: any): EventTier {
+    return {
+        id:        row.id,
+        eventId:   row.event_id,
+        title:     row.title,
+        price:     row.price,
+        capacity:  row.capacity ?? undefined,
+        isActive:  row.is_active,
+        createdAt: row.created_at,
+    }
+}
+
+/** Get all active tiers for an event */
+export async function fetchTiersByEvent(eventId: string): Promise<EventTier[]> {
+    if (!supabaseClient) return []
+    const { data, error } = await supabaseClient
+        .from('event_tiers')
+        .select('*')
+        .eq('event_id', eventId)
+        .eq('is_active', true)
+        .order('price', { ascending: true })
+    if (error) { console.error('fetchTiersByEvent error:', error); return [] }
+    return (data || []).map(mapTier)
+}
+
+/** Get all tiers for an event (including inactive — for vendor management) */
+export async function fetchAllTiersByEvent(eventId: string): Promise<EventTier[]> {
+    if (!supabaseClient) return []
+    const { data, error } = await supabaseClient
+        .from('event_tiers')
+        .select('*')
+        .eq('event_id', eventId)
+        .order('price', { ascending: true })
+    if (error) { console.error('fetchAllTiersByEvent error:', error); return [] }
+    return (data || []).map(mapTier)
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// EVENT BOOKINGS
+// ═══════════════════════════════════════════════════════════════════
+
+function mapEventBooking(row: any): EventBooking {
+    return {
+        id:                row.id,
+        bookingReference:  row.booking_reference,
+        eventId:           row.event_id,
+        tierId:            row.tier_id,
+        vendorId:          row.vendor_id ?? undefined,
+        eventTitle:        row.event_title,
+        eventDate:         row.event_date,
+        eventVenue:        row.event_venue ?? undefined,
+        tierTitle:         row.tier_title,
+        userId:            row.user_id ?? undefined,
+        customerName:      row.customer_name,
+        customerPhone:     row.customer_phone,
+        customerEmail:     row.customer_email ?? undefined,
+        quantity:          row.quantity,
+        baseAmount:        row.base_amount,
+        serviceFeeAmount:  row.service_fee_amount,
+        discountAmount:    row.discount_amount ?? 0,
+        amountPaid:        row.amount_paid,
+        couponCode:        row.coupon_code ?? undefined,
+        paymentProvider:   row.payment_provider,
+        cfOrderId:         row.cf_order_id ?? undefined,
+        cfPaymentId:       row.cf_payment_id ?? undefined,
+        paymentStatus:     row.payment_status,
+        bookingStatus:     row.booking_status,
+        bookingSource:     row.booking_source,
+        createdAt:         row.created_at,
+        updatedAt:         row.updated_at,
+    }
+}
+
+/** Get all paid event bookings for a user (for /account/bookings) */
+export async function fetchEventBookingsByUser(userId: string): Promise<EventBooking[]> {
+    if (!supabaseClient) return []
+    const { data, error } = await supabaseClient
+        .from('event_bookings')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('payment_status', 'paid')
+        .order('created_at', { ascending: false })
+    if (error) { console.error('fetchEventBookingsByUser error:', error); return [] }
+    return (data || []).map(mapEventBooking)
+}
+
+/** Get all paid bookings for an event (for vendor dashboard) */
+export async function fetchEventBookingsByEvent(eventId: string): Promise<EventBooking[]> {
+    if (!supabaseClient) return []
+    const { data, error } = await supabaseClient
+        .from('event_bookings')
+        .select('*')
+        .eq('event_id', eventId)
+        .eq('payment_status', 'paid')
+        .order('created_at', { ascending: false })
+    if (error) { console.error('fetchEventBookingsByEvent error:', error); return [] }
+    return (data || []).map(mapEventBooking)
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// EVENT COUPONS
+// ═══════════════════════════════════════════════════════════════════
+
+function mapCoupon(row: any): EventCoupon {
+    return {
+        id:            row.id,
+        vendorId:      row.vendor_id,
+        eventId:       row.event_id ?? undefined,
+        code:          row.code,
+        discountType:  row.discount_type,
+        discountValue: row.discount_value,
+        usageLimit:    row.usage_limit ?? undefined,
+        startAt:       row.start_at,
+        endAt:         row.end_at ?? undefined,
+        active:        row.active,
+        createdAt:     row.created_at,
+    }
+}
+
+/** Get all active coupons for a vendor */
+export async function fetchCouponsByVendor(vendorId: string): Promise<EventCoupon[]> {
+    if (!supabaseClient) return []
+    const { data, error } = await supabaseClient
+        .from('event_coupons')
+        .select('*')
+        .eq('vendor_id', vendorId)
+        .order('created_at', { ascending: false })
+    if (error) { console.error('fetchCouponsByVendor error:', error); return [] }
+    return (data || []).map(mapCoupon)
+}
+
+/** Fetch a single coupon by code (for validation at checkout) */
+export async function fetchCouponByCode(code: string): Promise<EventCoupon | undefined> {
+    if (!supabaseClient) return undefined
+    const { data, error } = await supabaseClient
+        .from('event_coupons')
+        .select('*')
+        .eq('code', code.toUpperCase())
+        .eq('active', true)
+        .single()
+    if (error || !data) return undefined
+    return mapCoupon(data)
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// VENDOR SETTLEMENTS
+// ═══════════════════════════════════════════════════════════════════
+
+function mapSettlement(row: any): VendorSettlement {
+    return {
+        id:               row.id,
+        vendorId:         row.vendor_id,
+        eventId:          row.event_id,
+        grossSales:       row.gross_sales,
+        refunds:          row.refunds ?? 0,
+        platformFee:      row.platform_fee,
+        estimatedPayout:  row.estimated_payout,
+        payoutStatus:     row.payout_status,
+        payoutReference:  row.payout_reference ?? undefined,
+        notes:            row.notes ?? undefined,
+        createdAt:        row.created_at,
+        updatedAt:        row.updated_at,
+    }
+}
+
+/** Get all settlements for a vendor */
+export async function fetchSettlementsByVendor(vendorId: string): Promise<VendorSettlement[]> {
+    if (!supabaseClient) return []
+    const { data, error } = await supabaseClient
+        .from('vendor_settlements')
+        .select('*')
+        .eq('vendor_id', vendorId)
+        .order('created_at', { ascending: false })
+    if (error) { console.error('fetchSettlementsByVendor error:', error); return [] }
+    return (data || []).map(mapSettlement)
 }
 
 

@@ -1,5 +1,6 @@
-export type PricingType = 'free' | 'paid'
-export type EventStatus = 'active' | 'expired'
+export type PricingType    = 'free' | 'paid'
+export type EventStatus    = 'active' | 'expired'
+export type ApprovalStatus = 'draft' | 'submitted' | 'approved' | 'rejected' | 'closed' | 'completed'
 
 export interface Event {
     id: string
@@ -10,15 +11,25 @@ export interface Event {
     venue?: string               // Venue name
     address?: string            // Address of the venue
     mapsLink?: string           // Google Maps link
-    bookingLink?: string        // Booking URL
-    image?: string              // Event poster/image
+    bookingLink?: string        // External booking URL (legacy — replaced by native checkout)
+    image?: string              // Event cover image — 3:4 portrait ratio (ImageKit URL)
     date: string                // ISO date string (YYYY-MM-DD)
     time?: string               // e.g. "7:00 PM – 10:00 PM"
     categories?: string[]       // Event categories for filtering
     pricingType?: PricingType    // 'free' or 'paid'
     pricing?: string            // Pricing details text, e.g. "₹499 per person"
     status?: EventStatus        // 'active' or 'expired' — defaults to 'active'
+
+    // ── Marketplace fields (added for event booking system) ──────────────
+    vendorId?:              string          // references vendors.id
+    approvalStatus?:        ApprovalStatus  // defaults to 'draft'
+    bookingEnabled?:        boolean         // true = native checkout active
+    eventPhone?:            string          // per-event notify number (WhatsApp)
+    serviceFeePercent?:     number          // default 5.00
+    feeAbsorbedByVendor?:   boolean         // if true, fee deducted from vendor not added to customer
+    refundPolicy?:          string          // free text, displayed at checkout
 }
+
 
 // ── Events Database ──────────────────────────────────────────────
 

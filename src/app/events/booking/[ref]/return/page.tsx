@@ -80,7 +80,12 @@ export default function BookingReturnPage({
                             <p style={styles.detailRow}><span>Tickets</span><strong>{booking.quantity} × {booking.tierTitle}</strong></p>
                             <p style={styles.detailRow}><span>Amount</span><strong>₹{(booking.amountPaid / 100).toLocaleString('en-IN')}</strong></p>
                         </div>
-                        <button onClick={() => router.push('/')} style={styles.btn}>Back to Outsyd →</button>
+        <button
+                            onClick={() => window.location.href = 'https://outsyd.in/account/bookings'}
+                            style={styles.btn}
+                        >
+                            View My Bookings →
+                        </button>
                     </>
                 )}
 

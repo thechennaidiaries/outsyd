@@ -38,6 +38,24 @@ export async function GET(
                     p_booking_id:    data.id,
                     p_cf_payment_id: cf.cfPaymentId,
                 })
+
+                // Upsert customer account (same as activity booking flow)
+                // so the ticket shows up in /account/bookings
+                const { data: booking } = await supabase
+                    .from('event_bookings')
+                    .select('customer_name, customer_phone')
+                    .eq('id', data.id)
+                    .single()
+
+                if (booking?.customer_phone) {
+                    await supabase
+                        .from('outsyd_users')
+                        .upsert(
+                            { phone_number: booking.customer_phone, name: booking.customer_name ?? null },
+                            { onConflict: 'phone_number', ignoreDuplicates: true }
+                        )
+                }
+
                 // Re-fetch updated status
                 const { data: updated } = await supabase
                     .from('event_bookings')

@@ -146,7 +146,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ result: rpcResult })
     }
 
-    // ── 7. Send WhatsApp notifications (confirmed only) ───────────────────────
+    // ── 7. Upsert customer account ────────────────────────────────────────────
+    // Creates account if new, ignores if already exists — same as activity booking flow
+    await supabase
+        .from('outsyd_users')
+        .upsert(
+            { phone_number: booking.customer_phone, name: booking.customer_name ?? null },
+            { onConflict: 'phone_number', ignoreDuplicates: true }
+        )
+
+    // ── 8. Send WhatsApp notifications (confirmed only) ───────────────────────
     const msgData = {
         bookingRef:   booking.booking_reference,
         eventTitle:   booking.event_title,

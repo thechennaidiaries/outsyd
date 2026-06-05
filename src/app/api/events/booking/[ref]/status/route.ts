@@ -34,10 +34,15 @@ export async function GET(
             const cf = await verifyCashfreeOrder(ref)
             if (cf?.status === 'PAID' && cf.cfPaymentId) {
                 // Trigger confirm_booking RPC inline
-                await supabase.rpc('confirm_booking', {
+                const { data: rpcResult, error: rpcError } = await supabase.rpc('confirm_booking', {
                     p_booking_id:    data.id,
                     p_cf_payment_id: cf.cfPaymentId,
                 })
+                if (rpcError) {
+                    console.error('[status] confirm_booking RPC error:', JSON.stringify(rpcError))
+                } else {
+                    console.log('[status] confirm_booking result:', rpcResult)
+                }
 
                 // Upsert customer account (same as activity booking flow)
                 // so the ticket shows up in /account/bookings

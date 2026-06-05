@@ -562,4 +562,27 @@ export const PUZZLES: GamePuzzle[] = [
     ],
   },
 
+  {
+    id: 'game-030',
+    date: '2026-06-06',
+    location: 'Santhome church',
+    area: 'Santhome',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/santhome1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/santhome2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/santhome3.webp',
+    ],
+    acceptedPatterns: [
+      'san\\s*thome?\\s*(church|cathedral|basilica)?',
+      'santhome?\\s*(church|cathedral|basilica)?',
+    ],
+    aliases: [
+      'santhome church',
+      'santhome cathedral',
+      'santhome cathedral basilica',
+      'san thome church',
+    ],
+  },
+
 ]

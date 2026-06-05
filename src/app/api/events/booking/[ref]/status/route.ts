@@ -2,10 +2,15 @@
  * GET /api/events/booking/[ref]/status
  *
  * Polling endpoint used by the return page to check booking confirmation.
+ *
+ * If payment_status is still 'pending', we also query Cashfree directly
+ * to check the order status and confirm the booking inline — this handles
+ * cases where the webhook is delayed or missed (common in sandbox).
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
+import { verifyCashfreeOrder } from '@/lib/payment/cashfree'
 
 export async function GET(
     req: NextRequest,
@@ -15,12 +20,48 @@ export async function GET(
 
     const { data, error } = await supabase
         .from('event_bookings')
-        .select('booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status')
+        .select('id, booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status')
         .eq('booking_reference', ref)
         .single()
 
     if (error || !data) {
         return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
+    }
+
+    // If still pending — query Cashfree directly as webhook fallback
+    if (data.payment_status === 'pending') {
+        try {
+            const cf = await verifyCashfreeOrder(ref)
+            if (cf?.status === 'PAID' && cf.cfPaymentId) {
+                // Trigger confirm_booking RPC inline
+                await supabase.rpc('confirm_booking', {
+                    p_booking_id:    data.id,
+                    p_cf_payment_id: cf.cfPaymentId,
+                })
+                // Re-fetch updated status
+                const { data: updated } = await supabase
+                    .from('event_bookings')
+                    .select('booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status')
+                    .eq('booking_reference', ref)
+                    .single()
+                if (updated) {
+                    return NextResponse.json({
+                        bookingRef:    updated.booking_reference,
+                        eventTitle:    updated.event_title,
+                        eventDate:     updated.event_date,
+                        eventVenue:    updated.event_venue,
+                        tierTitle:     updated.tier_title,
+                        quantity:      updated.quantity,
+                        amountPaid:    updated.amount_paid,
+                        paymentStatus: updated.payment_status,
+                        bookingStatus: updated.booking_status,
+                    })
+                }
+            }
+        } catch (e) {
+            // Swallow — just return the current DB status
+            console.warn('[booking/status] Cashfree order check failed:', e)
+        }
     }
 
     return NextResponse.json({

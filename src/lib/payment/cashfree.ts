@@ -89,6 +89,32 @@ export async function createCashfreeOrder(input: CashfreeOrderInput): Promise<Ca
     }
 }
 
+// ── Verify Order Status (webhook fallback) ────────────────────────────────────
+
+export async function verifyCashfreeOrder(
+    orderId: string,
+): Promise<{ status: string; cfPaymentId?: string } | null> {
+    try {
+        const res = await fetch(`${CF_BASE}/orders/${orderId}/payments`, {
+            method:  'GET',
+            headers: cfHeaders(),
+        })
+        if (!res.ok) return null
+        const payments = await res.json()
+        // payments is an array; find the successful one
+        const paid = Array.isArray(payments)
+            ? payments.find((p: any) => p.payment_status === 'SUCCESS')
+            : null
+        if (paid) {
+            return { status: 'PAID', cfPaymentId: paid.cf_payment_id?.toString() }
+        }
+        return { status: 'PENDING' }
+    } catch {
+        return null
+    }
+}
+
+
 // ── Verify Webhook Signature ──────────────────────────────────────────────────
 
 import { createHmac } from 'crypto'

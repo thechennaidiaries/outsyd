@@ -3,9 +3,9 @@
  *
  * Polling endpoint used by the return page to check booking confirmation.
  *
- * If payment_status is still 'pending', we also query Cashfree directly
- * to check the order status and confirm the booking inline — this handles
- * cases where the webhook is delayed or missed (common in sandbox).
+ * If payment_status is still 'pending', we query Cashfree directly and
+ * confirm the booking inline using a direct DB update (service role key,
+ * no RPC needed — avoids PostgREST 409 issues with the confirm_booking function).
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -20,7 +20,7 @@ export async function GET(
 
     const { data, error } = await supabase
         .from('event_bookings')
-        .select('id, booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status')
+        .select('id, booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status, customer_name, customer_phone, tier_id')
         .eq('booking_reference', ref)
         .single()
 
@@ -32,41 +32,45 @@ export async function GET(
     if (data.payment_status === 'pending') {
         try {
             const cf = await verifyCashfreeOrder(ref)
+            console.log(`[status] Cashfree check for ${ref}: status=${cf?.status} paymentId=${cf?.cfPaymentId}`)
+
             if (cf?.status === 'PAID' && cf.cfPaymentId) {
-                // Trigger confirm_booking RPC inline
-                const { data: rpcResult, error: rpcError } = await supabase.rpc('confirm_booking', {
-                    p_booking_id:    data.id,
-                    p_cf_payment_id: cf.cfPaymentId,
-                })
-                if (rpcError) {
-                    console.error('[status] confirm_booking RPC error:', JSON.stringify(rpcError))
+                // ── Confirm directly via DB update (service role key = full access) ──
+                // Idempotency: .eq('payment_status', 'pending') means only runs once
+                const { error: updateError } = await supabase
+                    .from('event_bookings')
+                    .update({
+                        payment_status: 'paid',
+                        cf_payment_id:  cf.cfPaymentId,
+                        booking_status: 'confirmed',
+                        updated_at:     new Date().toISOString(),
+                    })
+                    .eq('id', data.id)
+                    .eq('payment_status', 'pending')   // idempotency guard
+
+                if (updateError) {
+                    console.error('[status] Direct update error:', JSON.stringify(updateError))
                 } else {
-                    console.log('[status] confirm_booking result:', rpcResult)
+                    console.log(`[status] Booking ${ref} confirmed ✓ (cf_payment_id: ${cf.cfPaymentId})`)
                 }
 
-                // Upsert customer account (same as activity booking flow)
-                // so the ticket shows up in /account/bookings
-                const { data: booking } = await supabase
-                    .from('event_bookings')
-                    .select('customer_name, customer_phone')
-                    .eq('id', data.id)
-                    .single()
-
-                if (booking?.customer_phone) {
+                // ── Upsert customer account so ticket shows in /account/bookings ──
+                if (data.customer_phone) {
                     await supabase
                         .from('outsyd_users')
                         .upsert(
-                            { phone_number: booking.customer_phone, name: booking.customer_name ?? null },
+                            { phone_number: data.customer_phone, name: data.customer_name ?? null },
                             { onConflict: 'phone_number', ignoreDuplicates: true }
                         )
                 }
 
-                // Re-fetch updated status
+                // ── Re-fetch and return updated status ──────────────────────────────
                 const { data: updated } = await supabase
                     .from('event_bookings')
                     .select('booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status')
                     .eq('booking_reference', ref)
                     .single()
+
                 if (updated) {
                     return NextResponse.json({
                         bookingRef:    updated.booking_reference,
@@ -82,8 +86,7 @@ export async function GET(
                 }
             }
         } catch (e) {
-            // Swallow — just return the current DB status
-            console.warn('[booking/status] Cashfree order check failed:', e)
+            console.error('[status] Cashfree verification error:', e)
         }
     }
 

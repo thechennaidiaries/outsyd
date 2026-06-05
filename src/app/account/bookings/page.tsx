@@ -37,7 +37,7 @@ function fmtDate(iso: string, timeOnly = false) {
 
 export default async function BookingsPage() {
     const session = await getSession()
-    if (!session) redirect('/')
+    if (!session) redirect('/account/login?next=/account/bookings')
 
     // Fetch activity bookings
     const { data: activityBookings } = await supabase

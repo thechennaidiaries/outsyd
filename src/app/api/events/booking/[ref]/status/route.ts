@@ -5,12 +5,68 @@
  *
  * If payment_status is still 'pending', we query Cashfree directly and
  * confirm the booking inline using a direct DB update (service role key,
- * no RPC needed — avoids PostgREST 409 issues with the confirm_booking function).
+ * no RPC needed). Also sends WhatsApp confirmation — the webhook fallback
+ * for sandbox where Cashfree webhooks don't fire reliably.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { verifyCashfreeOrder } from '@/lib/payment/cashfree'
+import { sendWhatsApp } from '@/lib/wasender'
+
+// ── WhatsApp message templates (same as webhook) ──────────────────────────────
+
+function customerEventConfirmation(b: {
+    bookingRef: string; eventTitle: string; eventDate: string
+    eventVenue?: string; tierTitle: string; quantity: number; amountPaid: number
+}): string {
+    const date = new Date(b.eventDate).toLocaleDateString('en-IN', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    })
+    const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
+    return [
+        `🎟 *Booking Confirmed — Outsyd*`,
+        ``,
+        `Hey! Your tickets are booked. See you there! 🎉`,
+        ``,
+        `*Event:* ${b.eventTitle}`,
+        `*Date:* ${date}`,
+        b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
+        `*Tier:* ${b.tierTitle}`,
+        `*Tickets:* ${b.quantity}`,
+        `*Amount Paid:* ${amount}`,
+        ``,
+        `*Booking Ref:* ${b.bookingRef}`,
+        ``,
+        `_Show this message at the venue if asked. — Outsyd_`,
+    ].filter(Boolean).join('\n')
+}
+
+function opsEventNotification(b: {
+    bookingRef: string; eventTitle: string; eventDate: string
+    eventVenue?: string; tierTitle: string; quantity: number; amountPaid: number
+    customerName: string; customerPhone: string
+}): string {
+    const date = new Date(b.eventDate).toLocaleDateString('en-IN', {
+        day: 'numeric', month: 'short', year: 'numeric',
+    })
+    const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
+    return [
+        `📋 *New Booking — Outsyd*`,
+        ``,
+        `*Event:* ${b.eventTitle}`,
+        `*Date:* ${date}`,
+        b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
+        `*Tier:* ${b.tierTitle} × ${b.quantity}`,
+        `*Amount:* ${amount}`,
+        ``,
+        `*Customer:* ${b.customerName}`,
+        `*Phone:* ${b.customerPhone}`,
+        `*Ref:* ${b.bookingRef}`,
+    ].filter(Boolean).join('\n')
+}
+
+// ── Route handler ─────────────────────────────────────────────────────────────
 
 export async function GET(
     req: NextRequest,
@@ -20,7 +76,7 @@ export async function GET(
 
     const { data, error } = await supabase
         .from('event_bookings')
-        .select('id, booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status, customer_name, customer_phone, tier_id')
+        .select('id, booking_reference, event_title, event_date, event_venue, event_phone, tier_title, quantity, amount_paid, payment_status, booking_status, customer_name, customer_phone, tier_id')
         .eq('booking_reference', ref)
         .single()
 
@@ -35,8 +91,7 @@ export async function GET(
             console.log(`[status] Cashfree check for ${ref}: status=${cf?.status} paymentId=${cf?.cfPaymentId}`)
 
             if (cf?.status === 'PAID' && cf.cfPaymentId) {
-                // ── Confirm directly via DB update (service role key = full access) ──
-                // Idempotency: .eq('payment_status', 'pending') means only runs once
+                // ── Confirm directly via DB update ────────────────────────────
                 const { error: updateError } = await supabase
                     .from('event_bookings')
                     .update({
@@ -50,23 +105,52 @@ export async function GET(
 
                 if (updateError) {
                     if (updateError.code === '23505') {
-                        // Customer already has a paid booking for this event+tier
-                        // (unique constraint uq_event_booking_paid)
-                        // Mark this duplicate as 'duplicate' so it doesn't block again
-                        console.log(`[status] Duplicate booking detected for ${ref} — customer already has a paid ticket`)
+                        // Duplicate paid booking for same event+tier+customer
+                        // Force-mark this one as confirmed (Cashfree charged them)
+                        console.log(`[status] Duplicate constraint for ${ref} — forcing confirmed`)
                         await supabase
                             .from('event_bookings')
                             .update({ payment_status: 'paid', booking_status: 'confirmed', updated_at: new Date().toISOString() })
                             .eq('id', data.id)
-                        // Fall through — re-fetch will show confirmed
                     } else {
-                        console.error('[status] Direct update error:', JSON.stringify(updateError))
+                        console.error('[status] Update error:', JSON.stringify(updateError))
                     }
                 } else {
-                    console.log(`[status] Booking ${ref} confirmed ✓ (cf_payment_id: ${cf.cfPaymentId})`)
+                    console.log(`[status] Booking ${ref} confirmed ✓`)
+
+                    // ── Send WhatsApp notifications ───────────────────────────
+                    // (Webhook fallback — sandbox webhooks are unreliable)
+                    const msgData = {
+                        bookingRef:    data.booking_reference,
+                        eventTitle:    data.event_title,
+                        eventDate:     data.event_date,
+                        eventVenue:    data.event_venue,
+                        tierTitle:     data.tier_title,
+                        quantity:      data.quantity,
+                        amountPaid:    data.amount_paid,
+                        customerName:  data.customer_name,
+                        customerPhone: data.customer_phone,
+                    }
+
+                    // Customer confirmation
+                    if (data.customer_phone) {
+                        sendWhatsApp(data.customer_phone, customerEventConfirmation(msgData)).catch(() => {})
+                    }
+
+                    // Ops — fixed number
+                    const opsPhone = process.env.OUTSYD_OPS_PHONE
+                    if (opsPhone) {
+                        sendWhatsApp(opsPhone, opsEventNotification(msgData)).catch(() => {})
+                    }
+
+                    // Ops — per-event phone
+                    const eventPhone = data.event_phone ?? null
+                    if (eventPhone && eventPhone !== opsPhone) {
+                        sendWhatsApp(eventPhone, opsEventNotification(msgData)).catch(() => {})
+                    }
                 }
 
-                // ── Upsert customer account so ticket shows in /account/bookings ──
+                // ── Upsert customer account ───────────────────────────────────
                 if (data.customer_phone) {
                     await supabase
                         .from('outsyd_users')
@@ -76,7 +160,7 @@ export async function GET(
                         )
                 }
 
-                // ── Re-fetch and return updated status ──────────────────────────────
+                // ── Re-fetch and return updated status ────────────────────────
                 const { data: updated } = await supabase
                     .from('event_bookings')
                     .select('booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status')

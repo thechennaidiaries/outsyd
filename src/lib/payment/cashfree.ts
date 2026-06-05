@@ -9,6 +9,8 @@
  * Docs: https://docs.cashfree.com/reference/pg-new-apis-endpoint
  */
 
+import { createHmac } from 'crypto'
+
 const CF_ENV    = (process.env.CASHFREE_ENV ?? 'TEST') as 'PROD' | 'TEST'
 const CF_BASE   = CF_ENV === 'PROD'
     ? 'https://api.cashfree.com/pg'
@@ -137,10 +139,7 @@ export async function verifyCashfreeOrder(
     }
 }
 
-
 // ── Verify Webhook Signature ──────────────────────────────────────────────────
-
-import { createHmac } from 'crypto'
 
 export function verifyCashfreeWebhook(
     rawBody: string,

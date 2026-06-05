@@ -10,8 +10,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+    const { id } = params
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

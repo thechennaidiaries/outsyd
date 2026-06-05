@@ -27,9 +27,9 @@ function generateBookingRef(): string {
 
 export async function POST(
     req: NextRequest,
-    { params }: { params: Promise<{ eventId: string }> }
+    { params }: { params: { eventId: string } }
 ) {
-    const { eventId } = await params
+    const { eventId } = params
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://outsyd.in'
 
     // ── Parse body ────────────────────────────────────────────────────────────

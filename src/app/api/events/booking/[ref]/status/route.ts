@@ -9,9 +9,9 @@ import { supabase } from '@/lib/supabase'
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: Promise<{ ref: string }> }
+    { params }: { params: { ref: string } }
 ) {
-    const { ref } = await params
+    const { ref } = params
 
     const { data, error } = await supabase
         .from('event_bookings')

@@ -19,8 +19,8 @@ async function verifyOwnership(userId: string, eventId: string) {
     return { vendorId: vendor.id, event }
 }
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+    const { id } = params
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -37,8 +37,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     return NextResponse.json({ tiers: tiers ?? [] })
 }
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params
+export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+    const { id } = params
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

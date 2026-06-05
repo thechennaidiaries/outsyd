@@ -31,8 +31,8 @@ async function getVendorAndEvent(userId: string, eventId: string) {
 
 // ── GET ───────────────────────────────────────────────────────────────────────
 
-export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+    const { id } = params
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -51,8 +51,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
 // ── PUT ───────────────────────────────────────────────────────────────────────
 
-export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+    const { id } = params
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -100,8 +100,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 // ── DELETE ────────────────────────────────────────────────────────────────────
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+    const { id } = params
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

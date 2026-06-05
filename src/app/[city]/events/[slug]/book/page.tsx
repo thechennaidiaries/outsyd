@@ -10,7 +10,7 @@
  * 4. Open Cashfree payment via SDK
  */
 
-import { useState, useEffect, use } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { formatPaise } from '@/data/vendors'
 
@@ -29,9 +29,9 @@ type Step = 'select' | 'details' | 'paying'
 export default function BookingPage({
     params,
 }: {
-    params: Promise<{ city: string; slug: string }>
+    params: { city: string; slug: string }
 }) {
-    const { city, slug } = use(params)
+    const { city, slug } = params
     const router = useRouter()
 
     const [event, setEvent]         = useState<EventInfo | null>(null)

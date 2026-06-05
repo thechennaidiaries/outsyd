@@ -25,9 +25,9 @@ async function verifyTierOwnership(userId: string, eventId: string, tierId: stri
 
 export async function PUT(
     req: NextRequest,
-    { params }: { params: Promise<{ id: string; tid: string }> }
+    { params }: { params: { id: string; tid: string } }
 ) {
-    const { id, tid } = await params
+    const { id, tid } = params
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
@@ -62,9 +62,9 @@ export async function PUT(
 
 export async function DELETE(
     req: NextRequest,
-    { params }: { params: Promise<{ id: string; tid: string }> }
+    { params }: { params: { id: string; tid: string } }
 ) {
-    const { id, tid } = await params
+    const { id, tid } = params
     const session = await getSession()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 

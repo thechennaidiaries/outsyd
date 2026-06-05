@@ -7,15 +7,15 @@
 
 'use client'
 
-import { useEffect, useState, use } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
 export default function BookingReturnPage({
     params,
 }: {
-    params: Promise<{ ref: string }>
+    params: { ref: string }
 }) {
-    const { ref } = use(params)
+    const { ref } = params
     const searchParams = useSearchParams()
     const router = useRouter()
     const orderId = searchParams.get('order_id')

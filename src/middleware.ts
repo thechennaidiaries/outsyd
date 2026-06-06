@@ -43,11 +43,15 @@ export async function middleware(req: NextRequest) {
     if (pathname.startsWith('/account')) {
         const token = req.cookies.get('outsyd_session')?.value
         if (!token) {
-            return NextResponse.redirect(new URL('/', req.url))
+            const loginUrl = new URL('/account/login', req.url)
+            loginUrl.searchParams.set('next', pathname)
+            return NextResponse.redirect(loginUrl)
         }
         const session = await verifySessionToken(token)
         if (!session) {
-            const response = NextResponse.redirect(new URL('/', req.url))
+            const loginUrl = new URL('/account/login', req.url)
+            loginUrl.searchParams.set('next', pathname)
+            const response = NextResponse.redirect(loginUrl)
             response.cookies.set('outsyd_session', '', { maxAge: 0, path: '/' })
             return response
         }

@@ -33,7 +33,12 @@ export async function POST(
     { params }: { params: { eventId: string } }
 ) {
     const { eventId } = params
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'https://outsyd.in'
+    // Resolution order:
+    // 1. NEXT_PUBLIC_BASE_URL — set explicitly in .env.local (local dev) or Vercel (production)
+    // 2. VERCEL_URL — auto-injected by Vercel on every preview deployment
+    // 3. Fallback to production domain
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+        ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://outsyd.in')
 
     // ── Parse body ────────────────────────────────────────────────────────────
     let body: any

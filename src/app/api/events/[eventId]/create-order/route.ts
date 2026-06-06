@@ -33,10 +33,10 @@ export async function POST(
     { params }: { params: { eventId: string } }
 ) {
     const { eventId } = params
-    // Resolution order:
-    // 1. NEXT_PUBLIC_BASE_URL — set explicitly in .env.local (local dev) or Vercel (production)
-    // 2. VERCEL_URL — auto-injected by Vercel on every preview deployment
-    // 3. Fallback to production domain
+    // Base URL priority:
+    // 1. NEXT_PUBLIC_BASE_URL — set explicitly (local dev = http://localhost:3000)
+    // 2. VERCEL_URL          — auto-injected by Vercel on every preview/prod deploy
+    // 3. Fallback            — production domain
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
         ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://outsyd.in')
 

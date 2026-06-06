@@ -2,7 +2,6 @@
  * POST /api/auth/verify-otp
  *
  * Verifies the OTP, creates/finds the user, sets a session cookie.
- * Also back-links any historical guest bookings to the user's account.
  *
  * Body: { phone, otp, name? }
  * Response: { success, userId, isNewUser, name }
@@ -137,19 +136,6 @@ export async function POST(req: NextRequest) {
         maxAge:   MAX_AGE,
         path:     '/',
     })
-
-    // ── 9. Back-link any orphaned paid guest bookings to this user account ──────
-    // Handles users who previously booked as guests and are now logging in.
-    // Safe to fire-and-forget (non-critical, doesn't affect the login response).
-    supabase
-        .from('event_bookings')
-        .update({ user_id: userId })
-        .eq('customer_phone', phone)
-        .eq('payment_status', 'paid')
-        .is('user_id', null)
-        .then(({ error }) => {
-            if (error) console.error('[verify-otp] Back-link bookings error:', error)
-        })
 
     console.log(`[verify-otp] ${isNewUser ? 'New user created' : 'Existing user logged in'}: ${phone}`)
     return response

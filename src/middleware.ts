@@ -40,7 +40,7 @@ export async function middleware(req: NextRequest) {
     }
 
     // ── 2. Customer account protection ───────────────────────────────────────
-    if (pathname.startsWith('/account')) {
+    if (pathname.startsWith('/account') && !pathname.startsWith('/account/login')) {
         const token = req.cookies.get('outsyd_session')?.value
         if (!token) {
             const loginUrl = new URL('/account/login', req.url)

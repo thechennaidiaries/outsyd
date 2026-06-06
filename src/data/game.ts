@@ -585,4 +585,25 @@ export const PUZZLES: GamePuzzle[] = [
     ],
   },
 
+  {
+    id: 'game-031',
+    date: '2026-06-07',
+    location: 'Kilambakkam',
+    area: 'Kilambakkam',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/kilam1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/kilam2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/kilam3.webp',
+    ],
+    acceptedPatterns: [
+      'kilambak+am\\s*(bus\\s*stand)?',
+      'kilambak+am',
+    ],
+    aliases: [
+      'kilambakkam',
+      'kilambakkam bus stand',
+    ],
+  },
+
 ]

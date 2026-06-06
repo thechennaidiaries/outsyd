@@ -2,13 +2,17 @@
  * /events/booking/[ref]/return
  *
  * Cashfree redirects here after payment (success or failure).
- * We show appropriate state while the webhook processes in the background.
+ * Polls the booking status until confirmed, then shows the result.
+ *
+ * Note: useSearchParams() is intentionally avoided here — `order_id` from
+ * the query string is not needed for polling (we use `ref` from params).
+ * This avoids the Next.js 14 Suspense requirement for useSearchParams.
  */
 
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function BookingReturnPage({
     params,
@@ -16,106 +20,153 @@ export default function BookingReturnPage({
     params: { ref: string }
 }) {
     const { ref } = params
-    const searchParams = useSearchParams()
-    const router = useRouter()
-    const orderId = searchParams.get('order_id')
+    const router  = useRouter()
 
-    const [status, setStatus] = useState<'checking' | 'confirmed' | 'pending' | 'failed'>('checking')
+    const [status, setStatus]   = useState<'checking' | 'confirmed' | 'pending' | 'failed'>('checking')
     const [booking, setBooking] = useState<any>(null)
 
+    // ── Poll booking status ────────────────────────────────────────────────────
     useEffect(() => {
-        // Poll every 3s for up to 36s — Cashfree sandbox can be slow
         let attempts = 0
         const interval = setInterval(async () => {
             attempts++
-            const res = await fetch(`/api/events/booking/${ref}/status`)
-            if (res.ok) {
-                const data = await res.json()
-                if (data.paymentStatus === 'paid') {
-                    setStatus('confirmed')
-                    setBooking(data)
-                    clearInterval(interval)
-                } else if (data.paymentStatus === 'failed') {
-                    setStatus('failed')
-                    clearInterval(interval)
+            try {
+                const res  = await fetch(`/api/events/booking/${ref}/status`)
+                if (res.ok) {
+                    const data = await res.json()
+                    if (data.paymentStatus === 'paid') {
+                        setStatus('confirmed')
+                        setBooking(data)
+                        clearInterval(interval)
+                    } else if (data.paymentStatus === 'failed') {
+                        setStatus('failed')
+                        clearInterval(interval)
+                    } else if (attempts >= 12) {
+                        setStatus('pending')
+                        setBooking(data)
+                        clearInterval(interval)
+                    }
                 } else if (attempts >= 12) {
                     setStatus('pending')
-                    setBooking(data)
                     clearInterval(interval)
                 }
-            } else if (attempts >= 12) {
-                setStatus('pending')
-                clearInterval(interval)
+            } catch {
+                if (attempts >= 12) {
+                    setStatus('pending')
+                    clearInterval(interval)
+                }
             }
         }, 3000)
         return () => clearInterval(interval)
     }, [ref])
 
-    return (
-        <div style={styles.page}>
-            <div style={styles.card}>
-                <div style={styles.brand}>
-                    <span style={styles.brandName}>outsyd</span>
-                </div>
+    // ── Format date ────────────────────────────────────────────────────────────
+    function fmtDate(iso: string) {
+        return new Date(iso).toLocaleDateString('en-IN', {
+            weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+        })
+    }
 
+    return (
+        <div style={s.page}>
+            <div style={s.card}>
+                {/* Brand */}
+                <div style={s.brand}>outsyd</div>
+
+                {/* ── Checking ── */}
                 {status === 'checking' && (
                     <>
-                        <div style={styles.spinner} />
-                        <h1 style={styles.heading}>Confirming your booking…</h1>
-                        <p style={styles.sub}>Please wait, this usually takes a few seconds.</p>
+                        <div style={s.spinner} />
+                        <h1 style={s.heading}>Confirming your booking…</h1>
+                        <p style={s.sub}>Please wait, this usually takes a few seconds.</p>
                     </>
                 )}
 
+                {/* ── Confirmed ── */}
                 {status === 'confirmed' && booking && (
                     <>
-                        <div style={styles.iconBig}>🎟</div>
-                        <h1 style={{ ...styles.heading, color: '#4ade80' }}>You're in!</h1>
-                        <p style={styles.sub}>Booking confirmed. Check your WhatsApp for details.</p>
-                        <div style={styles.refBox}>
-                            <p style={styles.refLabel}>Booking Reference</p>
-                            <p style={styles.refCode}>{ref}</p>
+                        <div style={s.iconBig}>🎟️</div>
+                        <h1 style={{ ...s.heading, color: '#4ade80' }}>Booking Confirmed!</h1>
+                        <p style={s.sub}>Your booking details have been sent to your WhatsApp.</p>
+
+                        {/* Ref */}
+                        <div style={s.refBox}>
+                            <p style={s.refLabel}>Booking Reference</p>
+                            <p style={s.refCode}>{ref}</p>
                         </div>
-                        <div style={styles.detailBox}>
-                            <p style={styles.detailRow}><span>Event</span><strong>{booking.eventTitle}</strong></p>
-                            <p style={styles.detailRow}><span>Tickets</span><strong>{booking.quantity} × {booking.tierTitle}</strong></p>
-                            <p style={styles.detailRow}><span>Amount</span><strong>₹{(booking.amountPaid / 100).toLocaleString('en-IN')}</strong></p>
+
+                        {/* Details */}
+                        <div style={s.detailBox}>
+                            <DetailRow label="Event"   value={booking.eventTitle} />
+                            {booking.eventDate && (
+                                <DetailRow label="Date" value={fmtDate(booking.eventDate)} />
+                            )}
+                            {booking.eventVenue && (
+                                <DetailRow label="Venue" value={booking.eventVenue} />
+                            )}
+                            <DetailRow
+                                label="Tickets"
+                                value={`${booking.quantity} × ${booking.tierTitle}`}
+                            />
+                            <DetailRow
+                                label="Amount paid"
+                                value={`₹${(booking.amountPaid / 100).toLocaleString('en-IN')}`}
+                            />
                         </div>
-        <button
-                            onClick={() => window.location.href = 'https://outsyd.in/account/bookings'}
-                            style={styles.btn}
-                        >
-                            View My Bookings →
-                        </button>
+
+                        {/* CTAs */}
+                        <div style={s.btnGroup}>
+                            <button
+                                onClick={() => router.push('/account/bookings')}
+                                style={s.btnPrimary}
+                            >
+                                View My Bookings →
+                            </button>
+                            <button
+                                onClick={() => router.push('/')}
+                                style={s.btnGhost}
+                            >
+                                Back to Events
+                            </button>
+                        </div>
                     </>
                 )}
 
+                {/* ── Still processing ── */}
                 {status === 'pending' && (
                     <>
-                        <div style={styles.iconBig}>⏳</div>
-                        <h1 style={styles.heading}>Almost there…</h1>
-                        <p style={styles.sub}>
-                            Your payment was received but the booking is still being confirmed.
-                            If it doesn't show up in a few minutes, WhatsApp us with your reference.
+                        <div style={s.iconBig}>⏳</div>
+                        <h1 style={s.heading}>Almost there…</h1>
+                        <p style={s.sub}>
+                            Your payment was received but confirmation is taking longer than usual.
+                            We'll send you a WhatsApp once it's done.
                         </p>
-                        <div style={styles.refBox}>
-                            <p style={styles.refLabel}>Keep this reference</p>
-                            <p style={styles.refCode}>{ref}</p>
+                        <div style={s.refBox}>
+                            <p style={s.refLabel}>Keep this reference</p>
+                            <p style={s.refCode}>{ref}</p>
                         </div>
-                        <a href="https://wa.me/917305554166" style={styles.waLink} target="_blank" rel="noopener noreferrer">
+                        <a
+                            href="https://wa.me/917305554166"
+                            style={s.waLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
                             📲 Contact Support
                         </a>
                     </>
                 )}
 
+                {/* ── Failed ── */}
                 {status === 'failed' && (
                     <>
-                        <div style={styles.iconBig}>❌</div>
-                        <h1 style={{ ...styles.heading, color: '#f87171' }}>Payment failed</h1>
-                        <p style={styles.sub}>
+                        <div style={s.iconBig}>❌</div>
+                        <h1 style={{ ...s.heading, color: '#f87171' }}>Payment failed</h1>
+                        <p style={s.sub}>
                             Your payment didn't go through. No money was deducted.
-                            Please try again.
                         </p>
-                        <button onClick={() => router.back()} style={styles.btn}>Try again</button>
+                        <button onClick={() => router.back()} style={s.btnPrimary}>
+                            Try again
+                        </button>
                     </>
                 )}
             </div>
@@ -123,7 +174,16 @@ export default function BookingReturnPage({
     )
 }
 
-const styles: Record<string, React.CSSProperties> = {
+function DetailRow({ label, value }: { label: string; value: string }) {
+    return (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, gap: 12 }}>
+            <span style={{ fontSize: 13, color: '#666', flexShrink: 0 }}>{label}</span>
+            <span style={{ fontSize: 13, color: '#e5e5e5', fontWeight: 600, textAlign: 'right' }}>{value}</span>
+        </div>
+    )
+}
+
+const s: Record<string, React.CSSProperties> = {
     page: {
         minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
         backgroundColor: '#0a0a0a', padding: '24px 16px', fontFamily: 'Inter, system-ui, sans-serif',
@@ -132,31 +192,35 @@ const styles: Record<string, React.CSSProperties> = {
         width: '100%', maxWidth: 420, backgroundColor: '#141414', border: '1px solid #2a2a2a',
         borderRadius: 16, padding: '40px 32px', textAlign: 'center',
     },
-    brand: { marginBottom: 32 },
-    brandName: { fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: '-0.5px' },
-    spinner: {
+    brand:    { fontSize: 18, fontWeight: 800, color: '#fff', letterSpacing: '-0.5px', marginBottom: 32 },
+    spinner:  {
         width: 36, height: 36, border: '3px solid #2a2a2a', borderTop: '3px solid #fff',
         borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 24px',
     },
-    iconBig: { fontSize: 48, marginBottom: 20 },
-    heading: { fontSize: 22, fontWeight: 700, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.3px' },
-    sub: { fontSize: 14, color: '#888', lineHeight: 1.6, margin: '0 0 24px' },
-    refBox: {
+    iconBig:  { fontSize: 48, marginBottom: 20 },
+    heading:  { fontSize: 22, fontWeight: 700, color: '#fff', margin: '0 0 10px', letterSpacing: '-0.3px' },
+    sub:      { fontSize: 14, color: '#888', lineHeight: 1.6, margin: '0 0 24px' },
+
+    refBox:   {
         backgroundColor: '#1a1a1a', border: '1px solid #2a2a2a',
         borderRadius: 10, padding: '16px', marginBottom: 20,
     },
     refLabel: { fontSize: 11, color: '#666', textTransform: 'uppercase', letterSpacing: '0.08em', margin: '0 0 6px' },
-    refCode: { fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '0.05em', margin: 0 },
-    detailBox: { textAlign: 'left', marginBottom: 24 },
-    detailRow: {
-        display: 'flex', justifyContent: 'space-between',
-        fontSize: 13, color: '#888', margin: '0 0 8px',
-    },
-    btn: {
+    refCode:  { fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '0.05em', margin: 0 },
+
+    detailBox: { textAlign: 'left', marginBottom: 24, borderTop: '1px solid #1f1f1f', paddingTop: 20 },
+
+    btnGroup:   { display: 'flex', flexDirection: 'column', gap: 10 },
+    btnPrimary: {
         width: '100%', padding: '13px', backgroundColor: '#fff', color: '#000',
         border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 600, cursor: 'pointer',
     },
+    btnGhost: {
+        width: '100%', padding: '12px', backgroundColor: 'transparent', color: '#555',
+        border: '1px solid #2a2a2a', borderRadius: 10, fontSize: 14, cursor: 'pointer',
+    },
     waLink: {
-        display: 'inline-block', fontSize: 14, fontWeight: 600, color: '#4ade80', textDecoration: 'none', marginTop: 8,
+        display: 'inline-block', fontSize: 14, fontWeight: 600,
+        color: '#4ade80', textDecoration: 'none', marginTop: 8,
     },
 }

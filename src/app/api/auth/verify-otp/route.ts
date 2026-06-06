@@ -2,9 +2,12 @@
  * POST /api/auth/verify-otp
  *
  * Verifies the OTP, creates/finds the user, sets a session cookie.
+ * Also back-links any historical guest bookings to the user's account.
  *
  * Body: { phone, otp, name? }
- * Response: { success, userId, isNewUser }
+ * Response: { success, userId, isNewUser, name }
+ *   - name: the user's stored name (null for brand-new users with no name yet)
+ *     Used by the booking page to auto-fill the name field.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -117,13 +120,14 @@ export async function POST(req: NextRequest) {
         userName = newUser.name ?? undefined
     }
 
-    // ── 8. Create session JWT + set cookie ───────────────────────────────────
+    // ── 8. Create session JWT + set cookie ────────────────────────────────────────
     const token = await createSessionToken({ userId, phone, name: userName })
 
     const response = NextResponse.json({
         success:   true,
         userId,
         isNewUser,
+        name:      userName ?? null,   // booking page uses this to auto-fill the name field
     })
 
     response.cookies.set(COOKIE_NAME, token, {
@@ -133,6 +137,19 @@ export async function POST(req: NextRequest) {
         maxAge:   MAX_AGE,
         path:     '/',
     })
+
+    // ── 9. Back-link any orphaned paid guest bookings to this user account ──────
+    // Handles users who previously booked as guests and are now logging in.
+    // Safe to fire-and-forget (non-critical, doesn't affect the login response).
+    supabase
+        .from('event_bookings')
+        .update({ user_id: userId })
+        .eq('customer_phone', phone)
+        .eq('payment_status', 'paid')
+        .is('user_id', null)
+        .then(({ error }) => {
+            if (error) console.error('[verify-otp] Back-link bookings error:', error)
+        })
 
     console.log(`[verify-otp] ${isNewUser ? 'New user created' : 'Existing user logged in'}: ${phone}`)
     return response

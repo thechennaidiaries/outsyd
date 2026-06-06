@@ -2,8 +2,11 @@
  * POST /api/auth/send-otp
  *
  * Generates a 6-digit OTP, stores it, sends it to the user's
- * WhatsApp number via WaSender. Invalidates any previous un-verified
- * OTPs for the same number first.
+ * WhatsApp number via WaSender.
+ *
+ * Body: { phone, context?: 'login' | 'booking' }
+ * - context defaults to 'login'
+ * - 'booking' sends a booking-specific message
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -16,9 +19,11 @@ const OTP_EXPIRY_MINUTES = 10
 export async function POST(req: NextRequest) {
     // ── 1. Parse + validate ──────────────────────────────────────────────────
     let phone: string
+    let context: 'login' | 'booking' = 'login'
     try {
         const body = await req.json()
-        phone = body.phone?.trim()
+        phone   = body.phone?.trim()
+        if (body.context === 'booking') context = 'booking'
     } catch {
         return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
@@ -59,11 +64,18 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 5. Send via WaSender ─────────────────────────────────────────────────
-    const message = [
-        `🔐 *Your Outsyd verification code: ${otp}*`,
-        ``,
-        `Valid for ${OTP_EXPIRY_MINUTES} minutes. Do not share this code.`,
-    ].join('\n')
+    const message = context === 'booking'
+        ? [
+            `🎟️ *Your Outsyd booking code: ${otp}*`,
+            ``,
+            `Enter this code to confirm your identity and proceed with your booking.`,
+            `Valid for ${OTP_EXPIRY_MINUTES} minutes. Do not share this code.`,
+          ].join('\n')
+        : [
+            `🔐 *Your Outsyd verification code: ${otp}*`,
+            ``,
+            `Valid for ${OTP_EXPIRY_MINUTES} minutes. Do not share this code.`,
+          ].join('\n')
 
     const waResult = await sendWhatsApp(phone, message)
     if (!waResult.success) {

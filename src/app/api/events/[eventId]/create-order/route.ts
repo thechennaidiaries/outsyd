@@ -1,14 +1,17 @@
 /**
  * POST /api/events/[eventId]/create-order
  *
+ * Requires an authenticated session (OTP verified in Step 2 of booking).
+ *
  * Flow:
- * 1. Validate event is approved + booking_enabled
- * 2. Validate tier + capacity
- * 3. Validate coupon (if provided)
- * 4. Calculate fees
- * 5. Create pending event_booking row
- * 6. Create Cashfree order
- * 7. Return paymentSessionId to frontend
+ * 1. Auth check — 401 if no session
+ * 2. Validate event is approved + booking_enabled
+ * 3. Validate tier + capacity
+ * 4. Validate coupon (if provided)
+ * 5. Calculate fees
+ * 6. Create pending event_booking row (user_id always set)
+ * 7. Create Cashfree order
+ * 8. Return paymentSessionId to frontend
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -38,7 +41,7 @@ export async function POST(
         return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
 
-    const { tierId, quantity = 1, customerName, customerPhone, customerEmail, couponCode } = body
+    const { tierId, quantity = 1, customerName, customerPhone, couponCode } = body
 
     if (!tierId || !customerName || !customerPhone) {
         return NextResponse.json(
@@ -145,10 +148,17 @@ export async function POST(
         coupon,
     })
 
-    // ── Get session (optional — guest checkout allowed) ───────────────────────
+    // ── Require authenticated session ──────────────────────────────────────────────
+    // User must have verified their phone (Step 2) before placing an order.
     const session = await getSession()
+    if (!session) {
+        return NextResponse.json(
+            { error: 'You must verify your phone number before booking.' },
+            { status: 401 }
+        )
+    }
 
-    // ── Generate booking reference ────────────────────────────────────────────
+    // ── Generate booking reference ──────────────────────────────────────────────
     const bookingRef = generateBookingRef()
 
     // ── Create pending booking ────────────────────────────────────────────────
@@ -163,10 +173,10 @@ export async function POST(
             event_date:         new Date(event.date + 'T00:00:00+05:30').toISOString(),
             event_venue:        event.venue ?? null,
             tier_title:         tier.title,
-            user_id:            session?.userId ?? null,
+            user_id:            session.userId,
             customer_name:      customerName,
             customer_phone:     customerPhone,
-            customer_email:     customerEmail ?? null,
+            customer_email:     null,
             quantity,
             base_amount:        fees.baseAmount,
             service_fee_amount: fees.serviceFeeAmount,
@@ -191,7 +201,7 @@ export async function POST(
         amountInPaise:  fees.amountPaid,
         customerName,
         customerPhone,
-        customerEmail,
+        customerEmail:  undefined,
         returnUrl:      `${baseUrl}/events/booking/${bookingRef}/return?order_id={order_id}`,
         notifyUrl:      `${baseUrl}/api/webhooks/cashfree`,
         eventTitle:     event.title,

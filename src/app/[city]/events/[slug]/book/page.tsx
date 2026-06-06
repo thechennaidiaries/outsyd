@@ -85,7 +85,8 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
         fetch('/api/auth/me')
             .then(r => r.json())
             .then(d => {
-                if (d.user?.name) setName(d.user.name)
+                if (d.user?.name)         setName(d.user.name)
+                if (d.user?.phone_number) setPhone(d.user.phone_number)
             })
             .catch(() => {})
     }, [])
@@ -128,7 +129,8 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
             const res  = await fetch('/api/auth/me')
             const data = await res.json()
             if (data.user) {
-                if (data.user.name) setName(data.user.name)
+                if (data.user.name)         setName(data.user.name)
+                if (data.user.phone_number) setPhone(data.user.phone_number)
                 setStep('details')
                 return
             }

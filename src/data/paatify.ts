@@ -154,6 +154,26 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   {
     id: 'paatify-007',
     date: '2026-06-08',
+    song: 'Nee Singam Dhan',
+    movie: 'Pathu Thala',
+    year: 2023,
+    hints: [
+      'As the whole town stands around watching,\nHe will face the battlefield.',
+      'So his army can live in his smile,\nHe will embrace the wounds.',
+      'Even when many elephants gather together,\nYou are the lion.',
+      'A bird for whom that sky is not enough,\nLooking at the river as a mirror, Its heart is fulfilled today.'
+    ],
+    acceptedPatterns: [
+      'nee\\s*singam\\s*dha?n',
+      'nee\\s*singam\\s*tha?n',
+      'singam\\s*dha?n',
+      'singam\\s*tha?n',
+    ],
+  },
+
+  {
+    id: 'paatify-008',
+    date: '2026-06-09',
     song: 'Chinna Chinna Aasai',
     movie: 'Roja',
     year: 1992,
@@ -174,8 +194,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-008',
-    date: '2026-06-09',
+    id: 'paatify-009',
+    date: '2026-06-10',
     song: 'Uyire',
     movie: 'Bombay',
     year: 1995,
@@ -192,8 +212,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-009',
-    date: '2026-06-10',
+    id: 'paatify-010',
+    date: '2026-06-11',
     song: 'Vinnaithaandi Varuvaayaa',
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
@@ -212,8 +232,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-010',
-    date: '2026-06-11',
+    id: 'paatify-011',
+    date: '2026-06-12',
     song: 'Munbe Vaa',
     movie: 'Sillunu Oru Kaadhal',
     year: 2006,
@@ -231,8 +251,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-011',
-    date: '2026-06-12',
+    id: 'paatify-012',
+    date: '2026-06-13',
     song: 'Nenjukkul Peidhidum',
     movie: 'Vaaranam Aayiram',
     year: 2010,
@@ -251,8 +271,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-012',
-    date: '2026-06-13',
+    id: 'paatify-013',
+    date: '2026-06-14',
     song: 'Kannaana Kanney',
     movie: 'Viswasam',
     year: 2019,

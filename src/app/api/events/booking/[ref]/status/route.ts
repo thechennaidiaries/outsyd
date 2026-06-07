@@ -156,7 +156,8 @@ export async function GET(
                     console.log(`[status] Booking ${ref} confirmed ✓`)
 
                     // ── Send WhatsApp notifications ───────────────────────────
-                    // (Webhook fallback — sandbox webhooks are unreliable)
+                    // Must be awaited — Vercel serverless kills unawaited promises
+                    // after the response is sent.
                     const msgData = {
                         bookingRef:    data.booking_reference,
                         eventTitle:    data.event_title,
@@ -171,19 +172,23 @@ export async function GET(
 
                     // Customer confirmation
                     if (data.customer_phone) {
-                        console.log(`[status] Sending WhatsApp to customer: ${data.customer_phone}, key set: ${!!process.env.WASENDER_API_KEY}`)
-                        sendWhatsApp(data.customer_phone, customerEventConfirmation(msgData))
-                            .then(r => console.log('[status] Customer WhatsApp result:', r))
-                            .catch(e => console.error('[status] Customer WhatsApp error:', e))
+                        try {
+                            const r = await sendWhatsApp(data.customer_phone, customerEventConfirmation(msgData))
+                            console.log('[status] Customer WhatsApp result:', r)
+                        } catch (e) {
+                            console.error('[status] Customer WhatsApp error:', e)
+                        }
                     }
 
                     // Ops — fixed number
                     const opsPhone = process.env.OUTSYD_OPS_PHONE
                     if (opsPhone) {
-                        console.log(`[status] Sending WhatsApp to ops: ${opsPhone}`)
-                        sendWhatsApp(opsPhone, opsEventNotification(msgData))
-                            .then(r => console.log('[status] Ops WhatsApp result:', r))
-                            .catch(e => console.error('[status] Ops WhatsApp error:', e))
+                        try {
+                            const r = await sendWhatsApp(opsPhone, opsEventNotification(msgData))
+                            console.log('[status] Ops WhatsApp result:', r)
+                        } catch (e) {
+                            console.error('[status] Ops WhatsApp error:', e)
+                        }
                     } else {
                         console.warn('[status] OUTSYD_OPS_PHONE not set — skipping ops WhatsApp')
                     }
@@ -197,7 +202,7 @@ export async function GET(
                     
                     const eventPhone = eventData?.event_phone ?? null
                     if (eventPhone && eventPhone !== opsPhone) {
-                        sendWhatsApp(eventPhone, opsEventNotification(msgData)).catch(() => {})
+                        try { await sendWhatsApp(eventPhone, opsEventNotification(msgData)) } catch {}
                     }
                 }
 

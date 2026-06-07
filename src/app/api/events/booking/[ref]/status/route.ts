@@ -90,6 +90,26 @@ export async function GET(
             const cf = await verifyCashfreeOrder(ref)
             console.log(`[status] Cashfree check for ${ref}: status=${cf?.status} paymentId=${cf?.cfPaymentId}`)
 
+            // ── Terminal failure states — mark immediately ─────────────────────
+            const FAILED_STATUSES = ['EXPIRED', 'FAILED', 'USER_DROPPED', 'CANCELLED']
+            if (cf?.status && FAILED_STATUSES.includes(cf.status)) {
+                console.log(`[status] Booking ${ref} failed — Cashfree: ${cf.status}`)
+                await supabase
+                    .from('event_bookings')
+                    .update({
+                        payment_status: 'failed',
+                        booking_status: 'cancelled',
+                        updated_at:     new Date().toISOString(),
+                    })
+                    .eq('id', data.id)
+                    .eq('payment_status', 'pending')   // idempotency guard
+                return NextResponse.json({
+                    bookingRef:    data.booking_reference,
+                    paymentStatus: 'failed',
+                    bookingStatus: 'cancelled',
+                })
+            }
+
             if (cf?.status === 'PAID' && cf.cfPaymentId) {
                 // ── Confirm directly via DB update ────────────────────────────
                 const { error: updateError } = await supabase

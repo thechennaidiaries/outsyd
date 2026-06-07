@@ -64,6 +64,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     const [couponResult, setCouponResult] = useState<CouponResult | null>(null)
     const [couponLoading, setCouponLoading] = useState(false)
     const [detailsError, setDetailsError] = useState('')
+    const [alreadyBooked, setAlreadyBooked] = useState(false)
 
     // ── Global step ────────────────────────────────────────────────────────────
     const [step, setStep]                 = useState<Step>('select')
@@ -245,6 +246,14 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                 }),
             })
             const data = await res.json()
+
+            // Already booked — don't take payment again, show existing booking
+            if (res.status === 409) {
+                setStep('details')
+                setAlreadyBooked(true)
+                return
+            }
+
             if (!res.ok) throw new Error(data.error || 'Failed to create order')
 
             // Open Cashfree SDK
@@ -374,13 +383,28 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
 
                             {detailsError && <div style={s.errorBox}>{detailsError}</div>}
 
-                            <button
-                                onClick={handlePay}
-                                disabled={!name}
-                                style={{ ...s.payBtn, opacity: !name ? 0.4 : 1 }}
-                            >
-                                {preview ? `Pay ${formatPaise(preview.paid)}` : 'Proceed to Payment'}
-                            </button>
+                            {alreadyBooked ? (
+                                <div style={s.alreadyBookedBox}>
+                                    <p style={{ fontSize: 15, margin: '0 0 4px', fontWeight: 700, color: '#fff' }}>🎟 You're already booked!</p>
+                                    <p style={{ fontSize: 13, color: '#888', margin: '0 0 16px', lineHeight: 1.5 }}>
+                                        You have a confirmed ticket for this tier. No need to book again.
+                                    </p>
+                                    <button
+                                        onClick={() => window.location.href = '/account/bookings'}
+                                        style={s.payBtn}
+                                    >
+                                        View My Bookings →
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={handlePay}
+                                    disabled={!name}
+                                    style={{ ...s.payBtn, opacity: !name ? 0.4 : 1 }}
+                                >
+                                    {preview ? `Pay ${formatPaise(preview.paid)}` : 'Proceed to Payment'}
+                                </button>
+                            )}
 
                             {event.refund_policy && (
                                 <p style={s.refundNote}>📋 {event.refund_policy}</p>
@@ -560,7 +584,8 @@ const s: Record<string, React.CSSProperties> = {
         transition: 'opacity 0.15s',
     },
 
-    errorBox:      { backgroundColor: '#2a1212', border: '1px solid #5a2020', borderRadius: 8, color: '#f87171', fontSize: 13, padding: '12px 14px', margin: '12px 0' },
+    errorBox:          { backgroundColor: '#2a1212', border: '1px solid #5a2020', borderRadius: 8, color: '#f87171', fontSize: 13, padding: '12px 14px', margin: '12px 0' },
+    alreadyBookedBox:  { backgroundColor: '#0f2318', border: '1px solid #1a4a2e', borderRadius: 10, padding: '18px 16px', marginTop: 16 },
     refundNote:    { fontSize: 12, color: '#555', marginTop: 14, lineHeight: 1.6 },
 
     // Summary column

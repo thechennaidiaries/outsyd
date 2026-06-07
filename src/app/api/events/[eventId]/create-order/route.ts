@@ -165,6 +165,30 @@ export async function POST(
         )
     }
 
+    // ── Check for existing paid booking (prevent duplicate payment) ───────────────
+    // The DB has a partial unique index on (event_id, customer_phone, tier_id)
+    // WHERE payment_status = 'paid'. Without this check, a user could go through
+    // the full payment flow again and have their money taken, then get a 23505
+    // when we try to mark the new booking as paid.
+    const { data: existingPaid } = await supabase
+        .from('event_bookings')
+        .select('booking_reference')
+        .eq('event_id', eventId)
+        .eq('customer_phone', customerPhone)
+        .eq('tier_id', tierId)
+        .eq('payment_status', 'paid')
+        .maybeSingle()
+
+    if (existingPaid) {
+        return NextResponse.json(
+            {
+                error: 'You already have a confirmed booking for this tier.',
+                existingRef: existingPaid.booking_reference,
+            },
+            { status: 409 }
+        )
+    }
+
     // ── Generate booking reference ──────────────────────────────────────────────
     const bookingRef = generateBookingRef()
 

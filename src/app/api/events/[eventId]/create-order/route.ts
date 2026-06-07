@@ -33,12 +33,14 @@ export async function POST(
     { params }: { params: { eventId: string } }
 ) {
     const { eventId } = params
-    // Base URL priority:
-    // 1. NEXT_PUBLIC_BASE_URL — set explicitly (local dev = http://localhost:3000)
-    // 2. VERCEL_URL          — auto-injected by Vercel on every preview/prod deploy
-    // 3. Fallback            — production domain
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-        ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://outsyd.in')
+    // Derive base URL from the request host — this guarantees the Cashfree
+    // return URL uses the EXACT same domain the user is browsing on.
+    // VERCEL_URL is intentionally avoided: it returns the deployment-specific
+    // URL (e.g. outsyd-abc123.vercel.app) which differs from the branch alias
+    // (outsyd-git-branch.vercel.app) the user may be on, breaking cookie auth.
+    const host     = req.headers.get('host') ?? 'outsyd.in'
+    const protocol = host.startsWith('localhost') ? 'http' : 'https'
+    const baseUrl  = process.env.NEXT_PUBLIC_BASE_URL ?? `${protocol}://${host}`
 
     // ── Parse body ────────────────────────────────────────────────────────────
     let body: any

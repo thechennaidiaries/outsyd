@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
     // ── 4. Find booking by booking_reference ─────────────────────────────────
     const { data: booking } = await supabase
         .from('event_bookings')
-        .select('id, booking_reference, event_id, event_title, event_date, event_venue, tier_title, quantity, amount_paid, customer_name, customer_phone, event_phone')
+        .select('id, booking_reference, event_id, event_title, event_date, event_venue, tier_title, quantity, amount_paid, customer_name, customer_phone')
         .eq('booking_reference', cfOrderId)
         .single()
 
@@ -177,8 +177,14 @@ export async function POST(req: NextRequest) {
         await sendWhatsApp(opsPhone, opsEventNotification(msgData))
     }
 
-    // Ops — per-event phone (if different from fixed)
-    const eventPhone = booking.event_phone ?? null
+    // Vendor — per-event phone (looked up from events table — not stored on event_bookings)
+    const { data: eventRow } = await supabase
+        .from('events')
+        .select('event_phone')
+        .eq('id', booking.event_id)
+        .single()
+
+    const eventPhone = eventRow?.event_phone ?? null
     if (eventPhone && eventPhone !== opsPhone) {
         await sendWhatsApp(eventPhone, opsEventNotification(msgData))
     }

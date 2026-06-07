@@ -606,4 +606,30 @@ export const PUZZLES: GamePuzzle[] = [
     ],
   },
 
+  {
+    id: 'game-032',
+    date: '2026-06-08',
+    location: 'S2 Theyagaraja',
+    area: 'T Nagar',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/s21.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/s22.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/s23%20.webp',
+    ],
+    acceptedPatterns: [
+      '^s2$',
+      's2\\s*th?[ei]yag?ar?aja',
+      'pvr\\s*th?[ei]yag?ar?aja',
+    ],
+    aliases: [
+      's2',
+      'pvr theyagaraja',
+      's2 thyagaraja',
+      's2 thiyagaraja',
+      's2 theyagaraja',
+      'theyagaraja',
+    ],
+  },
+
 ]

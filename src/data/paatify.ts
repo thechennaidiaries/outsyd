@@ -174,6 +174,29 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   {
     id: 'paatify-008',
     date: '2026-06-09',
+    song: 'Pathikichu',
+    movie: 'Vidaamuyarchi',
+    year: 2025,
+    hints: [
+      'A monster fuse has caught on fire!\nIt will only end after it completely explodes.',
+      'A hidden nuclear weapon\nMay now demand the whole world as sacrifice.',
+      'Even if a single drop of blood is left remaining,\nThe story hasn\'t ended yet, watch it continue',
+      'Forever, keep trying!\nNever lose hope, keep trying.'
+    ],
+    acceptedPatterns: [
+      'pa[td]h?ikich[ui]',
+      'pathikichu',
+      'patikichu',
+      'padhikichu',
+      'padikichu',
+      'pathikichi',
+      'patikichi',
+    ],
+  },
+
+  {
+    id: 'paatify-009',
+    date: '2026-06-10',
     song: 'Chinna Chinna Aasai',
     movie: 'Roja',
     year: 1992,
@@ -194,8 +217,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-009',
-    date: '2026-06-10',
+    id: 'paatify-010',
+    date: '2026-06-11',
     song: 'Uyire',
     movie: 'Bombay',
     year: 1995,
@@ -212,8 +235,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-010',
-    date: '2026-06-11',
+    id: 'paatify-011',
+    date: '2026-06-12',
     song: 'Vinnaithaandi Varuvaayaa',
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
@@ -232,8 +255,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-011',
-    date: '2026-06-12',
+    id: 'paatify-012',
+    date: '2026-06-13',
     song: 'Munbe Vaa',
     movie: 'Sillunu Oru Kaadhal',
     year: 2006,
@@ -251,8 +274,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-012',
-    date: '2026-06-13',
+    id: 'paatify-013',
+    date: '2026-06-14',
     song: 'Nenjukkul Peidhidum',
     movie: 'Vaaranam Aayiram',
     year: 2010,
@@ -271,8 +294,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-013',
-    date: '2026-06-14',
+    id: 'paatify-014',
+    date: '2026-06-15',
     song: 'Kannaana Kanney',
     movie: 'Viswasam',
     year: 2019,

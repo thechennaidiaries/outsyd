@@ -632,4 +632,27 @@ export const PUZZLES: GamePuzzle[] = [
     ],
   },
 
+  {
+    id: 'game-033',
+    date: '2026-06-09',
+    location: 'Shri Ashtalakshmi Temple',
+    area: 'Besant Nagar',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/blurashta.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/ashta2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/ashta3.webp',
+    ],
+    acceptedPatterns: [
+      '^(shri|sri)?\\s*ashtalakshmi\\s*(temple)?$',
+      'ashtalakshmi',
+    ],
+    aliases: [
+      'shri ashtalakshmi temple',
+      'ashtalakshmi temple',
+      'ashtalakshmi',
+      'sri ashtalakshmi temple',
+    ],
+  },
+
 ]

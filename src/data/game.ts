@@ -655,4 +655,26 @@ export const PUZZLES: GamePuzzle[] = [
     ],
   },
 
+  {
+    id: 'game-034',
+    date: '2026-06-10',
+    location: 'St Thomas Mount Church',
+    area: 'St Thomas Mount',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/stthomas1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/stthomas2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/st%20thomas%203.webp',
+    ],
+    acceptedPatterns: [
+      'st\\.?\\s*thomas\\s*mount\\s*(church)?',
+      'stthomas\\s*mount\\s*(church)?',
+    ],
+    aliases: [
+      'St thomas mount',
+      'stthomas mount',
+      'St thomas mount church',
+    ],
+  },
+
 ]

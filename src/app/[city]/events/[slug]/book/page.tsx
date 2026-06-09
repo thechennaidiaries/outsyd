@@ -341,16 +341,14 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                                 const selected = selectedTier?.id === tier.id
                                 return (
                                     <div key={tier.id} style={{ ...s.tierCard, borderColor: selected ? '#7c3aed44' : '#222', backgroundColor: selected ? '#18102e' : '#141414' }}>
-                                        <div style={s.tierCardTop}>
-                                            <div>
-                                                <p style={s.tierTitle}>{tier.title}</p>
-                                                {tier.capacity && (
-                                                    <p style={s.tierCap}>{tier.capacity} seats available</p>
-                                                )}
-                                            </div>
-                                            <p style={s.tierPrice}>{formatPaise(tier.price)}</p>
-                                        </div>
+                                        {/* Row 1: tier name */}
+                                        <p style={s.tierTitle}>{tier.title}</p>
+                                        {tier.capacity && (
+                                            <p style={s.tierCap}>{tier.capacity} seats available</p>
+                                        )}
+                                        {/* Row 2: price (left) + ADD/qty (right) */}
                                         <div style={s.tierCardBottom}>
+                                            <p style={s.tierPrice}>{formatPaise(tier.price)}</p>
                                             {selected ? (
                                                 <div style={s.qtyRow} onClick={e => e.stopPropagation()}>
                                                     <button
@@ -675,7 +673,7 @@ const s: Record<string, React.CSSProperties> = {
     tierList:       { display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 },
     tierCard:       { border: '1px solid', borderRadius: 12, padding: 16, transition: 'border-color 0.15s, background-color 0.15s' },
     tierCardTop:    { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
-    tierCardBottom: { display: 'flex', justifyContent: 'flex-end', marginTop: 14 },
+    tierCardBottom: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 14 },
     tierTitle:      { fontSize: 15, fontWeight: 700, color: '#e5e5e5', margin: '0 0 3px' },
     tierCap:        { fontSize: 12, color: '#555', margin: 0 },
     tierPrice:      { fontSize: 16, fontWeight: 700, color: '#fff', margin: 0, flexShrink: 0 },

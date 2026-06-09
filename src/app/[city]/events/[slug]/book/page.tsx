@@ -5,7 +5,11 @@
  *
  * 3-step booking flow:
  *   Step 1 — select:   Pick Your Tickets (tier card + inline quantity)
- *   Step 2 — details:  Your Details (name + WhatsApp OTP, or pre-filled if logged in)
+ *   Step 2 — details:  Your Details
+ *                        ① Phone number typed → Send OTP button appears
+ *                        ② OTP verified → name field reveals below
+ *                        ③ Name filled → Next button goes to review
+ *                        Logged-in: phone pre-filled + Verified badge, skip OTP
  *   Step 3 — review:   Review & Pay (summary + coupon + book button)
  *   Paying  — Cashfree SDK checkout in progress
  */
@@ -56,6 +60,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     const [name, setName]                 = useState('')
     const [phone, setPhone]               = useState('')    // 10 digits only, no +91
     const [otpSent, setOtpSent]           = useState(false)
+    const [phoneVerified, setPhoneVerified] = useState(false)
     const [otp, setOtp]                   = useState('')
     const [otpLoading, setOtpLoading]     = useState(false)
     const [otpError, setOtpError]         = useState('')
@@ -97,6 +102,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                         // Strip +91 prefix — phone state stores 10 digits only
                         const digits = d.user.phone_number.replace(/^\+91/, '').replace(/\D/g, '').slice(-10)
                         setPhone(digits)
+                        setPhoneVerified(true)
                     }
                 }
             })
@@ -140,10 +146,6 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     // Step 2: Send OTP
     // ────────────────────────────────────────────────────────────────────────────
     async function handleSendOtp() {
-        if (!name.trim()) {
-            setDetailsError('Please enter your name before verifying.')
-            return
-        }
         setDetailsError('')
         setOtpError('')
         setOtpLoading(true)
@@ -166,7 +168,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     }
 
     // ────────────────────────────────────────────────────────────────────────────
-    // Step 2: Verify OTP
+    // Step 2: Verify OTP → reveals name field
     // ────────────────────────────────────────────────────────────────────────────
     async function handleVerifyOtp() {
         setOtpError('')
@@ -180,7 +182,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || 'Verification failed')
             if (data.name && !name) setName(data.name)
-            setStep('review')
+            setPhoneVerified(true)
         } catch (err: any) {
             setOtpError(err.message)
         } finally {
@@ -189,7 +191,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     }
 
     // ────────────────────────────────────────────────────────────────────────────
-    // Step 2 → Step 3 (logged-in users skip OTP)
+    // Step 2 → Step 3 (after phone verified + name filled)
     // ────────────────────────────────────────────────────────────────────────────
     function handleContinueDetails() {
         if (!name.trim()) {
@@ -281,9 +283,12 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
         </Page>
     )
 
-    const activeTiers  = tiers.filter(t => t.is_active)
-    const stepIndex    = step === 'select' ? 0 : step === 'details' ? 1 : 2
-    const stepLabels   = ['Pick Your Tickets', 'Your Details', 'Review & Pay']
+    const activeTiers = tiers.filter(t => t.is_active)
+    const stepIndex   = step === 'select' ? 0 : step === 'details' ? 1 : 2
+    const tabLabels   = ['Tickets', 'Details', 'Payment']
+
+    // In Step 2: can the user proceed?
+    const canProceedDetails = (isLoggedIn || phoneVerified) && name.trim().length > 0
 
     return (
         <Page>
@@ -299,22 +304,26 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                 ← {step === 'select' ? 'Back to event' : 'Back'}
             </button>
 
-            {/* ── Step progress dots ── */}
-            <div style={s.dotsRow}>
-                {[0, 1, 2].map(i => (
-                    <div
-                        key={i}
-                        style={{
-                            ...s.dot,
-                            backgroundColor: i === stepIndex ? '#fff'
-                                : i < stepIndex  ? '#555'
-                                : '#2a2a2a',
-                            transform: i === stepIndex ? 'scale(1.35)' : 'scale(1)',
-                        }}
-                    />
+            {/* ── Tab progress bar ── */}
+            <div style={s.tabBar}>
+                {tabLabels.map((label, i) => (
+                    <div key={i} style={s.tabItem}>
+                        <span style={{
+                            ...s.tabLabel,
+                            color:      i === stepIndex ? '#fff' : i < stepIndex ? '#888' : '#444',
+                            fontWeight: i === stepIndex ? 700 : 400,
+                        }}>
+                            {label}
+                        </span>
+                        <div style={{
+                            ...s.tabUnderline,
+                            backgroundColor: i === stepIndex ? '#7c3aed'
+                                : i < stepIndex ? '#444'
+                                : '#222',
+                        }} />
+                    </div>
                 ))}
             </div>
-            <p style={s.stepLabel}>{stepLabels[stepIndex]}</p>
 
             <div style={s.layout}>
 
@@ -399,21 +408,9 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                     {step === 'details' && (
                         <div style={s.section}>
 
-                            {/* Name */}
+                            {/* ── Phone number (always shown) ── */}
                             <div style={s.field}>
-                                <label style={s.label}>Your name *</label>
-                                <input
-                                    style={s.input}
-                                    value={name}
-                                    onChange={e => setName(e.target.value)}
-                                    placeholder="Arjun Kumar"
-                                    autoFocus={!name}
-                                />
-                            </div>
-
-                            {/* WhatsApp number */}
-                            <div style={{ ...s.field, marginTop: 18 }}>
-                                <label style={s.label}>WhatsApp number</label>
+                                <label style={s.label}>Phone number *</label>
                                 <div style={s.phoneRow}>
                                     <span style={s.phonePrefix}>+91</span>
                                     <input
@@ -422,28 +419,44 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                                             flex: 1,
                                             borderLeft: 'none',
                                             borderRadius: '0 8px 8px 0',
-                                            ...(isLoggedIn ? { color: '#555', cursor: 'not-allowed' } : {}),
+                                            ...((isLoggedIn || phoneVerified) ? { color: '#aaa', cursor: 'not-allowed' } : {}),
                                         }}
                                         value={phone}
-                                        onChange={e => !isLoggedIn && setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                                        onChange={e => {
+                                            if (isLoggedIn || phoneVerified) return
+                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10)
+                                            setPhone(val)
+                                            // Reset OTP state if they edit the number
+                                            if (otpSent) { setOtpSent(false); setOtp(''); setOtpError('') }
+                                        }}
                                         placeholder="98765 43210"
                                         type="tel"
                                         maxLength={10}
-                                        readOnly={isLoggedIn}
+                                        readOnly={isLoggedIn || phoneVerified}
+                                        autoFocus
                                     />
-                                    {isLoggedIn && (
+                                    {(isLoggedIn || phoneVerified) && (
                                         <span style={s.verifiedBadge}>✓ Verified</span>
                                     )}
                                 </div>
-                                {!isLoggedIn && (
-                                    <p style={s.phoneHint}>
-                                        Your booking confirmation will be sent here
-                                    </p>
+
+                                {/* Change number link — visible only after OTP sent but not yet verified */}
+                                {!isLoggedIn && otpSent && !phoneVerified && (
+                                    <button
+                                        style={{ ...s.ghostBtn, alignSelf: 'flex-end', marginTop: 4 }}
+                                        onClick={() => { setOtpSent(false); setOtp(''); setOtpError('') }}
+                                    >
+                                        Change number
+                                    </button>
+                                )}
+
+                                {!isLoggedIn && !phoneVerified && !otpSent && (
+                                    <p style={s.phoneHint}>Your booking confirmation will be sent here</p>
                                 )}
                             </div>
 
-                            {/* Verify button — non-logged-in, 10 digits typed, OTP not yet sent */}
-                            {!isLoggedIn && !otpSent && phone.length === 10 && (
+                            {/* ── Send OTP button — appears when 10 digits typed, not yet sent ── */}
+                            {!isLoggedIn && !phoneVerified && !otpSent && phone.length === 10 && (
                                 <button
                                     onClick={handleSendOtp}
                                     disabled={otpLoading}
@@ -453,18 +466,11 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                                 </button>
                             )}
 
-                            {/* OTP input — slides in after OTP is sent */}
-                            {!isLoggedIn && otpSent && (
+                            {/* ── OTP input — slides in after OTP sent ── */}
+                            {!isLoggedIn && !phoneVerified && otpSent && (
                                 <div style={s.otpSection}>
                                     <p style={s.otpSentNote}>
-                                        Code sent to +91 {phone} ·{' '}
-                                        <button
-                                            style={s.ghostBtn}
-                                            onClick={() => { setOtpSent(false); setOtp(''); setOtpError('') }}
-                                            disabled={resendCooldown > 0}
-                                        >
-                                            {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Change number'}
-                                        </button>
+                                        Code sent to +91 {phone}
                                     </p>
                                     <input
                                         ref={otpInputRef}
@@ -477,28 +483,55 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                                         autoFocus
                                     />
                                     {otpError && <p style={s.otpError}>{otpError}</p>}
-                                    <button
-                                        onClick={handleVerifyOtp}
-                                        disabled={otp.length < 6 || otpLoading}
-                                        style={{ ...s.primaryBtn, opacity: otp.length < 6 ? 0.35 : 1 }}
-                                    >
-                                        {otpLoading ? 'Verifying…' : 'Verify & Continue'}
-                                    </button>
+
+                                    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                                        <button
+                                            onClick={handleVerifyOtp}
+                                            disabled={otp.length < 6 || otpLoading}
+                                            style={{ ...s.primaryBtn, marginTop: 0, flex: 1, opacity: otp.length < 6 ? 0.35 : 1 }}
+                                        >
+                                            {otpLoading ? 'Verifying…' : 'Verify'}
+                                        </button>
+                                        <button
+                                            style={s.ghostBtn}
+                                            onClick={handleSendOtp}
+                                            disabled={resendCooldown > 0 || otpLoading}
+                                        >
+                                            {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend'}
+                                        </button>
+                                    </div>
                                 </div>
                             )}
 
-                            {/* Continue button — logged-in users */}
-                            {isLoggedIn && (
-                                <button
-                                    onClick={handleContinueDetails}
-                                    disabled={!name.trim()}
-                                    style={{ ...s.primaryBtn, opacity: !name.trim() ? 0.35 : 1, marginTop: 20 }}
-                                >
-                                    Continue →
-                                </button>
+                            {/* ── Name field — reveals only after phone is verified ── */}
+                            {(isLoggedIn || phoneVerified) && (
+                                <>
+                                    <div style={{ ...s.field, marginTop: 24 }}>
+                                        <p style={s.detailsIntro}>
+                                            You're almost in. We just need a few details to confirm your spot.
+                                        </p>
+                                        <label style={s.label}>Full Name *</label>
+                                        <input
+                                            style={s.input}
+                                            value={name}
+                                            onChange={e => setName(e.target.value)}
+                                            placeholder="Arjun Kumar"
+                                            autoFocus={!name}
+                                        />
+                                    </div>
+
+                                    {detailsError && <div style={s.errorBox}>{detailsError}</div>}
+
+                                    <button
+                                        onClick={handleContinueDetails}
+                                        disabled={!canProceedDetails}
+                                        style={{ ...s.primaryBtn, opacity: !canProceedDetails ? 0.35 : 1, marginTop: 20 }}
+                                    >
+                                        Next →
+                                    </button>
+                                </>
                             )}
 
-                            {detailsError && <div style={s.errorBox}>{detailsError}</div>}
                         </div>
                     )}
 
@@ -650,12 +683,13 @@ function Page({ children }: { children: React.ReactNode }) {
 
 // ── Styles ─────────────────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
-    backBtn:    { background: 'none', border: 'none', color: '#666', fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 28 },
+    backBtn:    { background: 'none', border: 'none', color: '#666', fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 20 },
 
-    // Step progress
-    dotsRow:    { display: 'flex', gap: 8, alignItems: 'center', marginBottom: 10 },
-    dot:        { width: 8, height: 8, borderRadius: '50%', transition: 'background-color 0.25s, transform 0.25s' },
-    stepLabel:  { fontSize: 22, fontWeight: 700, color: '#fff', margin: '0 0 24px', letterSpacing: '-0.5px' },
+    // Tab progress bar
+    tabBar:         { display: 'flex', borderBottom: '1px solid #222', marginBottom: 28 },
+    tabItem:        { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', paddingBottom: 0 },
+    tabLabel:       { fontSize: 14, paddingBottom: 12, transition: 'color 0.2s', display: 'block' },
+    tabUnderline:   { height: 2, width: '100%', borderRadius: 2, marginTop: -1, transition: 'background-color 0.25s' },
 
     // Layout
     layout:     { display: 'grid', gridTemplateColumns: '1fr 320px', gap: 32, alignItems: 'start' },
@@ -702,6 +736,9 @@ const s: Record<string, React.CSSProperties> = {
     otpInput:       { padding: '13px', backgroundColor: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 8, color: '#e5e5e5', fontSize: 22, letterSpacing: 12, textAlign: 'center', outline: 'none', width: '100%', boxSizing: 'border-box' },
     otpError:       { fontSize: 13, color: '#f87171', margin: 0 },
     ghostBtn:       { background: 'none', border: 'none', color: '#4ade80', fontSize: 13, cursor: 'pointer', padding: 0, textDecoration: 'underline' },
+
+    // Details intro
+    detailsIntro:   { fontSize: 15, fontWeight: 700, color: '#fff', margin: '0 0 16px', lineHeight: 1.5 },
 
     // Review box
     reviewBox:      { backgroundColor: '#0f0f0f', border: '1px solid #1f1f1f', borderRadius: 10, padding: '4px 16px', marginBottom: 4 },

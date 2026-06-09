@@ -321,7 +321,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                         </span>
                         <div style={{
                             ...s.tabUnderline,
-                            backgroundColor: i === stepIndex ? '#7c3aed'
+                            backgroundColor: i === stepIndex ? '#FF8648'
                                 : i < stepIndex ? '#444'
                                 : '#222',
                         }} />

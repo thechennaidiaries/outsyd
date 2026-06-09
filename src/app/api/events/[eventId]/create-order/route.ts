@@ -26,6 +26,11 @@ function generateBookingRef(): string {
     return `EVT-${date}-${rand}`
 }
 
+// Generate per-row refs: first item gets the base ref, extras get -2, -3, etc.
+function lineItemRef(baseRef: string, index: number): string {
+    return index === 0 ? baseRef : `${baseRef}-${index + 1}`
+}
+
 interface LineItem {
     tierId: string
     quantity: number
@@ -155,12 +160,12 @@ export async function POST(
         return { item, tier, fees }
     })
 
-    // ── Generate shared booking reference ─────────────────────────────────────
+    // ── Generate shared base booking reference ────────────────────────────────
     const bookingRef = generateBookingRef()
 
-    // ── Create one pending booking row per line item ───────────────────────────
-    const bookingInserts = feeBreakdowns.map(({ item, tier, fees }) => ({
-        booking_reference:  bookingRef,
+    // ── Create one pending booking row per line item (each with unique ref) ───
+    const bookingInserts = feeBreakdowns.map(({ item, tier, fees }, index) => ({
+        booking_reference:  lineItemRef(bookingRef, index),
         event_id:           eventId,
         tier_id:            tier.id,
         vendor_id:          event.vendor_id,
@@ -205,16 +210,16 @@ export async function POST(
     })
 
     if (!cfResult.success) {
-        // Clean up pending bookings so they don't orphan permanently
-        await supabase.from('event_bookings').delete().eq('booking_reference', bookingRef)
+        // Clean up all pending bookings for this order on Cashfree failure
+        await supabase.from('event_bookings').delete().like('booking_reference', `${bookingRef}%`)
         return NextResponse.json({ error: cfResult.error }, { status: 502 })
     }
 
-    // ── Save Cashfree order ID to all booking rows for this reference ─────────
+    // ── Save Cashfree order ID to all booking rows for this order ─────────────
     await supabase
         .from('event_bookings')
         .update({ cf_order_id: cfResult.cfOrderId })
-        .eq('booking_reference', bookingRef)
+        .like('booking_reference', `${bookingRef}%`)
 
     return NextResponse.json({
         bookingRef,

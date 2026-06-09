@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Missing order_id or payment_id' }, { status: 400 })
     }
 
-    // ── 4. Find booking by booking_reference ─────────────────────────────────
+    // ── 4. Find primary booking by booking_reference (= Cashfree orderId) ────
     const { data: booking } = await supabase
         .from('event_bookings')
         .select('id, booking_reference, event_id, event_title, event_date, event_venue, tier_title, quantity, amount_paid, customer_name, customer_phone')
@@ -145,6 +145,19 @@ export async function POST(req: NextRequest) {
     if (rpcResult !== 'confirmed') {
         return NextResponse.json({ result: rpcResult })
     }
+
+    // ── 6b. Bulk-confirm any extra line-item rows (same order) ───────────────
+    // For multi-tier orders, the primary row (EVT-...) is confirmed via RPC above.
+    // Extra rows (EVT-...-2, EVT-...-3) need to be marked paid via a bulk update.
+    await supabase
+        .from('event_bookings')
+        .update({
+            payment_status: 'paid',
+            cf_payment_id:  cfPaymentId,
+            booking_status: 'confirmed',
+        })
+        .like('booking_reference', `${cfOrderId}-%`)
+        .eq('payment_status', 'pending')
 
     // ── 7. Upsert customer account ────────────────────────────────────────────
     // Creates account if new, ignores if already exists — same as activity booking flow

@@ -512,4 +512,147 @@ export const PUZZLES: GamePuzzle[] = [
     ],
   },
 
+  {
+    id: 'game-028',
+    date: '2026-06-04',
+    location: 'CMBT Bus Stand',
+    area: 'Koyambedu',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/koyambedu1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/cmbt2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/cmbt3.jpg',
+    ],
+    acceptedPatterns: [
+      'cmbt\\s*(bus\\s*stand)?',
+      'koyambedu\\s*(bus\\s*stand)?',
+    ],
+    aliases: [
+      'cmbt',
+      'koyambedu',
+      'koyambedu bus stand',
+      'cmbt bus stand',
+    ],
+  },
+
+  {
+    id: 'game-029',
+    date: '2026-06-05',
+    location: 'Valluvar Kottam',
+    area: 'Nungambakkam',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/vlv1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/vlv2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/vlv3.webp',
+    ],
+    acceptedPatterns: [
+      'valluvar\\s*kottam',
+      'valluvar',
+      'kural\\s*mandapam',
+      'thiruvalluvar',
+      'thiruvalluvar\\s*memorial',
+    ],
+    aliases: [
+      'valluvar kottam',
+      'valluvar',
+      'kural mandapam',
+      'thiruvalluvar',
+      'thiruvalluvar memorial',
+    ],
+  },
+
+  {
+    id: 'game-030',
+    date: '2026-06-06',
+    location: 'Santhome church',
+    area: 'Santhome',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/santhome1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/santhome2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/santhome3.webp',
+    ],
+    acceptedPatterns: [
+      'san\\s*thome?\\s*(church|cathedral|basilica)?',
+      'santhome?\\s*(church|cathedral|basilica)?',
+    ],
+    aliases: [
+      'santhome church',
+      'santhome cathedral',
+      'santhome cathedral basilica',
+      'san thome church',
+    ],
+  },
+
+  {
+    id: 'game-031',
+    date: '2026-06-07',
+    location: 'Kilambakkam',
+    area: 'Kilambakkam',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/kilam1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/kilam2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/kilam3.webp',
+    ],
+    acceptedPatterns: [
+      'kilambak+am\\s*(bus\\s*stand)?',
+      'kilambak+am',
+    ],
+    aliases: [
+      'kilambakkam',
+      'kilambakkam bus stand',
+    ],
+  },
+
+  {
+    id: 'game-032',
+    date: '2026-06-08',
+    location: 'S2 Theyagaraja',
+    area: 'T Nagar',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/s21.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/s22.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/s23%20.webp',
+    ],
+    acceptedPatterns: [
+      '^s2$',
+      's2\\s*th?[ei]yag?ar?aja',
+      'pvr\\s*th?[ei]yag?ar?aja',
+    ],
+    aliases: [
+      's2',
+      'pvr theyagaraja',
+      's2 thyagaraja',
+      's2 thiyagaraja',
+      's2 theyagaraja',
+      'theyagaraja',
+    ],
+  },
+
+  {
+    id: 'game-033',
+    date: '2026-06-09',
+    location: 'Shri Ashtalakshmi Temple',
+    area: 'Besant Nagar',
+    placeType: 'Place',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/blurashta.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/ashta2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/ashta3.webp',
+    ],
+    acceptedPatterns: [
+      '^(shri|sri)?\\s*ashtalakshmi\\s*(temple)?$',
+      'ashtalakshmi',
+    ],
+    aliases: [
+      'shri ashtalakshmi temple',
+      'ashtalakshmi temple',
+      'ashtalakshmi',
+      'sri ashtalakshmi temple',
+    ],
+  },
+
 ]

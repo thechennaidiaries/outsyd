@@ -78,6 +78,125 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   {
     id: 'paatify-003',
     date: '2026-06-04',
+    song: 'Uyirin Uyire',
+    movie: 'Kaakha Kaakha',
+    year: 2003,
+    hints: [
+      'For every second you delay, death happens in installment',
+      "Won't you come near? Won't you give your fingers? You.. you..",
+      'Life of life, life of life, I am waiting on the lap of the river',
+      'The wet waves collect water and splash it on my face, but I am still sweating'
+    ],
+    acceptedPatterns: [
+      'uyirin\\s*uyire',
+      'uyirinuyire',
+    ],
+  },
+
+  {
+    id: 'paatify-004',
+    date: '2026-06-05',
+    song: 'Kadhaippoma',
+    movie: 'Oh My Kadavule',
+    year: 2020,
+    hints: [
+      "Even though I know it's true\nMy heart hesitates to say it",
+      'If we hold hands and talk together\nCourage will begin to appear',
+      'Shall we talk?\nShall we talk?',
+      'Shall we talk?\nThe more you speak, The more my wounds will heal'
+    ],
+    acceptedPatterns: [
+      'kadhaippoma',
+      'kadhaippomaa',
+      'kadhaipoma',
+    ],
+  },
+
+  {
+    id: 'paatify-005',
+    date: '2026-06-06',
+    song: 'Nenjame Nenjame',
+    movie: 'Maamannan',
+    year: 2023,
+    hints: [
+      'Oh heart, my heart\nIt whispers softly with affection',
+      'Oh shelter, my shelter\nIt has come to me as my own',
+      'The wounds you suffered when you were young\nYou never told anyone before',
+      'Whether you plead or stand strong\nLove will always triumph, no matter the day'
+    ],
+    acceptedPatterns: [
+      'nenjame\\s*nenjame',
+      'nenjamey\\s*nenjamey',
+      'nenjame',
+    ],
+  },
+
+  {
+    id: 'paatify-006',
+    date: '2026-06-07',
+    song: 'Vaarayo Vaarayo',
+    movie: 'Aadhavan',
+    year: 2009,
+    hints: [
+      'Will you come, will you come, to fall in love?',
+      'There is no breeze that doesn’t speak with the flowers.',
+      'Why didn’t this love exist yesterday?',
+      'You tell me, my heart'
+    ],
+    acceptedPatterns: [
+      'vaarayo\\s*vaarayo',
+      'varayo\\s*varayo',
+      'vaarayo',
+      'varayo',
+    ],
+  },
+
+  {
+    id: 'paatify-007',
+    date: '2026-06-08',
+    song: 'Nee Singam Dhan',
+    movie: 'Pathu Thala',
+    year: 2023,
+    hints: [
+      'As the whole town stands around watching,\nHe will face the battlefield.',
+      'So his army can live in his smile,\nHe will embrace the wounds.',
+      'Even when many elephants gather together,\nYou are the lion.',
+      'A bird for whom that sky is not enough,\nLooking at the river as a mirror, Its heart is fulfilled today.'
+    ],
+    acceptedPatterns: [
+      'nee\\s*singam\\s*dha?n',
+      'nee\\s*singam\\s*tha?n',
+      'singam\\s*dha?n',
+      'singam\\s*tha?n',
+    ],
+  },
+
+  {
+    id: 'paatify-008',
+    date: '2026-06-09',
+    song: 'Pathikichu',
+    movie: 'Vidaamuyarchi',
+    year: 2025,
+    hints: [
+      'A monster fuse has caught on fire!\nIt will only end after it completely explodes.',
+      'A hidden nuclear weapon\nMay now demand the whole world as sacrifice.',
+      'Even if a single drop of blood is left remaining,\nThe story hasn\'t ended yet, watch it continue',
+      'Forever, keep trying!\nNever lose hope, keep trying.'
+    ],
+    acceptedPatterns: [
+      'pa[td]h?ikich[ui]',
+      'pathikichu',
+      'patikichu',
+      'padhikichu',
+      'padikichu',
+      'pathikichi',
+      'patikichi',
+    ],
+  },
+
+  {
+    id: 'paatify-009',
+    date: '2026-06-10',
     song: 'Chinna Chinna Aasai',
     movie: 'Roja',
     year: 1992,
@@ -98,8 +217,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-004',
-    date: '2026-06-05',
+    id: 'paatify-010',
+    date: '2026-06-11',
     song: 'Uyire',
     movie: 'Bombay',
     year: 1995,
@@ -116,8 +235,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-005',
-    date: '2026-06-06',
+    id: 'paatify-011',
+    date: '2026-06-12',
     song: 'Vinnaithaandi Varuvaayaa',
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
@@ -136,8 +255,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-006',
-    date: '2026-06-07',
+    id: 'paatify-012',
+    date: '2026-06-13',
     song: 'Munbe Vaa',
     movie: 'Sillunu Oru Kaadhal',
     year: 2006,
@@ -155,8 +274,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-007',
-    date: '2026-06-08',
+    id: 'paatify-013',
+    date: '2026-06-14',
     song: 'Nenjukkul Peidhidum',
     movie: 'Vaaranam Aayiram',
     year: 2010,
@@ -175,8 +294,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-008',
-    date: '2026-06-09',
+    id: 'paatify-014',
+    date: '2026-06-15',
     song: 'Kannaana Kanney',
     movie: 'Viswasam',
     year: 2019,

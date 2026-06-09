@@ -340,7 +340,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                             {activeTiers.map(tier => {
                                 const selected = selectedTier?.id === tier.id
                                 return (
-                                    <div key={tier.id} style={{ ...s.tierCard, borderColor: selected ? '#7c3aed44' : '#222', backgroundColor: selected ? '#18102e' : '#141414' }}>
+                                    <div key={tier.id} style={{ ...s.tierCard, borderColor: selected ? '#7c3aed44' : '#222', backgroundColor: '#141414' }}>
                                         {/* Row 1: tier name */}
                                         <p style={s.tierTitle}>{tier.title}</p>
                                         {tier.capacity && (
@@ -353,7 +353,13 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                                                 <div style={s.qtyRow} onClick={e => e.stopPropagation()}>
                                                     <button
                                                         style={s.qtyBtn}
-                                                        onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                                                        onClick={() => {
+                                                            if (quantity === 1) {
+                                                                setSelectedTier(null)
+                                                            } else {
+                                                                setQuantity(q => q - 1)
+                                                            }
+                                                        }}
                                                     >−</button>
                                                     <span style={s.qtyNum}>{quantity}</span>
                                                     <button

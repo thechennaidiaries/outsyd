@@ -4,13 +4,9 @@
  * /[city]/events/[slug]/book
  *
  * 3-step booking flow:
- *   Step 1 — select:   Pick Your Tickets (tier card + inline quantity)
- *   Step 2 — details:  Your Details
- *                        ① Phone number typed → Send OTP button appears
- *                        ② OTP verified → name field reveals below
- *                        ③ Name filled → Next button goes to review
- *                        Logged-in: phone pre-filled + Verified badge, skip OTP
- *   Step 3 — review:   Review & Pay (summary + coupon + book button)
+ *   Step 1 — select:   Pick Your Tickets (tier card + inline quantity) — full width, no sidebar
+ *   Step 2 — details:  Your Details — phone first → OTP → name reveals — full width, no sidebar
+ *   Step 3 — review:   Order Summary inline (event, ticket, offers, payment details)
  *   Paying  — Cashfree SDK checkout in progress
  */
 
@@ -56,23 +52,23 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     const [quantity, setQuantity]         = useState(1)
 
     // ── Step 2: auth state ────────────────────────────────────────────────────
-    const [isLoggedIn, setIsLoggedIn]     = useState(false)
-    const [name, setName]                 = useState('')
-    const [phone, setPhone]               = useState('')    // 10 digits only, no +91
-    const [otpSent, setOtpSent]           = useState(false)
+    const [isLoggedIn, setIsLoggedIn]       = useState(false)
+    const [name, setName]                   = useState('')
+    const [phone, setPhone]                 = useState('')    // 10 digits only, no +91
+    const [otpSent, setOtpSent]             = useState(false)
     const [phoneVerified, setPhoneVerified] = useState(false)
-    const [otp, setOtp]                   = useState('')
-    const [otpLoading, setOtpLoading]     = useState(false)
-    const [otpError, setOtpError]         = useState('')
-    const [detailsError, setDetailsError] = useState('')
+    const [otp, setOtp]                     = useState('')
+    const [otpLoading, setOtpLoading]       = useState(false)
+    const [otpError, setOtpError]           = useState('')
+    const [detailsError, setDetailsError]   = useState('')
     const [resendCooldown, setResendCooldown] = useState(0)
     const otpInputRef = useRef<HTMLInputElement>(null)
 
     // ── Step 3: review ────────────────────────────────────────────────────────
-    const [couponCode, setCouponCode]     = useState('')
-    const [couponResult, setCouponResult] = useState<CouponResult | null>(null)
+    const [couponCode, setCouponCode]       = useState('')
+    const [couponResult, setCouponResult]   = useState<CouponResult | null>(null)
     const [couponLoading, setCouponLoading] = useState(false)
-    const [payError, setPayError]         = useState('')
+    const [payError, setPayError]           = useState('')
     const [alreadyBooked, setAlreadyBooked] = useState(false)
 
     // ── Global step ────────────────────────────────────────────────────────────
@@ -99,7 +95,6 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                     setIsLoggedIn(true)
                     if (d.user.name) setName(d.user.name)
                     if (d.user.phone_number) {
-                        // Strip +91 prefix — phone state stores 10 digits only
                         const digits = d.user.phone_number.replace(/^\+91/, '').replace(/\D/g, '').slice(-10)
                         setPhone(digits)
                         setPhoneVerified(true)
@@ -124,13 +119,13 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
         const discount = couponResult?.valid ? couponResult.discountAmount : 0
         const subtotal = event.fee_absorbed_by_vendor ? base : base + fee
         const paid     = Math.max(0, subtotal - discount)
-        return { base, fee, discount, paid }
+        return { base, fee, discount, subtotal, paid }
     }
     const preview = calcPreview()
 
     function fmtDate(iso: string) {
         return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', {
-            weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+            weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
         })
     }
 
@@ -191,7 +186,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     }
 
     // ────────────────────────────────────────────────────────────────────────────
-    // Step 2 → Step 3 (after phone verified + name filled)
+    // Step 2 → Step 3
     // ────────────────────────────────────────────────────────────────────────────
     function handleContinueDetails() {
         if (!name.trim()) {
@@ -283,12 +278,13 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
         </Page>
     )
 
-    const activeTiers = tiers.filter(t => t.is_active)
-    const stepIndex   = step === 'select' ? 0 : step === 'details' ? 1 : 2
-    const tabLabels   = ['Tickets', 'Details', 'Payment']
+    const activeTiers         = tiers.filter(t => t.is_active)
+    const stepIndex           = step === 'select' ? 0 : step === 'details' ? 1 : 2
+    const tabLabels           = ['Tickets', 'Details', 'Payment']
+    const canProceedDetails   = (isLoggedIn || phoneVerified) && name.trim().length > 0
 
-    // In Step 2: can the user proceed?
-    const canProceedDetails = (isLoggedIn || phoneVerified) && name.trim().length > 0
+    // Date + time + venue string for the event header
+    const eventMeta = [fmtDate(event.date), event.time, event.venue].filter(Boolean).join(' · ')
 
     return (
         <Page>
@@ -303,6 +299,14 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
             >
                 ← {step === 'select' ? 'Back to event' : 'Back'}
             </button>
+
+            {/* ── Event header (steps 1 & 2 only) ── */}
+            {step !== 'review' && (
+                <div style={s.eventHeader}>
+                    <h1 style={s.eventTitle}>{event.title}</h1>
+                    <p style={s.eventMeta}>{eventMeta}</p>
+                </div>
+            )}
 
             {/* ── Tab progress bar ── */}
             <div style={s.tabBar}>
@@ -325,340 +329,295 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                 ))}
             </div>
 
-            <div style={s.layout}>
+            {/* ── Single-column form area ── */}
+            <div style={s.formArea}>
 
-                {/* ══════════════════════════════════════════════════════
-                    Left column — form
-                ══════════════════════════════════════════════════════ */}
-                <div style={s.formCol}>
-
-                    {/* ── STEP 1: Pick Your Tickets ── */}
-                    {step === 'select' && (
-                        <div style={s.section}>
-                            <div style={s.tierList}>
-                                {activeTiers.map(tier => {
-                                    const selected = selectedTier?.id === tier.id
-                                    return (
-                                        <button
-                                            key={tier.id}
-                                            onClick={() => {
-                                                setSelectedTier(tier)
-                                                if (!selected) setQuantity(1)
-                                            }}
-                                            style={{
-                                                ...s.tierBtn,
-                                                borderColor:     selected ? '#ffffff25' : '#2a2a2a',
-                                                backgroundColor: selected ? '#1c1c1c'  : '#141414',
-                                                boxShadow:       selected ? '0 0 0 1px #ffffff12' : 'none',
-                                            }}
-                                        >
-                                            {/* Tier info */}
-                                            <div style={s.tierInfo}>
+                {/* ══ STEP 1: Pick Your Tickets ══ */}
+                {step === 'select' && (
+                    <div>
+                        <p style={s.sectionHeading}>CHOOSE TICKETS</p>
+                        <div style={s.tierList}>
+                            {activeTiers.map(tier => {
+                                const selected = selectedTier?.id === tier.id
+                                return (
+                                    <div key={tier.id} style={{ ...s.tierCard, borderColor: selected ? '#7c3aed44' : '#222', backgroundColor: selected ? '#18102e' : '#141414' }}>
+                                        <div style={s.tierCardTop}>
+                                            <div>
                                                 <p style={s.tierTitle}>{tier.title}</p>
                                                 {tier.capacity && (
                                                     <p style={s.tierCap}>{tier.capacity} seats available</p>
                                                 )}
                                             </div>
-
-                                            {/* Price + quantity (quantity only when selected) */}
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexShrink: 0 }}>
-                                                <p style={s.tierPrice}>{formatPaise(tier.price)}</p>
-                                                {selected && (
-                                                    <div
-                                                        style={s.qtyRow}
-                                                        onClick={e => e.stopPropagation()}
-                                                    >
-                                                        <button
-                                                            style={s.qtyBtn}
-                                                            onClick={e => {
-                                                                e.stopPropagation()
-                                                                setQuantity(q => Math.max(1, q - 1))
-                                                            }}
-                                                        >−</button>
-                                                        <span style={s.qtyNum}>{quantity}</span>
-                                                        <button
-                                                            style={s.qtyBtn}
-                                                            onClick={e => {
-                                                                e.stopPropagation()
-                                                                setQuantity(q => Math.min(10, q + 1))
-                                                            }}
-                                                        >+</button>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </button>
-                                    )
-                                })}
-                                {activeTiers.length === 0 && (
-                                    <p style={{ color: '#666', fontSize: 14, margin: 0 }}>No tickets available.</p>
-                                )}
-                            </div>
-
-                            <button
-                                onClick={handleContinueSelect}
-                                disabled={!selectedTier}
-                                style={{ ...s.primaryBtn, opacity: !selectedTier ? 0.35 : 1 }}
-                            >
-                                Continue →
-                            </button>
+                                            <p style={s.tierPrice}>{formatPaise(tier.price)}</p>
+                                        </div>
+                                        <div style={s.tierCardBottom}>
+                                            {selected ? (
+                                                <div style={s.qtyRow} onClick={e => e.stopPropagation()}>
+                                                    <button
+                                                        style={s.qtyBtn}
+                                                        onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                                                    >−</button>
+                                                    <span style={s.qtyNum}>{quantity}</span>
+                                                    <button
+                                                        style={s.qtyBtn}
+                                                        onClick={() => setQuantity(q => Math.min(10, q + 1))}
+                                                    >+</button>
+                                                </div>
+                                            ) : (
+                                                <button
+                                                    style={s.addBtn}
+                                                    onClick={() => { setSelectedTier(tier); setQuantity(1) }}
+                                                >
+                                                    ADD
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                            {activeTiers.length === 0 && (
+                                <p style={{ color: '#666', fontSize: 14, margin: 0 }}>No tickets available.</p>
+                            )}
                         </div>
-                    )}
 
-                    {/* ── STEP 2: Your Details ── */}
-                    {step === 'details' && (
-                        <div style={s.section}>
+                        <button
+                            onClick={handleContinueSelect}
+                            disabled={!selectedTier}
+                            style={{ ...s.primaryBtn, opacity: !selectedTier ? 0.35 : 1 }}
+                        >
+                            Continue →
+                        </button>
+                    </div>
+                )}
 
-                            {/* ── Phone number (always shown) ── */}
-                            <div style={s.field}>
-                                <label style={s.label}>Phone number *</label>
-                                <div style={s.phoneRow}>
-                                    <span style={s.phonePrefix}>+91</span>
-                                    <input
-                                        style={{
-                                            ...s.input,
-                                            flex: 1,
-                                            borderLeft: 'none',
-                                            borderRadius: '0 8px 8px 0',
-                                            ...((isLoggedIn || phoneVerified) ? { color: '#aaa', cursor: 'not-allowed' } : {}),
-                                        }}
-                                        value={phone}
-                                        onChange={e => {
-                                            if (isLoggedIn || phoneVerified) return
-                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10)
-                                            setPhone(val)
-                                            // Reset OTP state if they edit the number
-                                            if (otpSent) { setOtpSent(false); setOtp(''); setOtpError('') }
-                                        }}
-                                        placeholder="98765 43210"
-                                        type="tel"
-                                        maxLength={10}
-                                        readOnly={isLoggedIn || phoneVerified}
-                                        autoFocus
-                                    />
-                                    {(isLoggedIn || phoneVerified) && (
-                                        <span style={s.verifiedBadge}>✓ Verified</span>
-                                    )}
-                                </div>
+                {/* ══ STEP 2: Your Details ══ */}
+                {step === 'details' && (
+                    <div style={s.section}>
 
-                                {/* Change number link — visible only after OTP sent but not yet verified */}
-                                {!isLoggedIn && otpSent && !phoneVerified && (
-                                    <button
-                                        style={{ ...s.ghostBtn, alignSelf: 'flex-end', marginTop: 4 }}
-                                        onClick={() => { setOtpSent(false); setOtp(''); setOtpError('') }}
-                                    >
-                                        Change number
-                                    </button>
-                                )}
-
-                                {!isLoggedIn && !phoneVerified && !otpSent && (
-                                    <p style={s.phoneHint}>Your booking confirmation will be sent here</p>
+                        {/* Phone number */}
+                        <div style={s.field}>
+                            <label style={s.label}>Phone number *</label>
+                            <div style={s.phoneRow}>
+                                <span style={s.phonePrefix}>+91</span>
+                                <input
+                                    style={{
+                                        ...s.input,
+                                        flex: 1,
+                                        borderLeft: 'none',
+                                        borderRadius: '0 8px 8px 0',
+                                        ...((isLoggedIn || phoneVerified) ? { color: '#aaa', cursor: 'not-allowed' } : {}),
+                                    }}
+                                    value={phone}
+                                    onChange={e => {
+                                        if (isLoggedIn || phoneVerified) return
+                                        const val = e.target.value.replace(/\D/g, '').slice(0, 10)
+                                        setPhone(val)
+                                        if (otpSent) { setOtpSent(false); setOtp(''); setOtpError('') }
+                                    }}
+                                    placeholder="98765 43210"
+                                    type="tel"
+                                    maxLength={10}
+                                    readOnly={isLoggedIn || phoneVerified}
+                                    autoFocus
+                                />
+                                {(isLoggedIn || phoneVerified) && (
+                                    <span style={s.verifiedBadge}>✓ Verified</span>
                                 )}
                             </div>
 
-                            {/* ── Send OTP button — appears when 10 digits typed, not yet sent ── */}
-                            {!isLoggedIn && !phoneVerified && !otpSent && phone.length === 10 && (
+                            {!isLoggedIn && otpSent && !phoneVerified && (
                                 <button
-                                    onClick={handleSendOtp}
-                                    disabled={otpLoading}
-                                    style={{ ...s.primaryBtn, marginTop: 18 }}
+                                    style={{ ...s.ghostBtn, alignSelf: 'flex-end', marginTop: 4 }}
+                                    onClick={() => { setOtpSent(false); setOtp(''); setOtpError('') }}
                                 >
-                                    {otpLoading ? 'Sending…' : 'Verify via WhatsApp →'}
+                                    Change number
                                 </button>
                             )}
 
-                            {/* ── OTP input — slides in after OTP sent ── */}
-                            {!isLoggedIn && !phoneVerified && otpSent && (
-                                <div style={s.otpSection}>
-                                    <p style={s.otpSentNote}>
-                                        Code sent to +91 {phone}
-                                    </p>
-                                    <input
-                                        ref={otpInputRef}
-                                        style={s.otpInput}
-                                        value={otp}
-                                        onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                                        placeholder="— — — — — —"
-                                        type="tel"
-                                        maxLength={6}
-                                        autoFocus
-                                    />
-                                    {otpError && <p style={s.otpError}>{otpError}</p>}
-
-                                    <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                                        <button
-                                            onClick={handleVerifyOtp}
-                                            disabled={otp.length < 6 || otpLoading}
-                                            style={{ ...s.primaryBtn, marginTop: 0, flex: 1, opacity: otp.length < 6 ? 0.35 : 1 }}
-                                        >
-                                            {otpLoading ? 'Verifying…' : 'Verify'}
-                                        </button>
-                                        <button
-                                            style={s.ghostBtn}
-                                            onClick={handleSendOtp}
-                                            disabled={resendCooldown > 0 || otpLoading}
-                                        >
-                                            {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend'}
-                                        </button>
-                                    </div>
-                                </div>
+                            {!isLoggedIn && !phoneVerified && !otpSent && (
+                                <p style={s.phoneHint}>Your booking confirmation will be sent here</p>
                             )}
-
-                            {/* ── Name field — reveals only after phone is verified ── */}
-                            {(isLoggedIn || phoneVerified) && (
-                                <>
-                                    <div style={{ ...s.field, marginTop: 24 }}>
-                                        <p style={s.detailsIntro}>
-                                            You're almost in. We just need a few details to confirm your spot.
-                                        </p>
-                                        <label style={s.label}>Full Name *</label>
-                                        <input
-                                            style={s.input}
-                                            value={name}
-                                            onChange={e => setName(e.target.value)}
-                                            placeholder="Arjun Kumar"
-                                            autoFocus={!name}
-                                        />
-                                    </div>
-
-                                    {detailsError && <div style={s.errorBox}>{detailsError}</div>}
-
-                                    <button
-                                        onClick={handleContinueDetails}
-                                        disabled={!canProceedDetails}
-                                        style={{ ...s.primaryBtn, opacity: !canProceedDetails ? 0.35 : 1, marginTop: 20 }}
-                                    >
-                                        Next →
-                                    </button>
-                                </>
-                            )}
-
                         </div>
-                    )}
 
-                    {/* ── STEP 3: Review & Pay ── */}
-                    {step === 'review' && selectedTier && (
-                        <div style={s.section}>
+                        {/* Send OTP button */}
+                        {!isLoggedIn && !phoneVerified && !otpSent && phone.length === 10 && (
+                            <button
+                                onClick={handleSendOtp}
+                                disabled={otpLoading}
+                                style={{ ...s.primaryBtn, marginTop: 18 }}
+                            >
+                                {otpLoading ? 'Sending…' : 'Verify via WhatsApp →'}
+                            </button>
+                        )}
 
-                            {/* Booking details summary */}
-                            <div style={s.reviewBox}>
-                                <ReviewRow label="Ticket"    value={selectedTier.title} />
-                                <ReviewRow label="Quantity"  value={`${quantity} ticket${quantity > 1 ? 's' : ''}`} />
+                        {/* OTP input */}
+                        {!isLoggedIn && !phoneVerified && otpSent && (
+                            <div style={s.otpSection}>
+                                <p style={s.otpSentNote}>Code sent to +91 {phone}</p>
+                                <input
+                                    ref={otpInputRef}
+                                    style={s.otpInput}
+                                    value={otp}
+                                    onChange={e => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                    placeholder="— — — — — —"
+                                    type="tel"
+                                    maxLength={6}
+                                    autoFocus
+                                />
+                                {otpError && <p style={s.otpError}>{otpError}</p>}
+                                <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                                    <button
+                                        onClick={handleVerifyOtp}
+                                        disabled={otp.length < 6 || otpLoading}
+                                        style={{ ...s.primaryBtn, marginTop: 0, flex: 1, opacity: otp.length < 6 ? 0.35 : 1 }}
+                                    >
+                                        {otpLoading ? 'Verifying…' : 'Verify'}
+                                    </button>
+                                    <button
+                                        style={s.ghostBtn}
+                                        onClick={handleSendOtp}
+                                        disabled={resendCooldown > 0 || otpLoading}
+                                    >
+                                        {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend'}
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Name field — reveals after phone verified */}
+                        {(isLoggedIn || phoneVerified) && (
+                            <>
+                                <div style={{ ...s.field, marginTop: 24 }}>
+                                    <p style={s.detailsIntro}>
+                                        You're almost in. We just need a few details to confirm your spot.
+                                    </p>
+                                    <label style={s.label}>Full Name *</label>
+                                    <input
+                                        style={s.input}
+                                        value={name}
+                                        onChange={e => setName(e.target.value)}
+                                        placeholder="Arjun Kumar"
+                                        autoFocus={!name}
+                                    />
+                                </div>
+
+                                {detailsError && <div style={s.errorBox}>{detailsError}</div>}
+
+                                <button
+                                    onClick={handleContinueDetails}
+                                    disabled={!canProceedDetails}
+                                    style={{ ...s.primaryBtn, opacity: !canProceedDetails ? 0.35 : 1, marginTop: 20 }}
+                                >
+                                    Next →
+                                </button>
+                            </>
+                        )}
+                    </div>
+                )}
+
+                {/* ══ STEP 3: Order Summary (Payment) ══ */}
+                {step === 'review' && selectedTier && preview && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+                        {/* — Tickets section — */}
+                        <div style={s.orderBlock}>
+                            <p style={s.sectionHeading}>TICKETS</p>
+                            <div style={s.orderTicketCard}>
+                                <div style={{ marginBottom: 6 }}>
+                                    <p style={s.orderEventName}>{event.title}</p>
+                                    <p style={s.orderTierName}>{selectedTier.title}</p>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+                                    <span style={s.orderQtyLabel}>{quantity} ticket{quantity > 1 ? 's' : ''}</span>
+                                    <span style={s.orderTicketPrice}>{formatPaise(preview.base)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* — Customer details — */}
+                        <div style={s.orderBlock}>
+                            <p style={s.sectionHeading}>YOUR DETAILS</p>
+                            <div style={s.orderDetailsCard}>
                                 <ReviewRow label="Name"      value={name} />
                                 <ReviewRow label="WhatsApp"  value={`+91 ${phone}`} last />
                             </div>
+                        </div>
 
-                            {/* Price breakdown */}
-                            {preview && (
-                                <div style={s.breakdownBox}>
-                                    <Row label={`${selectedTier.title} × ${quantity}`} value={formatPaise(preview.base)} />
-                                    {preview.fee > 0 && !event.fee_absorbed_by_vendor && (
-                                        <Row label={`Service fee (${event.service_fee_pct}%)`} value={formatPaise(preview.fee)} />
-                                    )}
-                                    {preview.discount > 0 && (
-                                        <Row label="Coupon discount" value={`−${formatPaise(preview.discount)}`} />
-                                    )}
-                                    <div style={s.breakdownDivider} />
-                                    <Row label="Total" value={formatPaise(preview.paid)} bold />
-                                </div>
-                            )}
-
-                            {/* Coupon */}
-                            <div style={{ ...s.field, marginTop: 18 }}>
-                                <label style={s.label}>Coupon code (optional)</label>
-                                <div style={s.couponRow}>
-                                    <input
-                                        style={{ ...s.input, flex: 1 }}
-                                        value={couponCode}
-                                        onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
-                                        placeholder="EARLYBIRD20"
-                                    />
-                                    <button
-                                        onClick={handleApplyCoupon}
-                                        disabled={!couponCode || couponLoading}
-                                        style={s.couponBtn}
-                                    >
-                                        {couponLoading ? '…' : 'Apply'}
-                                    </button>
-                                </div>
-                                {couponResult && (
-                                    <p style={{ fontSize: 12, margin: '4px 0 0', color: couponResult.valid ? '#4ade80' : '#f87171' }}>
-                                        {couponResult.valid
-                                            ? `✓ Coupon applied — ${formatPaise(couponResult.discountAmount)} off`
-                                            : `✗ ${couponResult.message}`}
-                                    </p>
-                                )}
-                            </div>
-
-                            {payError && <div style={s.errorBox}>{payError}</div>}
-
-                            {alreadyBooked ? (
-                                <div style={s.alreadyBookedBox}>
-                                    <p style={{ fontSize: 15, margin: '0 0 4px', fontWeight: 700, color: '#fff' }}>🎟 You're already booked!</p>
-                                    <p style={{ fontSize: 13, color: '#888', margin: '0 0 16px', lineHeight: 1.5 }}>
-                                        You have a confirmed ticket for this tier. No need to book again.
-                                    </p>
-                                    <button
-                                        onClick={() => window.location.href = '/account/bookings'}
-                                        style={s.primaryBtn}
-                                    >
-                                        View My Bookings →
-                                    </button>
-                                </div>
-                            ) : (
-                                <button onClick={handlePay} style={s.primaryBtn}>
-                                    {preview ? `Book Tickets · ${formatPaise(preview.paid)}` : 'Book Tickets'}
+                        {/* — Offers / Coupon — */}
+                        <div style={s.orderBlock}>
+                            <p style={s.sectionHeading}>OFFERS</p>
+                            <div style={s.couponRow}>
+                                <input
+                                    style={{ ...s.input, flex: 1 }}
+                                    value={couponCode}
+                                    onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
+                                    placeholder="Enter coupon code"
+                                />
+                                <button
+                                    onClick={handleApplyCoupon}
+                                    disabled={!couponCode || couponLoading}
+                                    style={s.couponBtn}
+                                >
+                                    {couponLoading ? '…' : 'Apply'}
                                 </button>
-                            )}
-
-                            {event.refund_policy && (
-                                <p style={s.refundNote}>📋 {event.refund_policy}</p>
+                            </div>
+                            {couponResult && (
+                                <p style={{ fontSize: 12, margin: '8px 0 0', color: couponResult.valid ? '#4ade80' : '#f87171' }}>
+                                    {couponResult.valid
+                                        ? `✓ Coupon applied — ${formatPaise(couponResult.discountAmount)} off`
+                                        : `✗ ${couponResult.message}`}
+                                </p>
                             )}
                         </div>
-                    )}
-                </div>
 
-                {/* ══════════════════════════════════════════════════════
-                    Right column — event summary (sticky)
-                ══════════════════════════════════════════════════════ */}
-                <div style={s.summaryCol}>
-                    {event.image && (
-                        <img src={event.image} alt={event.title} style={s.eventImage} />
-                    )}
-                    <div style={s.summaryCard}>
-                        <h3 style={s.summaryTitle}>{event.title}</h3>
-                        <p style={s.summaryMeta}>{fmtDate(event.date)}{event.time && ` · ${event.time}`}</p>
-                        {event.venue && <p style={s.summaryMeta}>{event.venue}</p>}
-
-                        {selectedTier && preview && step !== 'select' && (
-                            <div style={s.summaryBreakdown}>
-                                <Row label={`${selectedTier.title} × ${quantity}`} value={formatPaise(preview.base)} />
+                        {/* — Payment details — */}
+                        <div style={s.orderBlock}>
+                            <p style={s.sectionHeading}>PAYMENT DETAILS</p>
+                            <div style={s.paymentDetailsCard}>
+                                <PayRow label="Order amount" value={formatPaise(preview.base)} />
                                 {preview.fee > 0 && !event.fee_absorbed_by_vendor && (
-                                    <Row label="Service fee" value={formatPaise(preview.fee)} />
+                                    <PayRow label={`Fees & charges (${event.service_fee_pct}%)`} value={formatPaise(preview.fee)} />
                                 )}
                                 {preview.discount > 0 && (
-                                    <Row label="Discount" value={`−${formatPaise(preview.discount)}`} />
+                                    <PayRow label="Coupon discount" value={`− ${formatPaise(preview.discount)}`} green />
                                 )}
-                                <div style={s.breakdownDivider} />
-                                <Row label="Total" value={formatPaise(preview.paid)} bold />
+                                <div style={{ borderTop: '1px solid #222', margin: '12px 0' }} />
+                                <PayRow label="Total" value={formatPaise(preview.paid)} bold />
                             </div>
+                        </div>
+
+                        {payError && <div style={s.errorBox}>{payError}</div>}
+
+                        {alreadyBooked ? (
+                            <div style={s.alreadyBookedBox}>
+                                <p style={{ fontSize: 15, margin: '0 0 4px', fontWeight: 700, color: '#fff' }}>🎟 You're already booked!</p>
+                                <p style={{ fontSize: 13, color: '#888', margin: '0 0 16px', lineHeight: 1.5 }}>
+                                    You have a confirmed ticket for this tier. No need to book again.
+                                </p>
+                                <button
+                                    onClick={() => window.location.href = '/account/bookings'}
+                                    style={s.primaryBtn}
+                                >
+                                    View My Bookings →
+                                </button>
+                            </div>
+                        ) : (
+                            <button onClick={handlePay} style={{ ...s.primaryBtn, marginTop: 0 }}>
+                                {`Book Tickets · ${formatPaise(preview.paid)}`}
+                            </button>
+                        )}
+
+                        {event.refund_policy && (
+                            <p style={s.refundNote}>📋 {event.refund_policy}</p>
                         )}
                     </div>
-                </div>
+                )}
             </div>
         </Page>
     )
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
-
-function Row({ label, value, bold }: { label: string; value: string; bold?: boolean }) {
-    return (
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-            <span style={{ fontSize: 13, color: bold ? '#e5e5e5' : '#888', fontWeight: bold ? 600 : 400 }}>{label}</span>
-            <span style={{ fontSize: 13, color: bold ? '#fff' : '#aaa',   fontWeight: bold ? 700 : 400 }}>{value}</span>
-        </div>
-    )
-}
 
 function ReviewRow({ label, value, last }: { label: string; value: string; last?: boolean }) {
     return (
@@ -673,17 +632,31 @@ function ReviewRow({ label, value, last }: { label: string; value: string; last?
     )
 }
 
+function PayRow({ label, value, bold, green }: { label: string; value: string; bold?: boolean; green?: boolean }) {
+    return (
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+            <span style={{ fontSize: 14, color: bold ? '#e5e5e5' : '#888', fontWeight: bold ? 700 : 400 }}>{label}</span>
+            <span style={{ fontSize: 14, color: green ? '#4ade80' : bold ? '#fff' : '#aaa', fontWeight: bold ? 700 : 400 }}>{value}</span>
+        </div>
+    )
+}
+
 function Page({ children }: { children: React.ReactNode }) {
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#0a0a0a', fontFamily: 'Inter, system-ui, sans-serif', padding: '24px 20px' }}>
-            <div style={{ maxWidth: 860, margin: '0 auto' }}>{children}</div>
+            <div style={{ maxWidth: 600, margin: '0 auto' }}>{children}</div>
         </div>
     )
 }
 
 // ── Styles ─────────────────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
-    backBtn:    { background: 'none', border: 'none', color: '#666', fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 20 },
+    backBtn:        { background: 'none', border: 'none', color: '#666', fontSize: 13, cursor: 'pointer', padding: 0, marginBottom: 20 },
+
+    // Event header (steps 1 & 2)
+    eventHeader:    { textAlign: 'center', marginBottom: 24 },
+    eventTitle:     { fontSize: 20, fontWeight: 700, color: '#fff', margin: '0 0 6px', letterSpacing: '-0.3px' },
+    eventMeta:      { fontSize: 13, color: '#888', margin: 0 },
 
     // Tab progress bar
     tabBar:         { display: 'flex', borderBottom: '1px solid #222', marginBottom: 28 },
@@ -692,37 +665,42 @@ const s: Record<string, React.CSSProperties> = {
     tabUnderline:   { height: 2, width: '100%', borderRadius: 2, marginTop: -1, transition: 'background-color 0.25s' },
 
     // Layout
-    layout:     { display: 'grid', gridTemplateColumns: '1fr 320px', gap: 32, alignItems: 'start' },
-    formCol:    { display: 'flex', flexDirection: 'column', gap: 16 },
-    section:    { backgroundColor: '#141414', border: '1px solid #222', borderRadius: 14, padding: 24 },
+    formArea:       { display: 'flex', flexDirection: 'column', gap: 0 },
+    section:        { backgroundColor: '#141414', border: '1px solid #222', borderRadius: 14, padding: 24 },
 
-    // Tier list
-    tierList:   { display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 },
-    tierBtn:    {
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '14px 16px', border: '1px solid', borderRadius: 10,
-        cursor: 'pointer', transition: 'border-color 0.15s, background-color 0.15s, box-shadow 0.15s',
-        width: '100%', textAlign: 'left',
+    // Section heading (like screenshot caps)
+    sectionHeading: { fontSize: 11, fontWeight: 700, color: '#555', letterSpacing: '1px', textTransform: 'uppercase', margin: '0 0 12px' },
+
+    // Tier cards (step 1)
+    tierList:       { display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 },
+    tierCard:       { border: '1px solid', borderRadius: 12, padding: 16, transition: 'border-color 0.15s, background-color 0.15s' },
+    tierCardTop:    { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' },
+    tierCardBottom: { display: 'flex', justifyContent: 'flex-end', marginTop: 14 },
+    tierTitle:      { fontSize: 15, fontWeight: 700, color: '#e5e5e5', margin: '0 0 3px' },
+    tierCap:        { fontSize: 12, color: '#555', margin: 0 },
+    tierPrice:      { fontSize: 16, fontWeight: 700, color: '#fff', margin: 0, flexShrink: 0 },
+
+    // ADD button (unselected tier)
+    addBtn:         {
+        padding: '8px 24px', backgroundColor: '#f5f5f5', color: '#111',
+        border: 'none', borderRadius: 8, fontSize: 13, fontWeight: 700, cursor: 'pointer',
+        letterSpacing: '0.5px',
     },
-    tierInfo:   {},
-    tierTitle:  { fontSize: 14, fontWeight: 600, color: '#e5e5e5', margin: '0 0 3px' },
-    tierCap:    { fontSize: 12, color: '#555', margin: 0 },
-    tierPrice:  { fontSize: 15, fontWeight: 700, color: '#fff', margin: 0, flexShrink: 0 },
 
     // Quantity
-    qtyRow:     { display: 'flex', alignItems: 'center', gap: 10 },
-    qtyBtn:     {
-        width: 30, height: 30, borderRadius: 6,
-        backgroundColor: '#2a2a2a', border: '1px solid #333',
-        color: '#e5e5e5', fontSize: 16, cursor: 'pointer', lineHeight: '1',
+    qtyRow:         { display: 'flex', alignItems: 'center', gap: 14 },
+    qtyBtn:         {
+        width: 34, height: 34, borderRadius: 8,
+        backgroundColor: '#111', border: '1px solid #333',
+        color: '#e5e5e5', fontSize: 18, cursor: 'pointer',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
     },
-    qtyNum:     { fontSize: 15, fontWeight: 600, color: '#fff', minWidth: 18, textAlign: 'center' },
+    qtyNum:         { fontSize: 16, fontWeight: 700, color: '#fff', minWidth: 20, textAlign: 'center' },
 
     // Form fields
-    field:      { display: 'flex', flexDirection: 'column', gap: 6 },
-    label:      { fontSize: 12, fontWeight: 500, color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' },
-    input:      { padding: '11px 13px', backgroundColor: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 8, color: '#e5e5e5', fontSize: 14, outline: 'none', width: '100%', boxSizing: 'border-box' },
+    field:          { display: 'flex', flexDirection: 'column', gap: 6 },
+    label:          { fontSize: 12, fontWeight: 500, color: '#666', textTransform: 'uppercase', letterSpacing: '0.5px' },
+    input:          { padding: '11px 13px', backgroundColor: '#1a1a1a', border: '1px solid #2a2a2a', borderRadius: 8, color: '#e5e5e5', fontSize: 14, outline: 'none', width: '100%', boxSizing: 'border-box' },
 
     // Phone row
     phoneRow:       { display: 'flex', alignItems: 'stretch', position: 'relative' },
@@ -740,12 +718,15 @@ const s: Record<string, React.CSSProperties> = {
     // Details intro
     detailsIntro:   { fontSize: 15, fontWeight: 700, color: '#fff', margin: '0 0 16px', lineHeight: 1.5 },
 
-    // Review box
-    reviewBox:      { backgroundColor: '#0f0f0f', border: '1px solid #1f1f1f', borderRadius: 10, padding: '4px 16px', marginBottom: 4 },
-
-    // Price breakdown
-    breakdownBox:   { marginTop: 16, paddingTop: 14, borderTop: '1px solid #1f1f1f' },
-    breakdownDivider: { borderTop: '1px solid #2a2a2a', margin: '8px 0' },
+    // Order summary blocks (step 3)
+    orderBlock:         { display: 'flex', flexDirection: 'column' },
+    orderTicketCard:    { backgroundColor: '#141414', border: '1px solid #222', borderRadius: 12, padding: '14px 16px' },
+    orderEventName:     { fontSize: 14, fontWeight: 700, color: '#e5e5e5', margin: '0 0 4px' },
+    orderTierName:      { fontSize: 13, color: '#888', margin: 0 },
+    orderQtyLabel:      { fontSize: 13, color: '#888' },
+    orderTicketPrice:   { fontSize: 14, fontWeight: 700, color: '#fff' },
+    orderDetailsCard:   { backgroundColor: '#141414', border: '1px solid #222', borderRadius: 12, padding: '4px 16px' },
+    paymentDetailsCard: { backgroundColor: '#141414', border: '1px solid #222', borderRadius: 12, padding: '16px' },
 
     // Coupon
     couponRow:      { display: 'flex', gap: 8 },
@@ -758,17 +739,9 @@ const s: Record<string, React.CSSProperties> = {
         transition: 'opacity 0.15s',
     },
 
-    errorBox:           { backgroundColor: '#2a1212', border: '1px solid #5a2020', borderRadius: 8, color: '#f87171', fontSize: 13, padding: '12px 14px', marginTop: 14 },
-    alreadyBookedBox:   { backgroundColor: '#0f2318', border: '1px solid #1a4a2e', borderRadius: 10, padding: '18px 16px', marginTop: 18 },
-    refundNote:         { fontSize: 12, color: '#555', marginTop: 14, lineHeight: 1.6 },
-
-    // Right column
-    summaryCol:         { display: 'flex', flexDirection: 'column', gap: 14, position: 'sticky', top: 24 },
-    eventImage:         { width: '100%', aspectRatio: '3/4', objectFit: 'cover', borderRadius: 12, display: 'block' },
-    summaryCard:        { backgroundColor: '#141414', border: '1px solid #222', borderRadius: 12, padding: 20 },
-    summaryTitle:       { fontSize: 15, fontWeight: 700, color: '#fff', margin: '0 0 6px', letterSpacing: '-0.2px' },
-    summaryMeta:        { fontSize: 13, color: '#666', margin: '0 0 4px' },
-    summaryBreakdown:   { marginTop: 16, paddingTop: 14, borderTop: '1px solid #1f1f1f' },
+    errorBox:           { backgroundColor: '#2a1212', border: '1px solid #5a2020', borderRadius: 8, color: '#f87171', fontSize: 13, padding: '12px 14px', marginTop: 4 },
+    alreadyBookedBox:   { backgroundColor: '#0f2318', border: '1px solid #1a4a2e', borderRadius: 10, padding: '18px 16px' },
+    refundNote:         { fontSize: 12, color: '#555', marginTop: 4, lineHeight: 1.6 },
 
     // Paying state
     payingState:    { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh', gap: 16 },

@@ -47,9 +47,8 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     const [loading, setLoading]     = useState(true)
     const [pageError, setPageError] = useState('')
 
-    // ── Step 1: tier + quantity ────────────────────────────────────────────────
-    const [selectedTier, setSelectedTier] = useState<Tier | null>(null)
-    const [quantity, setQuantity]         = useState(1)
+    // ── Step 1: cart (tierId → qty) ───────────────────────────────────────────
+    const [cart, setCart] = useState<Record<string, number>>({}) // tierId → qty
 
     // ── Step 2: auth state ────────────────────────────────────────────────────
     const [isLoggedIn, setIsLoggedIn]       = useState(false)
@@ -111,12 +110,17 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
         return () => clearTimeout(t)
     }, [resendCooldown])
 
-    // ── Fee preview ────────────────────────────────────────────────────────────
+    // ── Fee preview (sums across all cart items) ──────────────────────────────
     function calcPreview() {
-        if (!selectedTier || !event) return null
-        const base     = selectedTier.price * quantity
+        if (!event || Object.keys(cart).length === 0) return null
+        const cartItems = Object.entries(cart).filter(([, q]) => q > 0)
+        if (cartItems.length === 0) return null
+        const base     = cartItems.reduce((sum, [tierId, qty]) => {
+            const tier = tiers.find(t => t.id === tierId)
+            return sum + (tier?.price ?? 0) * qty
+        }, 0)
         const fee      = Math.ceil(base * (event.service_fee_pct / 100))
-        const discount = couponResult?.valid ? couponResult.discountAmount : 0
+        const discount = 0 // coupon hidden for now
         const subtotal = event.fee_absorbed_by_vendor ? base : base + fee
         const paid     = Math.max(0, subtotal - discount)
         return { base, fee, discount, subtotal, paid }
@@ -133,7 +137,8 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     // Step 1 → Step 2
     // ────────────────────────────────────────────────────────────────────────────
     function handleContinueSelect() {
-        if (!selectedTier) return
+        const hasItems = Object.values(cart).some(q => q > 0)
+        if (!hasItems) return
         setStep('details')
     }
 
@@ -198,36 +203,21 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     }
 
     // ────────────────────────────────────────────────────────────────────────────
-    // Step 3: Apply coupon
+    // Step 3: Apply coupon (hidden for now — will be re-enabled with multi-tier logic)
     // ────────────────────────────────────────────────────────────────────────────
     async function handleApplyCoupon() {
-        if (!couponCode || !event || !selectedTier) return
-        setCouponLoading(true)
-        setCouponResult(null)
-        try {
-            const res = await fetch(`/api/events/${event.id}/validate-coupon`, {
-                method:  'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body:    JSON.stringify({ couponCode, tierId: selectedTier.id, quantity }),
-            })
-            const data = await res.json()
-            if (!res.ok) {
-                setCouponResult({ valid: false, discountAmount: 0, code: couponCode, message: data.error })
-            } else {
-                setCouponResult({ valid: true, discountAmount: data.discountAmount, code: couponCode })
-            }
-        } catch {
-            setCouponResult({ valid: false, discountAmount: 0, code: couponCode, message: 'Could not validate coupon.' })
-        } finally {
-            setCouponLoading(false)
-        }
+        // Coupon field is hidden; this is a no-op until re-enabled
     }
 
     // ────────────────────────────────────────────────────────────────────────────
     // Step 3 → Payment
     // ────────────────────────────────────────────────────────────────────────────
     async function handlePay() {
-        if (!event || !selectedTier || !name) return
+        if (!event || !name || !preview) return
+        const lineItems = Object.entries(cart)
+            .filter(([, qty]) => qty > 0)
+            .map(([tierId, quantity]) => ({ tierId, quantity }))
+        if (lineItems.length === 0) return
         setPayError('')
         setStep('paying')
         try {
@@ -235,20 +225,12 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                 method:  'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    tierId:        selectedTier.id,
-                    quantity,
+                    lineItems,
                     customerName:  name,
                     customerPhone: `+91${phone}`,
-                    couponCode:    couponResult?.valid ? couponResult.code : undefined,
                 }),
             })
             const data = await res.json()
-
-            if (res.status === 409) {
-                setStep('review')
-                setAlreadyBooked(true)
-                return
-            }
 
             if (!res.ok) throw new Error(data.error || 'Failed to create order')
 
@@ -282,6 +264,12 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     const stepIndex           = step === 'select' ? 0 : step === 'details' ? 1 : 2
     const tabLabels           = ['Tickets', 'Details', 'Payment']
     const canProceedDetails   = (isLoggedIn || phoneVerified) && name.trim().length > 0
+    const cartHasItems        = Object.values(cart).some(q => q > 0)
+    // Cart line items with tier details resolved (for review step)
+    const cartLineItems       = Object.entries(cart)
+        .filter(([, qty]) => qty > 0)
+        .map(([tierId, qty]) => ({ tier: tiers.find(t => t.id === tierId)!, qty }))
+        .filter(item => item.tier)
 
     // Date + time + venue string for the event header
     const eventMeta = [fmtDate(event.date), event.time, event.venue].filter(Boolean).join(' · ')
@@ -338,9 +326,9 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                         <p style={s.sectionHeading}>CHOOSE TICKETS</p>
                         <div style={s.tierList}>
                             {activeTiers.map(tier => {
-                                const selected = selectedTier?.id === tier.id
+                                const qty = cart[tier.id] ?? 0
                                 return (
-                                    <div key={tier.id} style={{ ...s.tierCard, borderColor: selected ? '#7c3aed44' : '#222', backgroundColor: '#141414' }}>
+                                    <div key={tier.id} style={{ ...s.tierCard, borderColor: qty > 0 ? '#FF864844' : '#222', backgroundColor: '#141414' }}>
                                         {/* Row 1: tier name */}
                                         <p style={s.tierTitle}>{tier.title}</p>
                                         {tier.capacity && (
@@ -349,28 +337,28 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                                         {/* Row 2: price (left) + ADD/qty (right) */}
                                         <div style={s.tierCardBottom}>
                                             <p style={s.tierPrice}>{formatPaise(tier.price)}</p>
-                                            {selected ? (
+                                            {qty > 0 ? (
                                                 <div style={s.qtyRow} onClick={e => e.stopPropagation()}>
                                                     <button
                                                         style={s.qtyBtn}
                                                         onClick={() => {
-                                                            if (quantity === 1) {
-                                                                setSelectedTier(null)
+                                                            if (qty === 1) {
+                                                                setCart(c => { const n = { ...c }; delete n[tier.id]; return n })
                                                             } else {
-                                                                setQuantity(q => q - 1)
+                                                                setCart(c => ({ ...c, [tier.id]: qty - 1 }))
                                                             }
                                                         }}
                                                     >−</button>
-                                                    <span style={s.qtyNum}>{quantity}</span>
+                                                    <span style={s.qtyNum}>{qty}</span>
                                                     <button
                                                         style={s.qtyBtn}
-                                                        onClick={() => setQuantity(q => Math.min(10, q + 1))}
+                                                        onClick={() => setCart(c => ({ ...c, [tier.id]: Math.min(10, qty + 1) }))}
                                                     >+</button>
                                                 </div>
                                             ) : (
                                                 <button
                                                     style={s.addBtn}
-                                                    onClick={() => { setSelectedTier(tier); setQuantity(1) }}
+                                                    onClick={() => setCart(c => ({ ...c, [tier.id]: 1 }))}
                                                 >
                                                     ADD
                                                 </button>
@@ -386,8 +374,8 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
 
                         <button
                             onClick={handleContinueSelect}
-                            disabled={!selectedTier}
-                            style={{ ...s.primaryBtn, opacity: !selectedTier ? 0.35 : 1 }}
+                            disabled={!cartHasItems}
+                            style={{ ...s.primaryBtn, opacity: !cartHasItems ? 0.35 : 1 }}
                         >
                             Continue →
                         </button>
@@ -520,21 +508,25 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                 )}
 
                 {/* ══ STEP 3: Order Summary (Payment) ══ */}
-                {step === 'review' && selectedTier && preview && (
+                {step === 'review' && cartLineItems.length > 0 && preview && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
                         {/* — Tickets section — */}
                         <div style={s.orderBlock}>
                             <p style={s.sectionHeading}>TICKETS</p>
-                            <div style={s.orderTicketCard}>
-                                <div style={{ marginBottom: 6 }}>
-                                    <p style={s.orderEventName}>{event.title}</p>
-                                    <p style={s.orderTierName}>{selectedTier.title}</p>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
-                                    <span style={s.orderQtyLabel}>{quantity} ticket{quantity > 1 ? 's' : ''}</span>
-                                    <span style={s.orderTicketPrice}>{formatPaise(preview.base)}</span>
-                                </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                {cartLineItems.map(({ tier, qty }) => (
+                                    <div key={tier.id} style={s.orderTicketCard}>
+                                        <div style={{ marginBottom: 6 }}>
+                                            <p style={s.orderEventName}>{event.title}</p>
+                                            <p style={s.orderTierName}>{tier.title}</p>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+                                            <span style={s.orderQtyLabel}>{qty} ticket{qty > 1 ? 's' : ''}</span>
+                                            <span style={s.orderTicketPrice}>{formatPaise(tier.price * qty)}</span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
@@ -547,33 +539,6 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                             </div>
                         </div>
 
-                        {/* — Offers / Coupon — */}
-                        <div style={s.orderBlock}>
-                            <p style={s.sectionHeading}>OFFERS</p>
-                            <div style={s.couponRow}>
-                                <input
-                                    style={{ ...s.input, flex: 1 }}
-                                    value={couponCode}
-                                    onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponResult(null) }}
-                                    placeholder="Enter coupon code"
-                                />
-                                <button
-                                    onClick={handleApplyCoupon}
-                                    disabled={!couponCode || couponLoading}
-                                    style={s.couponBtn}
-                                >
-                                    {couponLoading ? '…' : 'Apply'}
-                                </button>
-                            </div>
-                            {couponResult && (
-                                <p style={{ fontSize: 12, margin: '8px 0 0', color: couponResult.valid ? '#4ade80' : '#f87171' }}>
-                                    {couponResult.valid
-                                        ? `✓ Coupon applied — ${formatPaise(couponResult.discountAmount)} off`
-                                        : `✗ ${couponResult.message}`}
-                                </p>
-                            )}
-                        </div>
-
                         {/* — Payment details — */}
                         <div style={s.orderBlock}>
                             <p style={s.sectionHeading}>PAYMENT DETAILS</p>
@@ -582,9 +547,6 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                                 {preview.fee > 0 && !event.fee_absorbed_by_vendor && (
                                     <PayRow label={`Fees & charges (${event.service_fee_pct}%)`} value={formatPaise(preview.fee)} />
                                 )}
-                                {preview.discount > 0 && (
-                                    <PayRow label="Coupon discount" value={`− ${formatPaise(preview.discount)}`} green />
-                                )}
                                 <div style={{ borderTop: '1px solid #222', margin: '12px 0' }} />
                                 <PayRow label="Total" value={formatPaise(preview.paid)} bold />
                             </div>
@@ -592,24 +554,9 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
 
                         {payError && <div style={s.errorBox}>{payError}</div>}
 
-                        {alreadyBooked ? (
-                            <div style={s.alreadyBookedBox}>
-                                <p style={{ fontSize: 15, margin: '0 0 4px', fontWeight: 700, color: '#fff' }}>🎟 You're already booked!</p>
-                                <p style={{ fontSize: 13, color: '#888', margin: '0 0 16px', lineHeight: 1.5 }}>
-                                    You have a confirmed ticket for this tier. No need to book again.
-                                </p>
-                                <button
-                                    onClick={() => window.location.href = '/account/bookings'}
-                                    style={s.primaryBtn}
-                                >
-                                    View My Bookings →
-                                </button>
-                            </div>
-                        ) : (
-                            <button onClick={handlePay} style={{ ...s.primaryBtn, marginTop: 0 }}>
-                                {`Book Tickets · ${formatPaise(preview.paid)}`}
-                            </button>
-                        )}
+                        <button onClick={handlePay} style={{ ...s.primaryBtn, marginTop: 0 }}>
+                            {`Book Tickets · ${formatPaise(preview.paid)}`}
+                        </button>
 
                         {event.refund_policy && (
                             <p style={s.refundNote}>📋 {event.refund_policy}</p>

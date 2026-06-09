@@ -6,12 +6,11 @@
  * Flow:
  * 1. Auth check — 401 if no session
  * 2. Validate event is approved + booking_enabled
- * 3. Validate tier + capacity
- * 4. Validate coupon (if provided)
- * 5. Calculate fees
- * 6. Create pending event_booking row (user_id always set)
- * 7. Create Cashfree order
- * 8. Return paymentSessionId to frontend
+ * 3. For each line item: validate tier + capacity
+ * 4. Calculate fees (summed across all line items)
+ * 5. Create one pending event_booking row per line item (shared booking_reference)
+ * 6. Create a single Cashfree order for the combined total
+ * 7. Return paymentSessionId to frontend
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -19,7 +18,6 @@ import { supabase } from '@/lib/supabase'
 import { getSession } from '@/lib/session'
 import { calculateFees } from '@/lib/payment/fee'
 import { createCashfreeOrder } from '@/lib/payment/cashfree'
-import type { EventCoupon } from '@/data/vendors'
 
 // ── Booking reference generator: EVT-YYYYMMDD-XXXX ────────────────────────────
 function generateBookingRef(): string {
@@ -28,16 +26,16 @@ function generateBookingRef(): string {
     return `EVT-${date}-${rand}`
 }
 
+interface LineItem {
+    tierId: string
+    quantity: number
+}
+
 export async function POST(
     req: NextRequest,
     { params }: { params: { eventId: string } }
 ) {
     const { eventId } = params
-    // Derive base URL from the request host — this guarantees the Cashfree
-    // return URL uses the EXACT same domain the user is browsing on.
-    // VERCEL_URL is intentionally avoided: it returns the deployment-specific
-    // URL (e.g. outsyd-abc123.vercel.app) which differs from the branch alias
-    // (outsyd-git-branch.vercel.app) the user may be on, breaking cookie auth.
     const host     = req.headers.get('host') ?? 'outsyd.in'
     const protocol = host.startsWith('localhost') ? 'http' : 'https'
     const baseUrl  = process.env.NEXT_PUBLIC_BASE_URL ?? `${protocol}://${host}`
@@ -48,17 +46,44 @@ export async function POST(
         return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
 
-    const { tierId, quantity = 1, customerName, customerPhone, couponCode } = body
+    const { lineItems, customerName, customerPhone } = body as {
+        lineItems: LineItem[]
+        customerName: string
+        customerPhone: string
+    }
 
-    if (!tierId || !customerName || !customerPhone) {
+    if (!lineItems || !Array.isArray(lineItems) || lineItems.length === 0) {
+        return NextResponse.json({ error: 'lineItems array is required' }, { status: 400 })
+    }
+
+    if (!customerName || !customerPhone) {
         return NextResponse.json(
-            { error: 'tierId, customerName, and customerPhone are required' },
+            { error: 'customerName and customerPhone are required' },
             { status: 400 }
         )
     }
 
-    if (quantity < 1 || quantity > 10) {
-        return NextResponse.json({ error: 'Quantity must be between 1 and 10' }, { status: 400 })
+    // Validate each line item quantity
+    for (const item of lineItems) {
+        if (!item.tierId || typeof item.quantity !== 'number' || item.quantity < 1 || item.quantity > 10) {
+            return NextResponse.json(
+                { error: `Each line item must have a valid tierId and quantity between 1 and 10` },
+                { status: 400 }
+            )
+        }
+    }
+    const totalQty = lineItems.reduce((sum, item) => sum + item.quantity, 0)
+    if (totalQty > 20) {
+        return NextResponse.json({ error: 'Total ticket quantity cannot exceed 20' }, { status: 400 })
+    }
+
+    // ── Require authenticated session ──────────────────────────────────────────
+    const session = await getSession()
+    if (!session) {
+        return NextResponse.json(
+            { error: 'You must verify your phone number before booking.' },
+            { status: 401 }
+        )
     }
 
     // ── Fetch event ───────────────────────────────────────────────────────────
@@ -74,162 +99,103 @@ export async function POST(
         return NextResponse.json({ error: 'Booking is not available for this event' }, { status: 400 })
     }
 
-    // ── Fetch tier ────────────────────────────────────────────────────────────
-    const { data: tier } = await supabase
+    // ── Fetch + validate all tiers ────────────────────────────────────────────
+    const tierIds = lineItems.map(item => item.tierId)
+    const { data: tiersData } = await supabase
         .from('event_tiers')
         .select('id, title, price, capacity, is_active')
-        .eq('id', tierId)
+        .in('id', tierIds)
         .eq('event_id', eventId)
-        .single()
 
-    if (!tier || !tier.is_active) {
-        return NextResponse.json({ error: 'Tier not found or not available' }, { status: 404 })
+    if (!tiersData || tiersData.length !== tierIds.length) {
+        return NextResponse.json({ error: 'One or more tiers not found for this event' }, { status: 404 })
     }
 
-    // ── Capacity check ────────────────────────────────────────────────────────
-    if (tier.capacity !== null) {
-        const { data: soldData } = await supabase
-            .from('event_bookings')
-            .select('quantity')
-            .eq('tier_id', tierId)
-            .eq('payment_status', 'paid')
+    const tierMap = new Map(tiersData.map(t => [t.id, t]))
 
-        const soldCount = (soldData ?? []).reduce((sum, r) => sum + r.quantity, 0)
-        if (soldCount + quantity > tier.capacity) {
-            return NextResponse.json(
-                { error: `Only ${tier.capacity - soldCount} seats remaining for this tier` },
-                { status: 409 }
-            )
+    for (const item of lineItems) {
+        const tier = tierMap.get(item.tierId)
+        if (!tier || !tier.is_active) {
+            return NextResponse.json({ error: `Tier ${item.tierId} not found or not available` }, { status: 404 })
         }
     }
 
-    // ── Coupon validation ─────────────────────────────────────────────────────
-    let coupon: EventCoupon | null = null
-    if (couponCode) {
-        const { data: c } = await supabase
-            .from('event_coupons')
-            .select('*')
-            .eq('code', couponCode.toUpperCase())
-            .eq('active', true)
-            .single()
-
-        if (!c) {
-            return NextResponse.json({ error: 'Invalid or expired coupon code' }, { status: 400 })
-        }
-
-        // Check expiry
-        if (c.end_at && new Date(c.end_at) < new Date()) {
-            return NextResponse.json({ error: 'Coupon has expired' }, { status: 400 })
-        }
-
-        // Check usage limit dynamically
-        if (c.usage_limit !== null) {
-            const { count } = await supabase
+    // ── Capacity check (per tier) ─────────────────────────────────────────────
+    for (const item of lineItems) {
+        const tier = tierMap.get(item.tierId)!
+        if (tier.capacity !== null) {
+            const { data: soldData } = await supabase
                 .from('event_bookings')
-                .select('id', { count: 'exact', head: true })
-                .eq('coupon_code', c.code)
+                .select('quantity')
+                .eq('tier_id', item.tierId)
                 .eq('payment_status', 'paid')
 
-            if ((count ?? 0) >= c.usage_limit) {
-                return NextResponse.json({ error: 'Coupon usage limit reached' }, { status: 400 })
+            const soldCount = (soldData ?? []).reduce((sum, r) => sum + r.quantity, 0)
+            if (soldCount + item.quantity > tier.capacity) {
+                return NextResponse.json(
+                    { error: `Only ${tier.capacity - soldCount} seats remaining for "${tier.title}"` },
+                    { status: 409 }
+                )
             }
         }
-
-        // Check coupon is for this vendor / event
-        if (c.vendor_id !== event.vendor_id) {
-            return NextResponse.json({ error: 'Coupon is not valid for this event' }, { status: 400 })
-        }
-        if (c.event_id && c.event_id !== eventId) {
-            return NextResponse.json({ error: 'Coupon is not valid for this event' }, { status: 400 })
-        }
-
-        coupon = c as EventCoupon
     }
 
-    // ── Calculate fees ────────────────────────────────────────────────────────
-    const fees = calculateFees({
-        tierPriceInPaise:    tier.price,
-        quantity,
-        serviceFeePercent:   Number(event.service_fee_pct),
-        feeAbsorbedByVendor: event.fee_absorbed_by_vendor,
-        coupon,
+    // ── Calculate fees (summed across all line items) ─────────────────────────
+    let totalAmountPaid = 0
+    const feeBreakdowns = lineItems.map(item => {
+        const tier = tierMap.get(item.tierId)!
+        const fees = calculateFees({
+            tierPriceInPaise:    tier.price,
+            quantity:            item.quantity,
+            serviceFeePercent:   Number(event.service_fee_pct),
+            feeAbsorbedByVendor: event.fee_absorbed_by_vendor,
+            coupon:              null,
+        })
+        totalAmountPaid += fees.amountPaid
+        return { item, tier, fees }
     })
 
-    // ── Require authenticated session ──────────────────────────────────────────────
-    // User must have verified their phone (Step 2) before placing an order.
-    const session = await getSession()
-    if (!session) {
-        return NextResponse.json(
-            { error: 'You must verify your phone number before booking.' },
-            { status: 401 }
-        )
-    }
-
-    // ── Check for existing paid booking (prevent duplicate payment) ───────────────
-    // The DB has a partial unique index on (event_id, customer_phone, tier_id)
-    // WHERE payment_status = 'paid'. Without this check, a user could go through
-    // the full payment flow again and have their money taken, then get a 23505
-    // when we try to mark the new booking as paid.
-    const { data: existingPaid } = await supabase
-        .from('event_bookings')
-        .select('booking_reference')
-        .eq('event_id', eventId)
-        .eq('customer_phone', customerPhone)
-        .eq('tier_id', tierId)
-        .eq('payment_status', 'paid')
-        .maybeSingle()
-
-    if (existingPaid) {
-        return NextResponse.json(
-            {
-                error: 'You already have a confirmed booking for this tier.',
-                existingRef: existingPaid.booking_reference,
-            },
-            { status: 409 }
-        )
-    }
-
-    // ── Generate booking reference ──────────────────────────────────────────────
+    // ── Generate shared booking reference ─────────────────────────────────────
     const bookingRef = generateBookingRef()
 
-    // ── Create pending booking ────────────────────────────────────────────────
-    const { data: booking, error: bookingError } = await supabase
-        .from('event_bookings')
-        .insert({
-            booking_reference:  bookingRef,
-            event_id:           eventId,
-            tier_id:            tierId,
-            vendor_id:          event.vendor_id,
-            event_title:        event.title,
-            event_date:         new Date(event.date + 'T00:00:00+05:30').toISOString(),
-            event_venue:        event.venue ?? null,
-            tier_title:         tier.title,
-            user_id:            session.userId,
-            customer_name:      customerName,
-            customer_phone:     customerPhone,
-            customer_email:     null,
-            quantity,
-            base_amount:        fees.baseAmount,
-            service_fee_amount: fees.serviceFeeAmount,
-            discount_amount:    fees.discountAmount,
-            amount_paid:        fees.amountPaid,
-            coupon_code:        coupon?.code ?? null,
-            payment_provider:   'cashfree',
-            payment_status:     'pending',
-            booking_status:     'confirmed',
-        })
-        .select('id')
-        .single()
+    // ── Create one pending booking row per line item ───────────────────────────
+    const bookingInserts = feeBreakdowns.map(({ item, tier, fees }) => ({
+        booking_reference:  bookingRef,
+        event_id:           eventId,
+        tier_id:            tier.id,
+        vendor_id:          event.vendor_id,
+        event_title:        event.title,
+        event_date:         new Date(event.date + 'T00:00:00+05:30').toISOString(),
+        event_venue:        event.venue ?? null,
+        tier_title:         tier.title,
+        user_id:            session.userId,
+        customer_name:      customerName,
+        customer_phone:     customerPhone,
+        customer_email:     null,
+        quantity:           item.quantity,
+        base_amount:        fees.baseAmount,
+        service_fee_amount: fees.serviceFeeAmount,
+        discount_amount:    fees.discountAmount,
+        amount_paid:        fees.amountPaid,
+        coupon_code:        null,
+        payment_provider:   'cashfree',
+        payment_status:     'pending',
+        booking_status:     'confirmed',
+    }))
 
-    if (bookingError || !booking) {
+    const { error: bookingError } = await supabase
+        .from('event_bookings')
+        .insert(bookingInserts)
+
+    if (bookingError) {
         console.error('[create-order] Booking insert error:', bookingError)
         return NextResponse.json({ error: 'Failed to create booking' }, { status: 500 })
     }
 
-    // ── Create Cashfree order ─────────────────────────────────────────────────
+    // ── Create single Cashfree order for combined total ───────────────────────
     const cfResult = await createCashfreeOrder({
         orderId:        bookingRef,
-        amountInPaise:  fees.amountPaid,
+        amountInPaise:  totalAmountPaid,
         customerName,
         customerPhone,
         customerEmail:  undefined,
@@ -239,26 +205,30 @@ export async function POST(
     })
 
     if (!cfResult.success) {
-        // Clean up pending booking so it doesn't orphan permanently
-        await supabase.from('event_bookings').delete().eq('id', booking.id)
+        // Clean up pending bookings so they don't orphan permanently
+        await supabase.from('event_bookings').delete().eq('booking_reference', bookingRef)
         return NextResponse.json({ error: cfResult.error }, { status: 502 })
     }
 
-    // ── Save Cashfree order ID to booking ─────────────────────────────────────
+    // ── Save Cashfree order ID to all booking rows for this reference ─────────
     await supabase
         .from('event_bookings')
         .update({ cf_order_id: cfResult.cfOrderId })
-        .eq('id', booking.id)
+        .eq('booking_reference', bookingRef)
 
     return NextResponse.json({
         bookingRef,
         paymentSessionId: cfResult.paymentSessionId,
-        amountPaid:       fees.amountPaid,
+        amountPaid:       totalAmountPaid,
         breakdown: {
-            baseAmount:       fees.baseAmount,
-            discountAmount:   fees.discountAmount,
-            serviceFeeAmount: fees.serviceFeeAmount,
-            amountPaid:       fees.amountPaid,
+            lineItems: feeBreakdowns.map(({ tier, item, fees }) => ({
+                tierTitle:        tier.title,
+                quantity:         item.quantity,
+                baseAmount:       fees.baseAmount,
+                serviceFeeAmount: fees.serviceFeeAmount,
+                amountPaid:       fees.amountPaid,
+            })),
+            totalAmountPaid,
         },
     })
 }

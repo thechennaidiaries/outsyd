@@ -12,6 +12,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { formatPaise } from '@/data/vendors'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -69,6 +70,8 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     const [couponLoading, setCouponLoading] = useState(false)
     const [payError, setPayError]           = useState('')
     const [alreadyBooked, setAlreadyBooked] = useState(false)
+    const [existingBookingRef, setExistingBookingRef] = useState<string | null>(null)
+    const [checkingBooking, setCheckingBooking]       = useState(false)
 
     // ── Global step ────────────────────────────────────────────────────────────
     const [step, setStep] = useState<Step>('select')
@@ -102,6 +105,23 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
             })
             .catch(() => {})
     }, [])
+
+    // ── Check if user has already booked for this event ────────────────────────
+    useEffect(() => {
+        if (!event?.id || !phoneVerified) return
+
+        setCheckingBooking(true)
+        fetch(`/api/events/${event.id}/check-booking`)
+            .then(r => r.json())
+            .then(d => {
+                if (d.booked) {
+                    setAlreadyBooked(true)
+                    if (d.bookingRef) setExistingBookingRef(d.bookingRef)
+                }
+                setCheckingBooking(false)
+            })
+            .catch(() => setCheckingBooking(false))
+    }, [event?.id, phoneVerified])
 
     // ── Resend cooldown ticker ─────────────────────────────────────────────────
     useEffect(() => {
@@ -248,7 +268,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     // ────────────────────────────────────────────────────────────────────────────
     // Render
     // ────────────────────────────────────────────────────────────────────────────
-    if (loading) return <Page><p style={{ color: '#666', textAlign: 'center', padding: 60 }}>Loading…</p></Page>
+    if (loading || checkingBooking) return <Page><p style={{ color: '#666', textAlign: 'center', padding: 60 }}>Loading…</p></Page>
     if (!event)  return <Page><p style={{ color: '#f87171', textAlign: 'center', padding: 60 }}>{pageError}</p></Page>
 
     if (step === 'paying') return (
@@ -319,9 +339,35 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
 
             {/* ── Single-column form area ── */}
             <div style={s.formArea}>
-
-                {/* ══ STEP 1: Pick Your Tickets ══ */}
-                {step === 'select' && (
+                {alreadyBooked ? (
+                    <div style={s.alreadyBookedBox}>
+                        <h3 style={{ margin: '0 0 10px 0', color: '#4ade80', fontSize: 16, fontWeight: 700 }}>
+                            🎉 You've Already Booked!
+                        </h3>
+                        <p style={{ margin: '0 0 16px 0', color: '#e5e5e5', fontSize: 14, lineHeight: 1.5 }}>
+                            You already have a confirmed booking for this event. You cannot book tickets for the same event multiple times.
+                        </p>
+                        <Link
+                            href="/account/bookings"
+                            style={{
+                                display: 'inline-block',
+                                padding: '12px 20px',
+                                backgroundColor: '#FF8648',
+                                color: '#fff',
+                                borderRadius: 10,
+                                fontSize: 14,
+                                fontWeight: 700,
+                                textDecoration: 'none',
+                                textAlign: 'center',
+                            }}
+                        >
+                            View My Bookings →
+                        </Link>
+                    </div>
+                ) : (
+                    <>
+                        {/* ══ STEP 1: Pick Your Tickets ══ */}
+                        {step === 'select' && (
                     <div>
                         <p style={s.sectionHeading}>CHOOSE TICKETS</p>
                         <div style={s.tierList}>
@@ -562,6 +608,8 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                             <p style={s.refundNote}>📋 {event.refund_policy}</p>
                         )}
                     </div>
+                )}
+                    </>
                 )}
             </div>
         </Page>

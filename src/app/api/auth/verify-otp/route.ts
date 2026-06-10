@@ -4,7 +4,9 @@
  * Verifies the OTP, creates/finds the user, sets a session cookie.
  *
  * Body: { phone, otp, name? }
- * Response: { success, userId, isNewUser }
+ * Response: { success, userId, isNewUser, name }
+ *   - name: the user's stored name (null for brand-new users with no name yet)
+ *     Used by the booking page to auto-fill the name field.
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -117,13 +119,14 @@ export async function POST(req: NextRequest) {
         userName = newUser.name ?? undefined
     }
 
-    // ── 8. Create session JWT + set cookie ───────────────────────────────────
+    // ── 8. Create session JWT + set cookie ────────────────────────────────────────
     const token = await createSessionToken({ userId, phone, name: userName })
 
     const response = NextResponse.json({
         success:   true,
         userId,
         isNewUser,
+        name:      userName ?? null,   // booking page uses this to auto-fill the name field
     })
 
     response.cookies.set(COOKIE_NAME, token, {

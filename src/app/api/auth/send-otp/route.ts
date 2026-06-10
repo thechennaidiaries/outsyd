@@ -2,8 +2,11 @@
  * POST /api/auth/send-otp
  *
  * Generates a 6-digit OTP, stores it, sends it to the user's
- * WhatsApp number via WaSender. Invalidates any previous un-verified
- * OTPs for the same number first.
+ * WhatsApp number via WaSender.
+ *
+ * Body: { phone, context?: 'login' | 'booking' }
+ * - context defaults to 'login'
+ * - 'booking' sends a booking-specific message
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -16,9 +19,11 @@ const OTP_EXPIRY_MINUTES = 10
 export async function POST(req: NextRequest) {
     // ── 1. Parse + validate ──────────────────────────────────────────────────
     let phone: string
+    let context: 'login' | 'booking' = 'login'
     try {
         const body = await req.json()
-        phone = body.phone?.trim()
+        phone   = body.phone?.trim()
+        if (body.context === 'booking') context = 'booking'
     } catch {
         return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
@@ -31,17 +36,23 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 2. Rate limit — max 3 OTPs per number per 10 minutes ────────────────
-    const { count } = await supabase
-        .from('otp_verifications')
-        .select('id', { count: 'exact', head: true })
-        .eq('phone_number', phone)
-        .gt('created_at', new Date(Date.now() - OTP_EXPIRY_MINUTES * 60 * 1000).toISOString())
+    const isTestEnv = process.env.NODE_ENV === 'development' || 
+                      process.env.VERCEL_ENV === 'preview' || 
+                      (process.env.NEXT_PUBLIC_BASE_URL && process.env.NEXT_PUBLIC_BASE_URL.includes('localhost'))
 
-    if ((count ?? 0) >= 3) {
-        return NextResponse.json(
-            { error: 'Too many codes sent. Please wait a few minutes before trying again.' },
-            { status: 429 }
-        )
+    if (!isTestEnv) {
+        const { count } = await supabase
+            .from('otp_verifications')
+            .select('id', { count: 'exact', head: true })
+            .eq('phone_number', phone)
+            .gt('created_at', new Date(Date.now() - OTP_EXPIRY_MINUTES * 60 * 1000).toISOString())
+
+        if ((count ?? 0) >= 3) {
+            return NextResponse.json(
+                { error: 'Too many codes sent. Please wait a few minutes before trying again.' },
+                { status: 429 }
+            )
+        }
     }
 
     // ── 3. Generate OTP ──────────────────────────────────────────────────────
@@ -59,11 +70,18 @@ export async function POST(req: NextRequest) {
     }
 
     // ── 5. Send via WaSender ─────────────────────────────────────────────────
-    const message = [
-        `🔐 *Your Outsyd verification code: ${otp}*`,
-        ``,
-        `Valid for ${OTP_EXPIRY_MINUTES} minutes. Do not share this code.`,
-    ].join('\n')
+    const message = context === 'booking'
+        ? [
+            `🎟️ *Your Outsyd booking code: ${otp}*`,
+            ``,
+            `Enter this code to confirm your identity and proceed with your booking.`,
+            `Valid for ${OTP_EXPIRY_MINUTES} minutes. Do not share this code.`,
+          ].join('\n')
+        : [
+            `🔐 *Your Outsyd verification code: ${otp}*`,
+            ``,
+            `Valid for ${OTP_EXPIRY_MINUTES} minutes. Do not share this code.`,
+          ].join('\n')
 
     const waResult = await sendWhatsApp(phone, message)
     if (!waResult.success) {

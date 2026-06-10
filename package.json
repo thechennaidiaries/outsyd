@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cashfreepayments/cashfree-js": "^1.0.7",
     "@google-analytics/data": "^5.2.1",
     "@next/third-parties": "^16.2.4",
     "@supabase/supabase-js": "^2.102.1",

@@ -46,11 +46,14 @@ export default async function BookingsPage() {
         .eq('user_id', session.userId)
         .order('created_at', { ascending: false })
 
-    // Fetch event bookings
+    // Fetch event bookings — only paid bookings are shown.
+    // Pending bookings are either abandoned flows or in-flight payments;
+    // neither is useful to display in booking history.
     const { data: eventBookings } = await supabase
         .from('event_bookings')
         .select('id, booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status, created_at')
         .eq('user_id', session.userId)
+        .eq('payment_status', 'paid')
         .order('created_at', { ascending: false })
 
     const hasAny = (activityBookings?.length ?? 0) + (eventBookings?.length ?? 0) > 0

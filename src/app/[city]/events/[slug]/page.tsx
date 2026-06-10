@@ -6,6 +6,7 @@ import EventCard from '@/components/EventCard'
 import ShareButton from '@/components/ShareButton'
 import SaveItemButton from '@/components/SaveItemButton'
 import ReportButton from '@/components/ReportButton'
+import AboutSection from '@/components/AboutSection'
 
 interface Props {
     params: { city: string; slug: string }
@@ -120,7 +121,7 @@ export default async function EventDetailPage({ params }: Props) {
 
                 {event.description && (
                     <DetailCard icon={<FileText size={18} />} label="About">
-                        <p style={{ fontSize: 14, color: 'var(--text)', lineHeight: 1.7, margin: 0 }}>{event.description}</p>
+                        <AboutSection description={event.description} />
                     </DetailCard>
                 )}
 

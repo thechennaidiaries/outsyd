@@ -18,12 +18,18 @@ import { sendWhatsApp } from '@/lib/wasender'
 
 function customerEventConfirmation(b: {
     bookingRef: string; eventTitle: string; eventDate: string
-    eventVenue?: string; tierTitle: string; quantity: number; amountPaid: number
+    eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
+    tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
     const date = new Date(b.eventDate).toLocaleDateString('en-IN', {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
     })
     const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
+
+    const ticketDetails = b.tickets && b.tickets.length > 0
+        ? b.tickets.map(t => `• ${t.tierTitle} × ${t.quantity}`).join('\n')
+        : `• ${b.tierTitle} × ${b.quantity}`
+
     return [
         `🎟 *Booking Confirmed — Outsyd*`,
         ``,
@@ -32,8 +38,10 @@ function customerEventConfirmation(b: {
         `*Event:* ${b.eventTitle}`,
         `*Date:* ${date}`,
         b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
-        `*Tier:* ${b.tierTitle}`,
-        `*Tickets:* ${b.quantity}`,
+        ``,
+        `*Tickets:*`,
+        ticketDetails,
+        ``,
         `*Amount Paid:* ${amount}`,
         ``,
         `*Booking Ref:* ${b.bookingRef}`,
@@ -44,20 +52,29 @@ function customerEventConfirmation(b: {
 
 function opsEventNotification(b: {
     bookingRef: string; eventTitle: string; eventDate: string
-    eventVenue?: string; tierTitle: string; quantity: number; amountPaid: number
+    eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
     customerName: string; customerPhone: string
+    tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
     const date = new Date(b.eventDate).toLocaleDateString('en-IN', {
         day: 'numeric', month: 'short', year: 'numeric',
     })
     const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
+
+    const ticketDetails = b.tickets && b.tickets.length > 0
+        ? b.tickets.map(t => `• ${t.tierTitle} × ${t.quantity}`).join('\n')
+        : `• ${b.tierTitle} × ${b.quantity}`
+
     return [
         `📋 *New Booking — Outsyd*`,
         ``,
         `*Event:* ${b.eventTitle}`,
         `*Date:* ${date}`,
         b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
-        `*Tier:* ${b.tierTitle} × ${b.quantity}`,
+        ``,
+        `*Tickets:*`,
+        ticketDetails,
+        ``,
         `*Amount:* ${amount}`,
         ``,
         `*Customer:* ${b.customerName}`,
@@ -74,11 +91,12 @@ export async function GET(
 ) {
     const { ref } = params
 
-    const { data, error } = await supabase
+    const { data: bookings, error } = await supabase
         .from('event_bookings')
-        .select('id, booking_reference, event_id, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status, customer_name, customer_phone, tier_id')
-        .eq('booking_reference', ref)
-        .single()
+        .select('id, booking_reference, event_id, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status, customer_name, customer_phone, tier_id, cf_order_id')
+        .or(`booking_reference.eq.${ref},booking_reference.like.${ref}-%,cf_order_id.eq.${ref}`)
+
+    const data = bookings?.find(b => b.booking_reference === ref)
 
     if (error || !data) {
         return NextResponse.json({ error: 'Booking not found' }, { status: 404 })
@@ -101,7 +119,7 @@ export async function GET(
                         booking_status: 'cancelled',
                         updated_at:     new Date().toISOString(),
                     })
-                    .eq('id', data.id)
+                    .or(`booking_reference.eq.${ref},booking_reference.like.${ref}-%,cf_order_id.eq.${ref}`)
                     .eq('payment_status', 'pending')   // idempotency guard
                 return NextResponse.json({
                     bookingRef:    data.booking_reference,
@@ -120,7 +138,7 @@ export async function GET(
                         booking_status: 'confirmed',
                         updated_at:     new Date().toISOString(),
                     })
-                    .eq('id', data.id)
+                    .or(`booking_reference.eq.${ref},booking_reference.like.${ref}-%,cf_order_id.eq.${ref}`)
                     .eq('payment_status', 'pending')   // idempotency guard
 
                 if (updateError) {
@@ -165,9 +183,10 @@ export async function GET(
                         eventVenue:    data.event_venue,
                         tierTitle:     data.tier_title,
                         quantity:      data.quantity,
-                        amountPaid:    data.amount_paid,
+                        amountPaid:    bookings ? bookings.reduce((sum, b) => sum + b.amount_paid, 0) : data.amount_paid,
                         customerName:  data.customer_name,
                         customerPhone: data.customer_phone,
+                        tickets:       bookings ? bookings.map(b => ({ tierTitle: b.tier_title, quantity: b.quantity })) : [],
                     }
 
                     // Customer confirmation
@@ -217,23 +236,31 @@ export async function GET(
                 }
 
                 // ── Re-fetch and return updated status ────────────────────────
-                const { data: updated } = await supabase
+                const { data: updatedBookings } = await supabase
                     .from('event_bookings')
                     .select('booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status')
-                    .eq('booking_reference', ref)
-                    .single()
+                    .or(`booking_reference.eq.${ref},booking_reference.like.${ref}-%,cf_order_id.eq.${ref}`)
 
-                if (updated) {
+                const updated = updatedBookings?.find(b => b.booking_reference === ref)
+
+                if (updated && updatedBookings) {
+                    const totalAmountPaid = updatedBookings.reduce((sum, b) => sum + b.amount_paid, 0)
+                    const totalQty = updatedBookings.reduce((sum, b) => sum + b.quantity, 0)
                     return NextResponse.json({
                         bookingRef:    updated.booking_reference,
                         eventTitle:    updated.event_title,
                         eventDate:     updated.event_date,
                         eventVenue:    updated.event_venue,
                         tierTitle:     updated.tier_title,
-                        quantity:      updated.quantity,
-                        amountPaid:    updated.amount_paid,
+                        quantity:      totalQty,
+                        amountPaid:    totalAmountPaid,
                         paymentStatus: updated.payment_status,
                         bookingStatus: updated.booking_status,
+                        tickets:       updatedBookings.map(b => ({
+                            tierTitle:  b.tier_title,
+                            quantity:   b.quantity,
+                            amountPaid: b.amount_paid,
+                        })),
                     })
                 }
             }
@@ -242,15 +269,22 @@ export async function GET(
         }
     }
 
+    const totalAmountPaid = bookings ? bookings.reduce((sum, b) => sum + b.amount_paid, 0) : data.amount_paid
+    const totalQty = bookings ? bookings.reduce((sum, b) => sum + b.quantity, 0) : data.quantity
     return NextResponse.json({
         bookingRef:    data.booking_reference,
         eventTitle:    data.event_title,
         eventDate:     data.event_date,
         eventVenue:    data.event_venue,
         tierTitle:     data.tier_title,
-        quantity:      data.quantity,
-        amountPaid:    data.amount_paid,
+        quantity:      totalQty,
+        amountPaid:    totalAmountPaid,
         paymentStatus: data.payment_status,
         bookingStatus: data.booking_status,
+        tickets:       bookings ? bookings.map(b => ({
+            tierTitle:  b.tier_title,
+            quantity:   b.quantity,
+            amountPaid: b.amount_paid,
+        })) : [],
     })
 }

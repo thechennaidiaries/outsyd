@@ -17,12 +17,18 @@ import { sendWhatsApp } from '@/lib/wasender'
 
 function customerEventConfirmation(b: {
     bookingRef: string; eventTitle: string; eventDate: string
-    eventVenue?: string; tierTitle: string; quantity: number; amountPaid: number
+    eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
+    tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
     const date = new Date(b.eventDate).toLocaleDateString('en-IN', {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
     })
     const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
+
+    const ticketDetails = b.tickets && b.tickets.length > 0
+        ? b.tickets.map(t => `• ${t.tierTitle} × ${t.quantity}`).join('\n')
+        : `• ${b.tierTitle} × ${b.quantity}`
+
     return [
         `🎟 *Booking Confirmed — Outsyd*`,
         ``,
@@ -31,8 +37,10 @@ function customerEventConfirmation(b: {
         `*Event:* ${b.eventTitle}`,
         `*Date:* ${date}`,
         b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
-        `*Tier:* ${b.tierTitle}`,
-        `*Tickets:* ${b.quantity}`,
+        ``,
+        `*Tickets:*`,
+        ticketDetails,
+        ``,
         `*Amount Paid:* ${amount}`,
         ``,
         `*Booking Ref:* ${b.bookingRef}`,
@@ -43,25 +51,34 @@ function customerEventConfirmation(b: {
 
 function opsEventNotification(b: {
     bookingRef: string; eventTitle: string; eventDate: string
-    eventVenue?: string; tierTitle: string; quantity: number; amountPaid: number
+    eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
     customerName: string; customerPhone: string
+    tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
     const date = new Date(b.eventDate).toLocaleDateString('en-IN', {
         day: 'numeric', month: 'short', year: 'numeric',
     })
     const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
+
+    const ticketDetails = b.tickets && b.tickets.length > 0
+        ? b.tickets.map(t => `• ${t.tierTitle} × ${t.quantity}`).join('\n')
+        : `• ${b.tierTitle} × ${b.quantity}`
+
     return [
-        `💸 *New Event Booking — Outsyd*`,
+        `📋 *New Booking — Outsyd*`,
         ``,
-        `*Ref:* ${b.bookingRef}`,
         `*Event:* ${b.eventTitle}`,
         `*Date:* ${date}`,
         b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
         ``,
+        `*Tickets:*`,
+        ticketDetails,
+        ``,
+        `*Amount:* ${amount}`,
+        ``,
         `*Customer:* ${b.customerName}`,
         `*Phone:* ${b.customerPhone}`,
-        `*Tier:* ${b.tierTitle} × ${b.quantity}`,
-        `*Amount:* ${amount}`,
+        `*Ref:* ${b.bookingRef}`,
     ].filter(Boolean).join('\n')
 }
 
@@ -100,12 +117,13 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Missing order_id or payment_id' }, { status: 400 })
     }
 
-    // ── 4. Find primary booking by booking_reference (= Cashfree orderId) ────
-    const { data: booking } = await supabase
+    // ── 4. Find all bookings for this Cashfree order ──────────────────────────
+    const { data: bookings } = await supabase
         .from('event_bookings')
         .select('id, booking_reference, event_id, event_title, event_date, event_venue, tier_title, quantity, amount_paid, customer_name, customer_phone')
-        .eq('booking_reference', cfOrderId)
-        .single()
+        .or(`booking_reference.eq.${cfOrderId},booking_reference.like.${cfOrderId}-%,cf_order_id.eq.${cfOrderId}`)
+
+    const booking = bookings?.find(b => b.booking_reference === cfOrderId)
 
     if (!booking) {
         console.error(`[webhook/cashfree] Booking not found for order: ${cfOrderId}`)
@@ -176,9 +194,10 @@ export async function POST(req: NextRequest) {
         eventVenue:   booking.event_venue,
         tierTitle:    booking.tier_title,
         quantity:     booking.quantity,
-        amountPaid:   booking.amount_paid,
+        amountPaid:   bookings ? bookings.reduce((sum, b) => sum + b.amount_paid, 0) : booking.amount_paid,
         customerName: booking.customer_name,
         customerPhone: booking.customer_phone,
+        tickets:      bookings ? bookings.map(b => ({ tierTitle: b.tier_title, quantity: b.quantity })) : [],
     }
 
     // Customer confirmation

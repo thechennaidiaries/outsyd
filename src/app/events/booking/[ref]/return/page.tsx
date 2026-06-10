@@ -104,10 +104,20 @@ export default function BookingReturnPage({
                             {booking.eventVenue && (
                                 <DetailRow label="Venue" value={booking.eventVenue} />
                             )}
-                            <DetailRow
-                                label="Tickets"
-                                value={`${booking.quantity} × ${booking.tierTitle}`}
-                            />
+                            {booking.tickets && booking.tickets.length > 0 ? (
+                                booking.tickets.map((t: any, idx: number) => (
+                                    <DetailRow
+                                        key={idx}
+                                        label={`Ticket (${t.tierTitle})`}
+                                        value={`${t.quantity}`}
+                                    />
+                                ))
+                            ) : (
+                                <DetailRow
+                                    label="Tickets"
+                                    value={`${booking.quantity} × ${booking.tierTitle}`}
+                                />
+                            )}
                             <DetailRow
                                 label="Amount paid"
                                 value={`₹${(booking.amountPaid / 100).toLocaleString('en-IN')}`}

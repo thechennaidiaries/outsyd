@@ -377,9 +377,6 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
                                     <div key={tier.id} style={{ ...s.tierCard, borderColor: qty > 0 ? '#FF864844' : '#222', backgroundColor: '#141414' }}>
                                         {/* Row 1: tier name */}
                                         <p style={s.tierTitle}>{tier.title}</p>
-                                        {tier.capacity && (
-                                            <p style={s.tierCap}>{tier.capacity} seats available</p>
-                                        )}
                                         {/* Row 2: price (left) + ADD/qty (right) */}
                                         <div style={s.tierCardBottom}>
                                             <p style={s.tierPrice}>{formatPaise(tier.price)}</p>

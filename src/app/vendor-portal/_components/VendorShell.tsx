@@ -14,6 +14,7 @@ const navItems = [
     { label: 'Bookings',    href: '/vendor-portal/bookings',     icon: '📋' },
     { label: 'Coupons',     href: '/vendor-portal/coupons',      icon: '🏷' },
     { label: 'Settlements', href: '/vendor-portal/settlements',  icon: '💰' },
+    { label: 'Profile',     href: '/vendor-portal/profile',      icon: '👤' },
 ]
 
 export default function VendorShell({ vendorName, children }: Props) {

@@ -50,7 +50,6 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ escalated: 0, message: 'No expired bookings found' })
     }
 
-    const opsPhone = process.env.OUTSYD_OPS_PHONE
     const results: { ref: string; success: boolean }[] = []
 
     for (const booking of expiredBookings) {
@@ -85,23 +84,7 @@ export async function GET(req: NextRequest) {
             .eq('id', booking.activity_id)
             .single()
 
-        // ── 4. Send WhatsApp to ops ──────────────────────────────────────────
-        if (opsPhone) {
-            const message = opsEscalationMessage({
-                bookingRef: booking.booking_reference,
-                activityTitle: activity?.title ?? 'Unknown activity',
-                placeName: booking.place_name,
-                customerName: booking.customer_name,
-                customerPhone: booking.customer_phone,
-                bookingDate: booking.booking_date,
-                timeSlot: booking.time_slot,
-                peopleCount: booking.people_count,
-                vendorPhone: place?.phone_number,
-            })
-            await sendWhatsApp(opsPhone, message)
-        } else {
-            console.warn('[cron/escalate] OUTSYD_OPS_PHONE not set — skipping ops notification')
-        }
+        // (Ops WhatsApp notification removed)
 
         results.push({ ref: booking.booking_reference, success: true })
         console.log(`[cron/escalate] Escalated booking ${booking.booking_reference}`)

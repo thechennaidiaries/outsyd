@@ -199,29 +199,29 @@ export async function GET(
                         }
                     }
 
-                    // Ops — fixed number
-                    const opsPhone = process.env.OUTSYD_OPS_PHONE
-                    if (opsPhone) {
-                        try {
-                            const r = await sendWhatsApp(opsPhone, opsEventNotification(msgData))
-                            console.log('[status] Ops WhatsApp result:', r)
-                        } catch (e) {
-                            console.error('[status] Ops WhatsApp error:', e)
+                    // Vendor — per-event phone or fallback to vendor profile phone
+                    try {
+                        const { data: eventData } = await supabase
+                            .from('events')
+                            .select('event_phone, vendor_id')
+                            .eq('id', data.event_id)
+                            .single()
+                        
+                        let eventPhone = eventData?.event_phone?.trim() || null
+                        if (!eventPhone && eventData?.vendor_id) {
+                            const { data: vendorData } = await supabase
+                                .from('vendors')
+                                .select('phone')
+                                .eq('id', eventData.vendor_id)
+                                .single()
+                            eventPhone = vendorData?.phone?.trim() || null
                         }
-                    } else {
-                        console.warn('[status] OUTSYD_OPS_PHONE not set — skipping ops WhatsApp')
-                    }
 
-                    // Ops — per-event phone
-                    const { data: eventData } = await supabase
-                        .from('events')
-                        .select('event_phone')
-                        .eq('id', data.event_id)
-                        .single()
-                    
-                    const eventPhone = eventData?.event_phone ?? null
-                    if (eventPhone && eventPhone !== opsPhone) {
-                        try { await sendWhatsApp(eventPhone, opsEventNotification(msgData)) } catch {}
+                        if (eventPhone) {
+                            await sendWhatsApp(eventPhone, opsEventNotification(msgData))
+                        }
+                    } catch (e) {
+                        console.error('[status] Vendor WhatsApp error:', e)
                     }
                 }
 

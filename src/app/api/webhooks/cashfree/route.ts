@@ -146,13 +146,7 @@ export async function POST(req: NextRequest) {
 
     // ── 6. Handle RPC results ─────────────────────────────────────────────────
     if (rpcResult === 'over_capacity') {
-        // TODO: trigger Cashfree refund + notify ops
-        const opsPhone = process.env.OUTSYD_OPS_PHONE
-        if (opsPhone) {
-            await sendWhatsApp(opsPhone,
-                `⚠️ *Over Capacity — Refund Needed*\n\nRef: ${booking.booking_reference}\nEvent: ${booking.event_title}\nCustomer: ${booking.customer_name} (${booking.customer_phone})\n\nPayment succeeded but event is full. Please issue refund manually.`
-            )
-        }
+        // TODO: trigger Cashfree refund
         return NextResponse.json({ result: 'over_capacity', action: 'manual_refund_required' })
     }
 
@@ -203,21 +197,24 @@ export async function POST(req: NextRequest) {
     // Customer confirmation
     await sendWhatsApp(booking.customer_phone, customerEventConfirmation(msgData))
 
-    // Ops — fixed number always gets it
-    const opsPhone = process.env.OUTSYD_OPS_PHONE
-    if (opsPhone) {
-        await sendWhatsApp(opsPhone, opsEventNotification(msgData))
-    }
-
-    // Vendor — per-event phone (looked up from events table — not stored on event_bookings)
+    // Vendor — per-event phone or fallback to vendor profile phone
     const { data: eventRow } = await supabase
         .from('events')
-        .select('event_phone')
+        .select('event_phone, vendor_id')
         .eq('id', booking.event_id)
         .single()
 
-    const eventPhone = eventRow?.event_phone ?? null
-    if (eventPhone && eventPhone !== opsPhone) {
+    let eventPhone = eventRow?.event_phone?.trim() || null
+    if (!eventPhone && eventRow?.vendor_id) {
+        const { data: vendorRow } = await supabase
+            .from('vendors')
+            .select('phone')
+            .eq('id', eventRow.vendor_id)
+            .single()
+        eventPhone = vendorRow?.phone?.trim() || null
+    }
+
+    if (eventPhone) {
         await sendWhatsApp(eventPhone, opsEventNotification(msgData))
     }
 

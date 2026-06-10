@@ -199,47 +199,7 @@ export async function GET(
                         }
                     }
 
-                    // Vendor — per-event phone or fallback to vendor profile phone
-                    try {
-                        console.log('[status] Resolving vendor phone for event_id:', data.event_id)
-                        const { data: eventData, error: eventErr } = await supabase
-                            .from('events')
-                            .select('event_phone, vendor_id')
-                            .eq('id', data.event_id)
-                            .single()
-                        
-                        if (eventErr) {
-                            console.error('[status] Event fetch error:', eventErr)
-                        }
 
-                        let eventPhone = eventData?.event_phone?.trim() || null
-                        console.log('[status] Event event_phone:', eventPhone, 'vendor_id:', eventData?.vendor_id)
-
-                        if (!eventPhone && eventData?.vendor_id) {
-                            console.log('[status] Event phone empty, falling back to vendor profile phone for vendor_id:', eventData.vendor_id)
-                            const { data: vendorData, error: vendorErr } = await supabase
-                                .from('vendors')
-                                .select('phone')
-                                .eq('id', eventData.vendor_id)
-                                .single()
-                            if (vendorErr) {
-                                console.error('[status] Vendor profile fetch error:', vendorErr)
-                            }
-                            eventPhone = vendorData?.phone?.trim() || null
-                            console.log('[status] Vendor profile phone:', eventPhone)
-                        }
-
-                        console.log('[status] Final resolved vendor phone:', eventPhone)
-
-                        if (eventPhone) {
-                            const res = await sendWhatsApp(eventPhone, opsEventNotification(msgData))
-                            console.log('[status] Vendor WhatsApp notification result:', res)
-                        } else {
-                            console.warn('[status] No vendor phone resolved. Skipping notification.')
-                        }
-                    } catch (e) {
-                        console.error('[status] Vendor WhatsApp error:', e)
-                    }
                 }
 
                 // ── Upsert customer account ───────────────────────────────────

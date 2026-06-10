@@ -197,48 +197,6 @@ export async function POST(req: NextRequest) {
     // Customer confirmation
     await sendWhatsApp(booking.customer_phone, customerEventConfirmation(msgData))
 
-    // Vendor — per-event phone or fallback to vendor profile phone
-    try {
-        console.log('[webhook/cashfree] Resolving vendor phone for event_id:', booking.event_id)
-        const { data: eventRow, error: eventErr } = await supabase
-            .from('events')
-            .select('event_phone, vendor_id')
-            .eq('id', booking.event_id)
-            .single()
-
-        if (eventErr) {
-            console.error('[webhook/cashfree] Event fetch error:', eventErr)
-        }
-
-        let eventPhone = eventRow?.event_phone?.trim() || null
-        console.log('[webhook/cashfree] Event event_phone:', eventPhone, 'vendor_id:', eventRow?.vendor_id)
-
-        if (!eventPhone && eventRow?.vendor_id) {
-            console.log('[webhook/cashfree] Event phone empty, falling back to vendor profile phone for vendor_id:', eventRow.vendor_id)
-            const { data: vendorRow, error: vendorErr } = await supabase
-                .from('vendors')
-                .select('phone')
-                .eq('id', eventRow.vendor_id)
-                .single()
-            if (vendorErr) {
-                console.error('[webhook/cashfree] Vendor profile fetch error:', vendorErr)
-            }
-            eventPhone = vendorRow?.phone?.trim() || null
-            console.log('[webhook/cashfree] Vendor profile phone:', eventPhone)
-        }
-
-        console.log('[webhook/cashfree] Final resolved vendor phone:', eventPhone)
-
-        if (eventPhone) {
-            const res = await sendWhatsApp(eventPhone, opsEventNotification(msgData))
-            console.log('[webhook/cashfree] Vendor WhatsApp notification result:', res)
-        } else {
-            console.warn('[webhook/cashfree] No vendor phone resolved. Skipping notification.')
-        }
-    } catch (e) {
-        console.error('[webhook/cashfree] Vendor WhatsApp notification failed:', e)
-    }
-
     console.log(`[webhook/cashfree] Booking ${booking.booking_reference} confirmed ✓`)
     return NextResponse.json({ result: 'confirmed' })
 }

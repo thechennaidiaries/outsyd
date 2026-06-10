@@ -28,7 +28,9 @@ export default function BookingReturnPage({
     // ── Poll booking status ────────────────────────────────────────────────────
     useEffect(() => {
         let attempts = 0
-        const interval = setInterval(async () => {
+        let interval: NodeJS.Timeout
+
+        const checkStatus = async () => {
             attempts++
             try {
                 const res  = await fetch(`/api/events/booking/${ref}/status`)
@@ -38,26 +40,42 @@ export default function BookingReturnPage({
                         setStatus('confirmed')
                         setBooking(data)
                         clearInterval(interval)
+                        return true
                     } else if (data.paymentStatus === 'failed') {
                         setStatus('failed')
                         clearInterval(interval)
+                        return true
                     } else if (attempts >= 12) {
                         setStatus('pending')
                         setBooking(data)
                         clearInterval(interval)
+                        return true
                     }
                 } else if (attempts >= 12) {
                     setStatus('pending')
                     clearInterval(interval)
+                    return true
                 }
             } catch {
                 if (attempts >= 12) {
                     setStatus('pending')
                     clearInterval(interval)
+                    return true
                 }
             }
-        }, 3000)
-        return () => clearInterval(interval)
+            return false
+        }
+
+        // Run immediately on mount, then start interval if not finished
+        checkStatus().then((done) => {
+            if (!done) {
+                interval = setInterval(checkStatus, 1500)
+            }
+        })
+
+        return () => {
+            if (interval) clearInterval(interval)
+        }
     }, [ref])
 
     // ── Format date ────────────────────────────────────────────────────────────

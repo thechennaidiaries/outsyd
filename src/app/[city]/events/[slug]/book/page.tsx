@@ -268,7 +268,7 @@ export default function BookingPage({ params }: { params: { city: string; slug: 
     // ────────────────────────────────────────────────────────────────────────────
     // Render
     // ────────────────────────────────────────────────────────────────────────────
-    if (loading || checkingBooking) return <Page><p style={{ color: '#666', textAlign: 'center', padding: 60 }}>Loading…</p></Page>
+    if (loading) return <Page><p style={{ color: '#666', textAlign: 'center', padding: 60 }}>Loading…</p></Page>
     if (!event)  return <Page><p style={{ color: '#f87171', textAlign: 'center', padding: 60 }}>{pageError}</p></Page>
 
     if (step === 'paying') return (

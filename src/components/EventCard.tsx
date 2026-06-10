@@ -47,7 +47,18 @@ export default function EventCard({ event, citySlug }: Props) {
             >
             {/* Image — 3:4 portrait (same as ActivityCard) */}
             <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', background: 'var(--bg-elevated)', flexShrink: 0 }}>
-                {!imgErr ? (
+                {event.videoUrl ? (
+                    <video
+                        src={event.videoUrl}
+                        poster={event.image}
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                        className="group-hover:scale-[1.03]"
+                    />
+                ) : !imgErr ? (
                     <img
                         src={event.image ?? ''}
                         alt={event.title}

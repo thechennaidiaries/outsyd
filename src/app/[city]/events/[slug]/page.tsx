@@ -68,13 +68,23 @@ export default async function EventDetailPage({ params }: Props) {
                     style={{ width: '100%', aspectRatio: '3/4', position: 'relative', overflow: 'hidden', background: 'var(--bg-elevated)' }}
                     className="md:aspect-auto md:h-[70vh]"
                 >
-                    {event.image && (
-                    <img
-                        src={event.image}
-                        alt={event.title}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                    />
-                    )}
+                    {event.videoUrl ? (
+                        <video
+                            src={event.videoUrl}
+                            poster={event.image}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                        />
+                    ) : event.image ? (
+                        <img
+                            src={event.image}
+                            alt={event.title}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                        />
+                    ) : null}
 
                     <div style={{
                         position: 'absolute', inset: 0,

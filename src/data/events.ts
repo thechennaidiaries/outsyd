@@ -28,6 +28,7 @@ export interface Event {
     serviceFeePercent?:     number          // default 5.00
     feeAbsorbedByVendor?:   boolean         // if true, fee deducted from vendor not added to customer
     refundPolicy?:          string          // free text, displayed at checkout
+    videoUrl?:              string          // Video url for autoplay preview
 }
 
 

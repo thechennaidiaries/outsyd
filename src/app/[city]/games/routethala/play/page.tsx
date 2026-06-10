@@ -438,15 +438,15 @@ function WonCard({
         {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Share Result</>}
       </button>
 
-      <Link href="/" style={{
+      <a href="https://swiy.co/routethalaquiznight" target="_blank" rel="noopener noreferrer" style={{
         display: 'block', marginTop: 16, padding: '12px 16px',
         background: 'var(--accent)', borderRadius: 12,
         border: 'none',
         fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
         lineHeight: 1.4,
       }}>
-        Explore 200+ Activities &amp; Side Quests in Chennai →
-      </Link>
+        Join Chennai&apos;s first Kollywood Trivia Night On June 14 →
+      </a>
     </div>
   )
 }
@@ -479,15 +479,15 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: GamePuzzle; onShare: ()
         {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Challenge Your Friends to Guess</>}
       </button>
 
-      <Link href="/" style={{
+      <a href="https://swiy.co/routethalaquiznight" target="_blank" rel="noopener noreferrer" style={{
         display: 'block', marginTop: 16, padding: '12px 16px',
         background: 'var(--accent)', borderRadius: 12,
         border: 'none',
         fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
         lineHeight: 1.4,
       }}>
-        Explore 200+ Activities &amp; Side Quests in Chennai →
-      </Link>
+        Join Chennai&apos;s first Kollywood Trivia Night On June 14 →
+      </a>
     </div>
   )
 }

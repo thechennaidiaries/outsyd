@@ -549,14 +549,14 @@ function WonCard({
         {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Share Result</>}
       </button>
 
-      <Link href="/" style={{
+      <a href="https://swiy.co/paatifyquiznight" target="_blank" rel="noopener noreferrer" style={{
         display: 'block', padding: '12px 16px',
         background: '#1DB954', borderRadius: 12,
         fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
         lineHeight: 1.4,
       }}>
-        Explore 200+ Activities &amp; Side Quests in Chennai →
-      </Link>
+        Join Chennai&apos;s first Kollywood Trivia Night On June 14 →
+      </a>
     </div>
   )
 }
@@ -592,14 +592,14 @@ function LostCard({ puzzle, onShare, copied }: { puzzle: PaatifyPuzzle; onShare:
         {copied ? <><Check size={14} /> Copied!</> : <><Share2 size={14} /> Challenge Your Friends</>}
       </button>
 
-      <Link href="/" style={{
+      <a href="https://swiy.co/paatifyquiznight" target="_blank" rel="noopener noreferrer" style={{
         display: 'block', padding: '12px 16px',
         background: '#1DB954', borderRadius: 12,
         fontSize: 13, color: '#fff', textDecoration: 'none', fontWeight: 700,
         lineHeight: 1.4,
       }}>
-        Explore 200+ Activities &amp; Side Quests in Chennai →
-      </Link>
+        Join Chennai&apos;s first Kollywood Trivia Night On June 14 →
+      </a>
     </div>
   )
 }

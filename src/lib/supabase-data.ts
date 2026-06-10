@@ -67,6 +67,7 @@ function mapEvent(row: any): Event {
         serviceFeePercent:    row.service_fee_pct ?? 5,
         feeAbsorbedByVendor:  row.fee_absorbed_by_vendor ?? false,
         refundPolicy:         row.refund_policy ?? undefined,
+        videoUrl:             row.video_url ?? undefined,
     }
 }
 

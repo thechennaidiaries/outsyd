@@ -112,7 +112,7 @@ export default function AboutSection({ description }: AboutSectionProps) {
                         {tcItems.map((item, idx) => (
                             <li key={idx} style={{
                                 fontSize: 13,
-                                color: 'var(--text-3)',
+                                color: 'var(--text-2)',
                                 lineHeight: 1.6,
                             }}>
                                 {item}

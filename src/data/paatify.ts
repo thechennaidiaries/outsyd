@@ -216,6 +216,26 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   {
     id: 'paatify-010',
     date: '2026-06-11',
+    song: 'Pirai Thedum',
+    movie: 'Mayakkam Enna',
+    year: 2011,
+    hints: [
+      'A heart that lives only for you',
+      'As long as I am alive, I belong to you',
+      'In this moon-seeking night, my love\nWhat are you searching for?',
+      'I am calling you to tell a story, my love\nCome, my dear'
+    ],
+    acceptedPatterns: [
+      'pirai\\s*thedum',
+      'pirai\\s*thedum\\s*iravilae',
+      'pirai\\s*thedum\\s*iravil',
+      'pirai\\s*theydum',
+    ],
+  },
+
+  {
+    id: 'paatify-011',
+    date: '2026-06-12',
     song: 'Chinna Chinna Aasai',
     movie: 'Roja',
     year: 1992,
@@ -236,8 +256,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-011',
-    date: '2026-06-12',
+    id: 'paatify-012',
+    date: '2026-06-13',
     song: 'Uyire',
     movie: 'Bombay',
     year: 1995,
@@ -254,8 +274,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-012',
-    date: '2026-06-13',
+    id: 'paatify-013',
+    date: '2026-06-14',
     song: 'Vinnaithaandi Varuvaayaa',
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
@@ -274,8 +294,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-013',
-    date: '2026-06-14',
+    id: 'paatify-014',
+    date: '2026-06-15',
     song: 'Munbe Vaa',
     movie: 'Sillunu Oru Kaadhal',
     year: 2006,
@@ -293,8 +313,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-014',
-    date: '2026-06-15',
+    id: 'paatify-015',
+    date: '2026-06-16',
     song: 'Nenjukkul Peidhidum',
     movie: 'Vaaranam Aayiram',
     year: 2010,
@@ -313,8 +333,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-015',
-    date: '2026-06-16',
+    id: 'paatify-016',
+    date: '2026-06-17',
     song: 'Kannaana Kanney',
     movie: 'Viswasam',
     year: 2019,

@@ -197,6 +197,25 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   {
     id: 'paatify-009',
     date: '2026-06-10',
+    song: 'Kanave Kanave',
+    movie: 'David',
+    year: 2013,
+    hints: [
+      'The music is gone, My arrogance is gone\nI suffered in the fire of loneliness',
+      'My shadow is gone, The reality is gone\nI searched for myself, within me',
+      'Oh dream, oh dream, why are you dissolving\nWhy are my hands full of pain',
+      'Oh memory, oh memory, why are you slapping me\nWhy is my world falling apart'
+    ],
+    acceptedPatterns: [
+      'kanave\\s*kanave',
+      'kanavey\\s*kanavey',
+      'kanave',
+    ],
+  },
+
+  {
+    id: 'paatify-010',
+    date: '2026-06-11',
     song: 'Chinna Chinna Aasai',
     movie: 'Roja',
     year: 1992,
@@ -217,8 +236,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-010',
-    date: '2026-06-11',
+    id: 'paatify-011',
+    date: '2026-06-12',
     song: 'Uyire',
     movie: 'Bombay',
     year: 1995,
@@ -235,8 +254,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-011',
-    date: '2026-06-12',
+    id: 'paatify-012',
+    date: '2026-06-13',
     song: 'Vinnaithaandi Varuvaayaa',
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
@@ -255,8 +274,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-012',
-    date: '2026-06-13',
+    id: 'paatify-013',
+    date: '2026-06-14',
     song: 'Munbe Vaa',
     movie: 'Sillunu Oru Kaadhal',
     year: 2006,
@@ -274,8 +293,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-013',
-    date: '2026-06-14',
+    id: 'paatify-014',
+    date: '2026-06-15',
     song: 'Nenjukkul Peidhidum',
     movie: 'Vaaranam Aayiram',
     year: 2010,
@@ -294,8 +313,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-014',
-    date: '2026-06-15',
+    id: 'paatify-015',
+    date: '2026-06-16',
     song: 'Kannaana Kanney',
     movie: 'Viswasam',
     year: 2019,

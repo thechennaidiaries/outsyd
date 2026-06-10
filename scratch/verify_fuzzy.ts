@@ -1,23 +1,21 @@
 import { checkAnswer, PUZZLES } from '../src/data/game';
 
-const puzzle = PUZZLES.find(p => p.id === 'game-026');
+const puzzle = PUZZLES.find(p => p.id === 'game-035');
 if (!puzzle) {
-  console.error("Error: Could not find game-026 in PUZZLES!");
+  console.error("Error: Could not find game-035 in PUZZLES!");
   process.exit(1);
 }
 
 const testCases = [
-  { input: 'Chennai Trade Centre', expected: true, desc: 'Exact match' },
-  { input: 'chennai trade center', expected: true, desc: 'Case/spelling variation' },
-  { input: 'Trade Centre', expected: true, desc: 'Alternate form alias' },
-  { input: 'Trade Center', expected: true, desc: 'Alternate form variation' },
-  { input: 'Chenai Trade Centre', expected: true, desc: '1 typo (Chennai -> Chenai)' },
-  { input: 'Chennai Trdae Centre', expected: true, desc: 'Single transposition / 2 edits (Trdae)' },
-  { input: 'ctc', expected: true, desc: 'Exact abbreviation' },
-  { input: 'c.t.c.', expected: true, desc: 'Abbreviation with punctuation' },
-  { input: 'c t c', expected: true, desc: 'Abbreviation with space' },
-  { input: 'Chennai Central', expected: false, desc: 'Completely different place' },
-  { input: 'Loyola College', expected: false, desc: 'Completely different place' },
+  { input: 'Chennai Lighthouse', expected: true, desc: 'Exact match' },
+  { input: 'chennai lighthouse', expected: true, desc: 'Case variation' },
+  { input: 'Lighthouse', expected: true, desc: 'Alias match' },
+  { input: 'Marina Lighthouse', expected: true, desc: 'Alias match' },
+  { input: 'Light house', expected: true, desc: 'Alias match with space' },
+  { input: 'Marina Light house', expected: true, desc: 'Marina Light house pattern' },
+  { input: 'Chenai Lighthouse', expected: true, desc: '1 typo in Chennai' },
+  { input: 'Lighthous', expected: true, desc: '1 typo in Lighthouse' },
+  { input: 'Kapaleeshwarar Temple', expected: false, desc: 'Completely different place' },
 ];
 
 let failed = 0;
@@ -36,3 +34,4 @@ if (failed === 0) {
   console.log(`\n❌ ${failed} tests failed!`);
   process.exit(1);
 }
+

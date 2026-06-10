@@ -677,4 +677,27 @@ export const PUZZLES: GamePuzzle[] = [
     ],
   },
 
+  {
+    id: 'game-035',
+    date: '2026-06-11',
+    location: 'Chennai Lighthouse',
+    area: 'Marina Beach',
+    placeType: 'Landmark',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/image1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/image2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/image3.webp',
+    ],
+    acceptedPatterns: [
+      '^(chennai\\s*|marina\\s*)?light\\s*house$',
+      '^(chennai\\s*|marina\\s*)?lighthouse$',
+    ],
+    aliases: [
+      'Lighthouse',
+      'Marina Lighthouse',
+      'Light house',
+      'Chennai Lighthouse',
+    ],
+  },
+
 ]

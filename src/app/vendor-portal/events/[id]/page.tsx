@@ -257,20 +257,6 @@ export default function EditEventPage() {
                 </SCard>
 
                 <SCard title="Settings">
-                    <SField label="Event WhatsApp number">
-                        <input style={styles.input} value={eventPhone}
-                            onChange={e => setEventPhone(e.target.value)} type="tel" />
-                    </SField>
-                    <div style={styles.toggleRow}>
-                        <div>
-                            <p style={styles.toggleLabel}>Absorb service fee</p>
-                            <p style={styles.toggleHint}>Fee deducted from your payout instead of added to ticket price.</p>
-                        </div>
-                        <button type="button" onClick={() => setFeeAbsorbed(f => !f)}
-                            style={{ ...styles.toggle, backgroundColor: feeAbsorbed ? '#fff' : '#2a2a2a' }}>
-                            <span style={{ ...styles.toggleThumb, transform: feeAbsorbed ? 'translateX(20px)' : 'translateX(2px)', backgroundColor: feeAbsorbed ? '#000' : '#555' }} />
-                        </button>
-                    </div>
                     <SField label="Refund policy">
                         <textarea style={{ ...styles.input, height: 80, resize: 'vertical' }}
                             value={refundPolicy} onChange={e => setRefundPolicy(e.target.value)} />

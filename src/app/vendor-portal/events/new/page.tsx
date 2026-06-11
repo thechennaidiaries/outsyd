@@ -297,24 +297,7 @@ export default function NewEventPage() {
 
                 {/* ── Section 5: Settings ───────────────────────────────── */}
                 <Section title="Settings">
-                    <Field label="Event WhatsApp number (for booking notifications)">
-                        <input style={styles.input} value={eventPhone} onChange={e => setEventPhone(e.target.value)}
-                            placeholder="+91 98765 43210" type="tel" />
-                        <p style={styles.hint}>Leave blank to use the default Outsyd ops number.</p>
-                    </Field>
 
-                    <div style={styles.toggleRow}>
-                        <div>
-                            <p style={styles.toggleLabel}>Absorb service fee</p>
-                            <p style={styles.toggleHint}>
-                                If on, the 5% Outsyd fee is deducted from your payout instead of added to the ticket price.
-                            </p>
-                        </div>
-                        <button type="button" onClick={() => setFeeAbsorbed(f => !f)}
-                            style={{ ...styles.toggle, backgroundColor: feeAbsorbed ? '#fff' : '#2a2a2a' }}>
-                            <span style={{ ...styles.toggleThumb, transform: feeAbsorbed ? 'translateX(20px)' : 'translateX(2px)', backgroundColor: feeAbsorbed ? '#000' : '#555' }} />
-                        </button>
-                    </div>
 
                     <Field label="Refund policy">
                         <textarea style={{ ...styles.input, height: 80, resize: 'vertical' }}

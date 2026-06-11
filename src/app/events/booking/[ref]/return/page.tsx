@@ -117,9 +117,7 @@ export default function BookingReturnPage({
                         {/* Details */}
                         <div style={s.detailBox}>
                             <DetailRow label="Event"   value={booking.eventTitle} />
-                            {booking.eventDate && (
-                                <DetailRow label="Date" value={fmtDate(booking.eventDate)} />
-                            )}
+
                             {booking.eventVenue && (
                                 <DetailRow label="Venue" value={booking.eventVenue} />
                             )}

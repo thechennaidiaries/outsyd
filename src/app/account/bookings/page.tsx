@@ -33,6 +33,20 @@ function fmtDate(iso: string, timeOnly = false) {
     return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+function fmtEventDate(dbDateStr: string | null | undefined, fallbackIso: string) {
+    if (dbDateStr) {
+        const [y, m, d] = dbDateStr.split('-').map(Number)
+        return new Date(y, m - 1, d).toLocaleDateString('en-IN', {
+            weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+        })
+    }
+    const date = new Date(fallbackIso)
+    return date.toLocaleDateString('en-IN', {
+        weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
+        timeZone: 'Asia/Kolkata'
+    })
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function BookingsPage() {
@@ -51,7 +65,22 @@ export default async function BookingsPage() {
     // neither is useful to display in booking history.
     const { data: eventBookings } = await supabase
         .from('event_bookings')
-        .select('id, booking_reference, event_title, event_date, event_venue, tier_title, quantity, amount_paid, payment_status, booking_status, created_at')
+        .select(`
+            id,
+            booking_reference,
+            event_title,
+            event_date,
+            event_venue,
+            tier_title,
+            quantity,
+            amount_paid,
+            payment_status,
+            booking_status,
+            created_at,
+            events (
+                date
+            )
+        `)
         .eq('user_id', session.userId)
         .eq('payment_status', 'paid')
         .order('created_at', { ascending: false })
@@ -136,7 +165,7 @@ export default async function BookingsPage() {
                                         </div>
                                         <div style={title}>{b.event_title}</div>
                                         <div style={metaRow}>
-                                            <span>📅 {fmtDate(b.event_date, true)}</span>
+                                            <span>📅 {fmtEventDate(Array.isArray(b.events) ? b.events[0]?.date : (b.events as any)?.date, b.event_date)}</span>
                                             {b.event_venue && <span>📍 {b.event_venue}</span>}
                                         </div>
                                         <div style={metaRow}>

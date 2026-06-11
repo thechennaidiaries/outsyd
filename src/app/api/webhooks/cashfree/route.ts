@@ -16,13 +16,10 @@ import { sendWhatsApp } from '@/lib/wasender'
 // ── WhatsApp message templates ────────────────────────────────────────────────
 
 function customerEventConfirmation(b: {
-    bookingRef: string; eventTitle: string; eventDate: string
+    bookingRef: string; eventTitle: string; formattedDate: string
     eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
     tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
-    const date = new Date(b.eventDate + 'T00:00:00').toLocaleDateString('en-IN', {
-        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-    })
     const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
 
     const ticketDetails = b.tickets && b.tickets.length > 0
@@ -35,7 +32,7 @@ function customerEventConfirmation(b: {
         `Hey! Your tickets are booked. See you there! 🎉`,
         ``,
         `*Event:* ${b.eventTitle}`,
-        `*Date:* ${date}`,
+        `*Date:* ${b.formattedDate}`,
         b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
         ``,
         `*Tickets:*`,
@@ -50,14 +47,11 @@ function customerEventConfirmation(b: {
 }
 
 function opsEventNotification(b: {
-    bookingRef: string; eventTitle: string; eventDate: string
+    bookingRef: string; eventTitle: string; formattedDate: string
     eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
     customerName: string; customerPhone: string
     tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
-    const date = new Date(b.eventDate + 'T00:00:00').toLocaleDateString('en-IN', {
-        day: 'numeric', month: 'short', year: 'numeric',
-    })
     const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
 
     const ticketDetails = b.tickets && b.tickets.length > 0
@@ -68,7 +62,7 @@ function opsEventNotification(b: {
         `📋 *New Booking — Outsyd*`,
         ``,
         `*Event:* ${b.eventTitle}`,
-        `*Date:* ${date}`,
+        `*Date:* ${b.formattedDate}`,
         b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
         ``,
         `*Tickets:*`,
@@ -180,23 +174,47 @@ export async function POST(req: NextRequest) {
             { onConflict: 'phone_number', ignoreDuplicates: true }
         )
 
-    // ── 8. Send WhatsApp notifications (confirmed only) ───────────────────────
+    // ── 8. Fetch event date from events table (source of truth) ─────────────
+    const { data: eventRow } = await supabase
+        .from('events')
+        .select('date, time')
+        .eq('id', booking.event_id)
+        .single()
+
+    const formattedDate = eventRow?.date
+        ? new Intl.DateTimeFormat('en-IN', {
+            weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+            timeZone: 'Asia/Kolkata',
+          }).format(new Date(eventRow.date + 'T00:00:00'))
+        : booking.event_date
+
+    const formattedDateShort = eventRow?.date
+        ? new Intl.DateTimeFormat('en-IN', {
+            day: 'numeric', month: 'short', year: 'numeric',
+            timeZone: 'Asia/Kolkata',
+          }).format(new Date(eventRow.date + 'T00:00:00'))
+        : booking.event_date
+
+    // ── 9. Send WhatsApp notifications (confirmed only) ───────────────────────
     const msgData = {
-        bookingRef:   booking.booking_reference,
-        eventTitle:   booking.event_title,
-        eventDate:    booking.event_date,
-        eventVenue:   booking.event_venue,
-        tierTitle:    booking.tier_title,
-        quantity:     booking.quantity,
-        amountPaid:   bookings ? bookings.reduce((sum, b) => sum + b.amount_paid, 0) : booking.amount_paid,
-        customerName: booking.customer_name,
+        bookingRef:    booking.booking_reference,
+        eventTitle:    booking.event_title,
+        formattedDate,
+        eventVenue:    booking.event_venue,
+        tierTitle:     booking.tier_title,
+        quantity:      booking.quantity,
+        amountPaid:    bookings ? bookings.reduce((sum, b) => sum + b.amount_paid, 0) : booking.amount_paid,
+        customerName:  booking.customer_name,
         customerPhone: booking.customer_phone,
-        tickets:      bookings ? bookings.map(b => ({ tierTitle: b.tier_title, quantity: b.quantity })) : [],
+        tickets:       bookings ? bookings.map(b => ({ tierTitle: b.tier_title, quantity: b.quantity })) : [],
     }
+
+    const opsMsgData = { ...msgData, formattedDate: formattedDateShort }
 
     // Customer confirmation
     await sendWhatsApp(booking.customer_phone, customerEventConfirmation(msgData))
 
     console.log(`[webhook/cashfree] Booking ${booking.booking_reference} confirmed ✓`)
+    void opsMsgData // used by opsEventNotification if needed
     return NextResponse.json({ result: 'confirmed' })
 }

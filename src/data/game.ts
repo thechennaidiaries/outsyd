@@ -699,5 +699,28 @@ export const PUZZLES: GamePuzzle[] = [
       'Chennai Lighthouse',
     ],
   },
+  {
+    id: 'game-036',
+    date: '2026-06-12',
+    location: 'Semmozhi Poonga',
+    area: 'Teynampet',
+    placeType: 'Park',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/semmozhi1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/semmozhi2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/semmozhi3.webp',
+    ],
+    acceptedPatterns: [
+      'sem+ozhi\\s*po+n?ga',
+      'sem+oli\\s*po+n?ga',
+      'sem+ozhi',
+      'semmozhi\\s*park',
+    ],
+    aliases: [
+      'semmozhi poonga',
+      'semmozhi park',
+      'semmozhi',
+    ],
+  },
 
 ]

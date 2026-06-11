@@ -80,7 +80,8 @@ export default function BookingReturnPage({
 
     // ── Format date ────────────────────────────────────────────────────────────
     function fmtDate(iso: string) {
-        return new Date(iso + 'T00:00:00').toLocaleDateString('en-IN', {
+        const [y, m, d] = iso.split('-').map(Number)
+        return new Date(y, m - 1, d).toLocaleDateString('en-IN', {
             weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
         })
     }

@@ -16,7 +16,7 @@ import { sendWhatsApp } from '@/lib/wasender'
 // ── WhatsApp message templates ────────────────────────────────────────────────
 
 function customerEventConfirmation(b: {
-    bookingRef: string; eventTitle: string; formattedDate: string
+    bookingRef: string; eventTitle: string; formattedDate: string; eventTime?: string
     eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
     tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
@@ -33,6 +33,7 @@ function customerEventConfirmation(b: {
         ``,
         `*Event:* ${b.eventTitle}`,
         `*Date:* ${b.formattedDate}`,
+        b.eventTime ? `*Time:* ${b.eventTime}` : null,
         b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
         ``,
         `*Tickets:*`,
@@ -47,7 +48,7 @@ function customerEventConfirmation(b: {
 }
 
 function opsEventNotification(b: {
-    bookingRef: string; eventTitle: string; formattedDate: string
+    bookingRef: string; eventTitle: string; formattedDate: string; eventTime?: string
     eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
     customerName: string; customerPhone: string
     tickets?: Array<{ tierTitle: string; quantity: number }>
@@ -63,6 +64,7 @@ function opsEventNotification(b: {
         ``,
         `*Event:* ${b.eventTitle}`,
         `*Date:* ${b.formattedDate}`,
+        b.eventTime ? `*Time:* ${b.eventTime}` : null,
         b.eventVenue ? `*Venue:* ${b.eventVenue}` : null,
         ``,
         `*Tickets:*`,
@@ -200,6 +202,7 @@ export async function POST(req: NextRequest) {
         bookingRef:    booking.booking_reference,
         eventTitle:    booking.event_title,
         formattedDate,
+        eventTime:     eventRow?.time ?? undefined,
         eventVenue:    booking.event_venue,
         tierTitle:     booking.tier_title,
         quantity:      booking.quantity,

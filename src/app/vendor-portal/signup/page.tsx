@@ -34,7 +34,12 @@ export default function VendorSignupPage() {
         fetch('/api/auth/me')
             .then(r => r.ok ? r.json() : null)
             .then(data => {
-                if (data?.userId) {
+                if (data?.user) {
+                    if (data.user.name) setName(data.user.name)
+                    if (data.user.phone_number) {
+                        const digits = data.user.phone_number.replace(/^\+91/, '').replace(/\D/g, '').slice(-10)
+                        setPhone(digits)
+                    }
                     // Already logged in — check if already a vendor
                     fetch('/api/vendor/me').then(r => {
                         if (r.ok) router.push('/vendor-portal/dashboard')
@@ -53,7 +58,7 @@ export default function VendorSignupPage() {
             const res = await fetch('/api/auth/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone }),
+                body: JSON.stringify({ phone: `+91${phone}` }),
             })
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || 'Failed to send OTP')
@@ -73,7 +78,7 @@ export default function VendorSignupPage() {
             const res = await fetch('/api/auth/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone, otp }),
+                body: JSON.stringify({ phone: `+91${phone}`, otp }),
             })
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || 'Invalid OTP')
@@ -99,7 +104,7 @@ export default function VendorSignupPage() {
             const res = await fetch('/api/vendor/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, brandName, email, phone }),
+                body: JSON.stringify({ name, brandName, email, phone: `+91${phone}` }),
             })
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || 'Registration failed')
@@ -151,8 +156,29 @@ export default function VendorSignupPage() {
                         <p style={styles.subheading}>Enter your phone number to get started.</p>
                         <form onSubmit={handleSendOtp} style={styles.form}>
                             <label style={styles.label}>Phone number</label>
-                            <input type="tel" placeholder="+91 98765 43210" value={phone}
-                                onChange={e => setPhone(e.target.value)} required autoFocus style={styles.input} />
+                            <div style={styles.phoneRow}>
+                                <span style={styles.phonePrefix}>+91</span>
+                                <input
+                                    type="tel"
+                                    placeholder="98765 43210"
+                                    value={phone}
+                                    onChange={e => {
+                                        let val = e.target.value.replace(/\D/g, '')
+                                        if (val.startsWith('91') && val.length > 10) {
+                                            val = val.substring(2)
+                                        }
+                                        setPhone(val.slice(0, 10))
+                                    }}
+                                    required
+                                    autoFocus
+                                    style={{
+                                        ...styles.input,
+                                        flex: 1,
+                                        borderLeft: 'none',
+                                        borderRadius: '0 10px 10px 0',
+                                    }}
+                                />
+                            </div>
                             <button type="submit" disabled={loading} style={styles.button}>
                                 {loading ? 'Sending…' : 'Send WhatsApp OTP'}
                             </button>
@@ -164,7 +190,7 @@ export default function VendorSignupPage() {
                 {step === 'otp' && (
                     <>
                         <h1 style={styles.heading}>Enter your code</h1>
-                        <p style={styles.subheading}>Sent to {phone} via WhatsApp.</p>
+                        <p style={styles.subheading}>Sent to +91 {phone} via WhatsApp.</p>
                         <form onSubmit={handleVerifyOtp} style={styles.form}>
                             <label style={styles.label}>6-digit code</label>
                             <input type="text" inputMode="numeric" placeholder="123456" value={otp}
@@ -291,4 +317,21 @@ const styles: Record<string, React.CSSProperties> = {
     },
     footer: { fontSize: 13, color: '#666', textAlign: 'center', marginTop: 28 },
     link: { color: '#aaa', textDecoration: 'underline' },
+    phoneRow: {
+        display: 'flex',
+        alignItems: 'stretch',
+        position: 'relative',
+    },
+    phonePrefix: {
+        padding: '12px 14px',
+        backgroundColor: '#1a1a1a',
+        border: '1px solid #2a2a2a',
+        borderRight: 'none',
+        borderRadius: '10px 0 0 10px',
+        color: '#666',
+        fontSize: 15,
+        display: 'flex',
+        alignItems: 'center',
+        flexShrink: 0,
+    },
 }

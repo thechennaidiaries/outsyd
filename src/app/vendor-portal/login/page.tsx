@@ -32,7 +32,7 @@ export default function VendorLoginPage() {
             const res = await fetch('/api/auth/send-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone }),
+                body: JSON.stringify({ phone: `+91${phone}` }),
             })
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || 'Failed to send OTP')
@@ -53,7 +53,7 @@ export default function VendorLoginPage() {
             const res = await fetch('/api/auth/verify-otp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone, otp }),
+                body: JSON.stringify({ phone: `+91${phone}`, otp }),
             })
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || 'Invalid OTP')
@@ -95,7 +95,7 @@ export default function VendorLoginPage() {
                 <p style={styles.subheading}>
                     {step === 'phone'
                         ? 'We\'ll send a WhatsApp code to verify your number.'
-                        : `Code sent to ${phone}. Check your WhatsApp.`}
+                        : `Code sent to +91 ${phone}. Check your WhatsApp.`}
                 </p>
 
                 {error && <div style={styles.errorBox}>{error}</div>}
@@ -103,15 +103,29 @@ export default function VendorLoginPage() {
                 {step === 'phone' ? (
                     <form onSubmit={handleSendOtp} style={styles.form}>
                         <label style={styles.label}>Phone number</label>
-                        <input
-                            type="tel"
-                            placeholder="+91 98765 43210"
-                            value={phone}
-                            onChange={e => setPhone(e.target.value)}
-                            required
-                            autoFocus
-                            style={styles.input}
-                        />
+                        <div style={styles.phoneRow}>
+                            <span style={styles.phonePrefix}>+91</span>
+                            <input
+                                type="tel"
+                                placeholder="98765 43210"
+                                value={phone}
+                                onChange={e => {
+                                    let val = e.target.value.replace(/\D/g, '')
+                                    if (val.startsWith('91') && val.length > 10) {
+                                        val = val.substring(2)
+                                    }
+                                    setPhone(val.slice(0, 10))
+                                }}
+                                required
+                                autoFocus
+                                style={{
+                                    ...styles.input,
+                                    flex: 1,
+                                    borderLeft: 'none',
+                                    borderRadius: '0 10px 10px 0',
+                                }}
+                            />
+                        </div>
                         <button type="submit" disabled={loading} style={styles.button}>
                             {loading ? 'Sending…' : 'Send OTP via WhatsApp'}
                         </button>
@@ -272,5 +286,22 @@ const styles: Record<string, React.CSSProperties> = {
     link: {
         color: '#aaa',
         textDecoration: 'underline',
+    },
+    phoneRow: {
+        display: 'flex',
+        alignItems: 'stretch',
+        position: 'relative',
+    },
+    phonePrefix: {
+        padding: '12px 14px',
+        backgroundColor: '#1a1a1a',
+        border: '1px solid #2a2a2a',
+        borderRight: 'none',
+        borderRadius: '10px 0 0 10px',
+        color: '#666',
+        fontSize: 15,
+        display: 'flex',
+        alignItems: 'center',
+        flexShrink: 0,
     },
 }

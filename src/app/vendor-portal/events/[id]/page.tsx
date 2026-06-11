@@ -257,10 +257,6 @@ export default function EditEventPage() {
                 </SCard>
 
                 <SCard title="Settings">
-                    <SField label="Event WhatsApp number">
-                        <input style={styles.input} value={eventPhone}
-                            onChange={e => setEventPhone(e.target.value)} type="tel" />
-                    </SField>
                     <SField label="Refund policy">
                         <textarea style={{ ...styles.input, height: 80, resize: 'vertical' }}
                             value={refundPolicy} onChange={e => setRefundPolicy(e.target.value)} />

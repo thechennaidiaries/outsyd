@@ -297,11 +297,6 @@ export default function NewEventPage() {
 
                 {/* ── Section 5: Settings ───────────────────────────────── */}
                 <Section title="Settings">
-                    <Field label="Event WhatsApp number (for booking notifications)">
-                        <input style={styles.input} value={eventPhone} onChange={e => setEventPhone(e.target.value)}
-                            placeholder="+91 98765 43210" type="tel" />
-                        <p style={styles.hint}>Leave blank to use the default Outsyd ops number.</p>
-                    </Field>
 
 
                     <Field label="Refund policy">

@@ -21,7 +21,7 @@ function customerEventConfirmation(b: {
     eventVenue?: string; tierTitle?: string; quantity?: number; amountPaid: number
     tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
-    const date = new Date(b.eventDate).toLocaleDateString('en-IN', {
+    const date = new Date(b.eventDate + 'T00:00:00').toLocaleDateString('en-IN', {
         weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
     })
     const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`
@@ -56,7 +56,7 @@ function opsEventNotification(b: {
     customerName: string; customerPhone: string
     tickets?: Array<{ tierTitle: string; quantity: number }>
 }): string {
-    const date = new Date(b.eventDate).toLocaleDateString('en-IN', {
+    const date = new Date(b.eventDate + 'T00:00:00').toLocaleDateString('en-IN', {
         day: 'numeric', month: 'short', year: 'numeric',
     })
     const amount = `₹${(b.amountPaid / 100).toLocaleString('en-IN')}`

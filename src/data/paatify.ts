@@ -278,6 +278,26 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   {
     id: 'paatify-013',
     date: '2026-06-14',
+    song: 'Kanimaa',
+    movie: 'Vettaiyan',
+    year: 2024,
+    hints: [
+      'The one with the moon on his forehead\nAlso has the courage of a warrior',
+      'Let the whole southern region\nGather here with loud celebration',
+      'Like a sandalwood log\nSpinning like a top',
+      'One look at her is enough to explode like fireworks'
+    ],
+    acceptedPatterns: [
+      'kanima+a',
+      'kanima',
+      'kannimaa',
+      'kannima',
+    ],
+  },
+
+  {
+    id: 'paatify-014',
+    date: '2026-06-15',
     song: 'Uyire',
     movie: 'Bombay',
     year: 1995,
@@ -294,8 +314,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-014',
-    date: '2026-06-15',
+    id: 'paatify-015',
+    date: '2026-06-16',
     song: 'Vinnaithaandi Varuvaayaa',
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
@@ -314,8 +334,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-015',
-    date: '2026-06-16',
+    id: 'paatify-016',
+    date: '2026-06-17',
     song: 'Munbe Vaa',
     movie: 'Sillunu Oru Kaadhal',
     year: 2006,
@@ -333,8 +353,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-016',
-    date: '2026-06-17',
+    id: 'paatify-017',
+    date: '2026-06-18',
     song: 'Chinna Chinna Aasai',
     movie: 'Roja',
     year: 1992,
@@ -355,8 +375,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-017',
-    date: '2026-06-18',
+    id: 'paatify-018',
+    date: '2026-06-19',
     song: 'Kannaana Kanney',
     movie: 'Viswasam',
     year: 2019,

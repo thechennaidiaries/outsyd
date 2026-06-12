@@ -727,7 +727,7 @@ export const PUZZLES: GamePuzzle[] = [
     date: '2026-06-13',
     location: 'Chennai International Airport',
     area: 'Meenambakkam',
-    placeType: 'Airport',
+    placeType: 'Place',
     images: [
       'https://ik.imagekit.io/zxnq8x4yz/clue1airport.webp',
       'https://ik.imagekit.io/zxnq8x4yz/clue22airport.webp',

@@ -722,5 +722,27 @@ export const PUZZLES: GamePuzzle[] = [
       'semmozhi',
     ],
   },
+  {
+    id: 'game-037',
+    date: '2026-06-13',
+    location: 'Chennai International Airport',
+    area: 'Meenambakkam',
+    placeType: 'Airport',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/clue1airport.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/clue22airport.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/clue3airport.webp',
+    ],
+    acceptedPatterns: [
+      '^(chennai\\s*)?(international\\s*)?airport$',
+      '^meenambakkam\\s*airport$',
+    ],
+    aliases: [
+      'chennai international airport',
+      'chennai airport',
+      'airport',
+      'meenambakkam airport',
+    ],
+  },
 
 ]

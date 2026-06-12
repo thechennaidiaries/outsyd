@@ -7,6 +7,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getSession } from '@/lib/session'
 import { supabase } from '@/lib/supabase'
+import { revalidatePath } from 'next/cache'
 
 async function getVendorAndEvent(userId: string, eventId: string) {
     const { data: vendor } = await supabase
@@ -87,12 +88,23 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
             approval_status:        result.event.approval_status === 'rejected' ? 'draft' : result.event.approval_status,
         })
         .eq('id', id)
-        .select('id, slug, title, approval_status')
+        .select('id, slug, title, approval_status, city_id')
         .single()
 
     if (error) {
         console.error('[vendor/events PUT]', error)
         return NextResponse.json({ error: 'Failed to update event' }, { status: 500 })
+    }
+
+    // Automatically revalidate the event detail page if it is live/approved
+    if (updated.approval_status === 'approved') {
+        const eventPath = `/${updated.city_id}/events/${updated.slug}`
+        try {
+            revalidatePath(eventPath)
+            console.log(`[revalidate] Auto-purged cache on PUT for: ${eventPath}`)
+        } catch (err) {
+            console.error(`[revalidate] Failed to auto-purge cache on PUT for: ${eventPath}`, err)
+        }
     }
 
     return NextResponse.json({ event: updated })

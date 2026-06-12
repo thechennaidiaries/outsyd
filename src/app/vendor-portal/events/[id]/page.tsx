@@ -37,6 +37,7 @@ export default function EditEventPage() {
     const [tiers, setTiers]     = useState<Tier[]>([])
     const [loading, setLoading] = useState(true)
     const [saving, setSaving]   = useState(false)
+    const [syncing, setSyncing] = useState(false)
     const [error, setError]     = useState('')
     const [success, setSuccess] = useState('')
 
@@ -117,6 +118,18 @@ export default function EditEventPage() {
         finally { setSaving(false) }
     }
 
+    async function handleSync() {
+        setError(''); setSuccess('')
+        setSyncing(true)
+        try {
+            const res = await fetch(`/api/vendor/events/${id}/revalidate`, { method: 'POST' })
+            const data = await res.json()
+            if (!res.ok) throw new Error(data.error || 'Failed to sync')
+            setSuccess('Live page cache updated successfully!')
+        } catch (err: any) { setError(err.message) }
+        finally { setSyncing(false) }
+    }
+
     async function handleSubmitForReview() {
         setError(''); setSuccess('')
         setSaving(true)
@@ -174,6 +187,16 @@ export default function EditEventPage() {
             <div style={styles.header}>
                 <button onClick={() => router.push('/vendor-portal/events')} style={styles.backBtn}>← Events</button>
                 <div style={styles.headerRight}>
+                    {event?.approval_status === 'approved' && (
+                        <button
+                            type="button"
+                            onClick={handleSync}
+                            disabled={syncing}
+                            style={styles.syncBtn}
+                        >
+                            {syncing ? 'Syncing...' : 'Sync Live Page'}
+                        </button>
+                    )}
                     {badge && <span style={{ ...styles.badge, color: badge.color }}>{badge.label}</span>}
                     {canDelete && (
                         <button onClick={handleDelete} style={styles.deleteBtn}>Delete event</button>
@@ -355,6 +378,7 @@ const styles: Record<string, React.CSSProperties> = {
     headerRight: { display: 'flex', alignItems: 'center', gap: 12 },
     badge: { fontSize: 12, fontWeight: 600 },
     deleteBtn: { background: 'none', border: '1px solid #3a1a1a', borderRadius: 6, color: '#f87171', fontSize: 12, padding: '5px 12px', cursor: 'pointer' },
+    syncBtn: { background: 'none', border: '1px solid #2a2a2a', borderRadius: 6, color: '#e5e5e5', fontSize: 12, padding: '5px 12px', cursor: 'pointer', fontWeight: 600, backgroundColor: '#1a1a1a', transition: 'all 0.2s' },
     title: { fontSize: 22, fontWeight: 700, color: '#fff', margin: '0 0 20px', letterSpacing: '-0.3px' },
     errorBox: { backgroundColor: '#2a1212', border: '1px solid #5a2020', borderRadius: 8, color: '#f87171', fontSize: 13, padding: '12px 16px', marginBottom: 16 },
     successBox: { backgroundColor: '#0a2a0a', border: '1px solid #1a5a1a', borderRadius: 8, color: '#4ade80', fontSize: 13, padding: '12px 16px', marginBottom: 16 },

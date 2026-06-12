@@ -744,5 +744,23 @@ export const PUZZLES: GamePuzzle[] = [
       'meenambakkam airport',
     ],
   },
+  {
+    id: 'game-038',
+    date: '2026-06-14',
+    location: 'Porur',
+    area: 'Porur',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/porur1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/porur2.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/porur3.webp',
+    ],
+    acceptedPatterns: [
+      '^porur$',
+    ],
+    aliases: [
+      'porur',
+    ],
+  },
 
 ]

@@ -279,7 +279,7 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
     id: 'paatify-013',
     date: '2026-06-14',
     song: 'Kanimaa',
-    movie: 'Vettaiyan',
+    movie: 'Retro',
     year: 2024,
     hints: [
       'The one with the moon on his forehead\nAlso has the courage of a warrior',

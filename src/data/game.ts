@@ -762,5 +762,25 @@ export const PUZZLES: GamePuzzle[] = [
       'porur',
     ],
   },
+  {
+    id: 'game-039',
+    date: '2026-06-15',
+    location: 'Guindy',
+    area: 'Guindy',
+    placeType: 'Area',
+    images: [
+      'https://ik.imagekit.io/zxnq8x4yz/guindy1.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/guindy22.webp',
+      'https://ik.imagekit.io/zxnq8x4yz/guindy3.webp',
+    ],
+    acceptedPatterns: [
+      '^guind[hy]?y$',
+      '^gindy$',
+    ],
+    aliases: [
+      'guindy',
+      'guindhy',
+    ],
+  },
 
 ]

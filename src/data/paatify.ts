@@ -298,6 +298,29 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   {
     id: 'paatify-014',
     date: '2026-06-15',
+    song: 'Ilamai Thirumbudhe',
+    movie: 'Petta',
+    year: 2019,
+    hints: [
+      'My heart jumps and dances with joy\nSleep doesn\'t come anymore',
+      'I get nervous as the evening approaches\nIt feels like first love all over again',
+      'My hands reach for the comb on their own\nMy eyes keep searching for you, dear',
+      'The days pass slowly for no reason\nLove touches me gently'
+    ],
+    acceptedPatterns: [
+      'ilamai\\s*thirumbudhe',
+      'ilamai\\s*thirumbuthe',
+      'ilamai\\s*thirumbudhey',
+      'ilamai\\s*thirumbuthey',
+      'ilamai\\s*thirumbu',
+      'ilamaithirumbudhe',
+      'ilamaithirumbuthe',
+    ],
+  },
+
+  {
+    id: 'paatify-015',
+    date: '2026-06-16',
     song: 'Uyire',
     movie: 'Bombay',
     year: 1995,
@@ -314,8 +337,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-015',
-    date: '2026-06-16',
+    id: 'paatify-016',
+    date: '2026-06-17',
     song: 'Vinnaithaandi Varuvaayaa',
     movie: 'Vinnaithaandi Varuvaayaa',
     year: 2010,
@@ -334,8 +357,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-016',
-    date: '2026-06-17',
+    id: 'paatify-017',
+    date: '2026-06-18',
     song: 'Munbe Vaa',
     movie: 'Sillunu Oru Kaadhal',
     year: 2006,
@@ -353,8 +376,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-017',
-    date: '2026-06-18',
+    id: 'paatify-018',
+    date: '2026-06-19',
     song: 'Chinna Chinna Aasai',
     movie: 'Roja',
     year: 1992,
@@ -375,8 +398,8 @@ export const PAATIFY_PUZZLES: PaatifyPuzzle[] = [
   },
 
   {
-    id: 'paatify-018',
-    date: '2026-06-19',
+    id: 'paatify-019',
+    date: '2026-06-20',
     song: 'Kannaana Kanney',
     movie: 'Viswasam',
     year: 2019,
